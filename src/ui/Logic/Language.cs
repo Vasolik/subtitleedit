@@ -1519,6 +1519,8 @@ namespace Nikse.SubtitleEdit.Logic
                 soName = "Somali",
                 sqName = "Albanian",
                 srName = "Serbian",
+                srCyrlName = "Serbian Cyrillic",
+                srLatnName = "Serbian Latn",
                 ssName = "Swati",
                 stName = "Southern Sotho",
                 suName = "Sundanese",

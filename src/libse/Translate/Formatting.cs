@@ -9,7 +9,7 @@ namespace Nikse.SubtitleEdit.Core.Translate
     {
         public static readonly List<string> LanguagesAllowingLineMerging = new List<string>
         {
-            "en", "da", "nl", "de", "sv", "nb", "fr", "it", "tr", "es", "pt", "sr", "ru", "lv", "lt", "et", "ro", "pl", "ar", "he", "no"
+            "en", "da", "nl", "de", "sv", "nb", "fr", "it", "tr", "es", "pt", "sr-cyrl","sr-latn", "sr", "ru", "lv", "lt", "et", "ro", "pl", "ar", "he", "no"
         };
 
         private bool Italic { get; set; }

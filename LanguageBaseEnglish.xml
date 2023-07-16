@@ -1246,6 +1246,8 @@ To use an API key, go to "Options -&gt; Settings -&gt; Tools" to enter your Goog
     <soName>Somali</soName>
     <sqName>Albanian</sqName>
     <srName>Serbian</srName>
+    <srCyrlName>Serbian Cyrillic</srCyrlName>
+    <srLatnName>Serbian Latin</srLatnName>
     <ssName>Swati</ssName>
     <stName>Southern Sotho</stName>
     <suName>Sundanese</suName>

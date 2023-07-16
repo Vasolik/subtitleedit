@@ -528,6 +528,11 @@ namespace Nikse.SubtitleEdit.Core.Common
             count = GetCount(text, AutoDetectWordsRussian);
             if (count > bestCount)
             {
+                var serbianCount = GetCount(text, AutoDetectWordsSerbianCyrillic)*3;
+                if (serbianCount > count)
+                {
+                    return "sr-cyrl"; // Serbian
+                }
                 var bulgarianCount = GetCount(text, AutoDetectWordsBulgarian);
                 var ukrainianCount = GetCount(text, AutoDetectWordsUkrainian);
                 if (bulgarianCount > count)
@@ -545,16 +550,10 @@ namespace Nikse.SubtitleEdit.Core.Common
                     return "uk"; // Ukrainian
                 }
 
-                var serbianCount = GetCount(text, AutoDetectWordsSerbianCyrillic);
-                if (serbianCount > count)
-                {
-                    return "sr"; // Serbian
-                }
-
                 var serbianWordsOnlyCount = GetCount(text, AutoDetectWordsSerbianCyrillicOnly);
                 if (serbianWordsOnlyCount > 1)
                 {
-                    return "sr"; // Serbian
+                    return "sr-cyrl"; // Serbian
                 }
 
                 return "ru"; // Russian
@@ -622,7 +621,7 @@ namespace Nikse.SubtitleEdit.Core.Common
                     return "sl";
                 }
 
-                return "sr"; // Serbian
+                return "sr-cyrl"; // Serbian
             }
 
             count = GetCount(text, AutoDetectWordsVietnamese);
@@ -935,12 +934,12 @@ namespace Nikse.SubtitleEdit.Core.Common
                 },
                 new LanguageForAutoDetect
                 {
-                    LanguageCode = "sr",
+                    LanguageCode = "sr-latn",
                     Words = AutoDetectWordsSerbian,
                 },
                 new LanguageForAutoDetect
                 {
-                    LanguageCode = "sr",
+                    LanguageCode = "sr-cyrl",
                     Words = AutoDetectWordsSerbianCyrillic,
                 },
                 new LanguageForAutoDetect
@@ -1347,10 +1346,11 @@ namespace Nikse.SubtitleEdit.Core.Common
                         }
                         break;
                     case "sr": // Serbian (Cyrillic)
+                    case "sr_cyrl": // Serbian (Cyrillic)
                         count = GetCount(text, AutoDetectWordsSerbianCyrillic);
                         if (count > bestCount)
                         {
-                            languageName = shortName;
+                            languageName = "sr-cyrl";
                             bestCount = count;
                         }
                         break;

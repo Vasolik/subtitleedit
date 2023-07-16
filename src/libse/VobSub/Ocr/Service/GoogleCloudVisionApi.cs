@@ -122,6 +122,7 @@ namespace Nikse.SubtitleEdit.Core.VobSub.Ocr.Service
                     "sl",
                     "sq",
                     "sr",
+                    "sr-cyrl",
                     "sr-Latn",
                     "sv",
                     "sw",
