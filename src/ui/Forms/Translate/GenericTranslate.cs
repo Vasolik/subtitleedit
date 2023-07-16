@@ -146,6 +146,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
         {
             AddTranslationService(GoogleTranslationInitializer.Init(this));
             AddTranslationService(MicrosoftTranslationInitializer.Init());
+            AddTranslationService(SerbianScriptTranslationInitializer.Init());
 
             if (comboBoxTranslationServices.Items.Count > 0 && comboBoxTranslationServices.SelectedIndex < 0)
             {
@@ -758,6 +759,14 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             }
 
             return microsoftTranslationService;
+        }
+    }
+    
+    public class SerbianScriptTranslationInitializer
+    {
+        public static SerbianLettersService Init()
+        {
+            return new SerbianLettersService();
         }
     }
 }

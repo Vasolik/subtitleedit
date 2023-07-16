@@ -1333,6 +1333,8 @@ namespace Nikse.SubtitleEdit.Logic
             public string soName { get; set; }
             public string sqName { get; set; }
             public string srName { get; set; }
+            public string srCyrlName { get; set; }
+            public string srLatnName { get; set; }
             public string ssName { get; set; }
             public string stName { get; set; }
             public string suName { get; set; }

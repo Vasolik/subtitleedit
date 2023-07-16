@@ -121,6 +121,8 @@ namespace Nikse.SubtitleEdit.Core.Common
                {"so", "Somali"             },
                {"sq", "Albanian"           },
                {"sr", "Serbian"            },
+               {"sr-cyrl", "Serbian Cyrillic"    },
+               {"sr-latn", "Serbian Latin"    },
                {"ss", "Swati"              },
                {"st", "Southern Sotho"     },
                {"su", "Sundanese"          },

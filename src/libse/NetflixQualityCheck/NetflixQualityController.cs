@@ -149,6 +149,8 @@ namespace Nikse.SubtitleEdit.Core.NetflixQualityCheck
                     case "fi": // Finnish
                     case "he": // Hebrew
                     case "sr": // Serbian
+                    case "sr-cyrl": // Serbian
+                    case "sr-latn": // Serbian
                         return DialogType.DashSecondLineWithoutSpace;
                     case "bg": // Bulgarian 
                         return DialogType.DashSecondLineWithSpace;

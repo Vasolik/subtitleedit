@@ -3265,6 +3265,12 @@ namespace Nikse.SubtitleEdit.Logic
                 case "LanguageNames/srName":
                     language.LanguageNames.srName = reader.Value;
                     break;
+                case "LanguageNames/srCyrlName":
+                    language.LanguageNames.srCyrlName = reader.Value;
+                    break;
+                case "LanguageNames/srLatnName":
+                    language.LanguageNames.srLatnName = reader.Value;
+                    break;                    
                 case "LanguageNames/ssName":
                     language.LanguageNames.ssName = reader.Value;
                     break;

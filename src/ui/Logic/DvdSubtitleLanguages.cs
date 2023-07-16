@@ -117,6 +117,8 @@ namespace Nikse.SubtitleEdit.Logic
                 { "so", LanguageSettings.Current.LanguageNames.soName },
                 { "sq", LanguageSettings.Current.LanguageNames.sqName },
                 { "sr", LanguageSettings.Current.LanguageNames.srName },
+                { "sr-cyrl", LanguageSettings.Current.LanguageNames.srCyrlName },
+                { "sr-latn", LanguageSettings.Current.LanguageNames.srLatnName },
                 { "ss", LanguageSettings.Current.LanguageNames.ssName },
                 { "st", LanguageSettings.Current.LanguageNames.stName },
                 { "su", LanguageSettings.Current.LanguageNames.suName },
