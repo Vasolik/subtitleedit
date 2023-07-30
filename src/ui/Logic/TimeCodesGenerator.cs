@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.Logic
 {
@@ -37,7 +35,8 @@ namespace Nikse.SubtitleEdit.Logic
                 _timeCodes = new List<double>();
             }
 
-            var ffProbePath = Path.Combine(Path.GetDirectoryName(Configuration.Settings.General.FFmpegLocation), "ffprobe.exe");
+            var ffMpegLocation = Configuration.Settings.General.FFmpegLocation;
+            var ffProbePath = !string.IsNullOrWhiteSpace(ffMpegLocation) ? Path.Combine(Path.GetDirectoryName(ffMpegLocation), "ffprobe.exe") : string.Empty;
             if (!Configuration.IsRunningOnWindows && !File.Exists(ffProbePath))
             {
                 ffProbePath = "ffprobe";

@@ -44,7 +44,7 @@ namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
 
             if (videoInfo != null && videoInfo.TotalMilliseconds > 0)
             {
-                _duration = videoInfo.TotalMilliseconds;
+                _duration = videoInfo.TotalSeconds;
             }
 
             _videoInfo = videoInfo;
@@ -83,21 +83,8 @@ namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
                 _timeCodes = TimeCodesFileHelper.FromDisk(videoFileName);
                 _shotChanges = shotChanges;
 
-                // Check if ffprobe is available
-                var isFfProbeAvailable = false;
-                if (!string.IsNullOrEmpty(Configuration.Settings.General.FFmpegLocation))
-                {
-                    var ffProbePath = Path.Combine(Path.GetDirectoryName(Configuration.Settings.General.FFmpegLocation), "ffprobe.exe");
-                    if (Configuration.IsRunningOnWindows)
-                    {
-                        isFfProbeAvailable = File.Exists(ffProbePath);
-                    }
-                    else
-                    {
-                        isFfProbeAvailable = true;
-                    }
-                }
-                if (!isFfProbeAvailable)
+                // Check if ffprobe is available              
+                if (!IsFfProbeAvailable())
                 {
                     checkBoxExtractExactTimeCodes.Enabled = false;
                     checkBoxExtractExactTimeCodes.Checked = false;
@@ -204,7 +191,10 @@ namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
             if (!_abortTimeCodes && success)
             {
                 _timeCodes = _timeCodesGenerator.GetTimeCodes();
-                TimeCodesFileHelper.SaveTimeCodes(_videoFileName, _timeCodes);
+                if (_timeCodes.Count > 0)
+                {
+                    TimeCodesFileHelper.SaveTimeCodes(_videoFileName, _timeCodes);
+                }
             }
 
             RefreshControls();
@@ -276,7 +266,7 @@ namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
             buttonOK.Enabled = false;
 
             // Actual processing
-            FixedSubtitle = new Subtitle(_subtitle);
+            FixedSubtitle = new Subtitle(_subtitle, false);
 
             TimeCodesBeautifier timeCodesBeautifier = new TimeCodesBeautifier(
                 FixedSubtitle,
@@ -284,12 +274,16 @@ namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
                 checkBoxExtractExactTimeCodes.Checked ? _timeCodes : new List<double>(), // ditto
                 checkBoxSnapToShotChanges.Checked ? _shotChanges : new List<double>()
             );
-            timeCodesBeautifier.ProgressChanged += delegate (double progress)
+            timeCodesBeautifier.ProgressChanged += delegate (int progress)
             {
-                progressBar.Value = Convert.ToInt32(progress * 100);
-                Application.DoEvents();
+                progressBar.Value = progress;
+                progressBar.Invalidate();
             };
             timeCodesBeautifier.Beautify();
+
+            // Re-enable group boxes, otherwise child controls are also disabled, and we need their original state for the checks below
+            groupBoxTimeCodes.Enabled = true;
+            groupBoxShotChanges.Enabled = true;
 
             // Save settings
             Configuration.Settings.BeautifyTimeCodes.AlignTimeCodes = checkBoxAlignTimeCodes.Checked;
@@ -325,6 +319,14 @@ namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
         private void buttonCancelTimeCodes_Click(object sender, EventArgs e)
         {
             _abortTimeCodes = true;
+        }
+
+        public static bool IsFfProbeAvailable()
+        {
+            return !Configuration.IsRunningOnWindows || (
+                !string.IsNullOrWhiteSpace(Configuration.Settings.General.FFmpegLocation) 
+                && File.Exists(Path.Combine(Path.GetDirectoryName(Configuration.Settings.General.FFmpegLocation), "ffprobe.exe"))
+            );
         }
     }
 }

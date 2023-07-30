@@ -70,13 +70,13 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
-        [Category("NikseUpDown"), Description("Gets or sets the increment value")]
+        [Category("NikseUpDown"), Description("Gets or sets the increment value"), DefaultValue(1)]
         public decimal Increment { get; set; } = 1;
 
-        [Category("NikseUpDown"), Description("Gets or sets the Maximum value (max 25 significant digits)")]
+        [Category("NikseUpDown"), Description("Gets or sets the Maximum value (max 25 significant digits)"), DefaultValue(100)]
         public decimal Maximum { get; set; } = 100;
 
-        [Category("NikseUpDown"), Description("Gets or sets the Minimum value")]
+        [Category("NikseUpDown"), Description("Gets or sets the Minimum value"), DefaultValue(0)]
         public decimal Minimum { get; set; } = 0;
 
         [Category("NikseUpDown"), Description("Allow arrow keys to set increment/decrement value")]
@@ -164,6 +164,8 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        public static Color DefaultBackColorDisabled = Color.FromArgb(240, 240, 240);
+
         private Color _backColorDisabled;
         [Category("NikseUpDown"), Description("Gets or sets the button foreground color"),
          RefreshProperties(RefreshProperties.Repaint)]
@@ -204,6 +206,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public NikseUpDown()
         {
+            Height = 23;
             _textBox = new TextBox();
             _textBox.KeyPress += TextBox_KeyPress;
             _textBox.KeyDown += (sender, e) =>
@@ -219,19 +222,23 @@ namespace Nikse.SubtitleEdit.Controls
                     e.Handled = true;
                 }
             };
-            _textBox.LostFocus += (sender, args) => Invalidate();
+            _textBox.LostFocus += (sender, args) =>
+            {
+                SetText(true);
+                Invalidate();
+            };
             _textBox.GotFocus += (sender, args) => Invalidate();
             _textBox.TextChanged += _textBox_TextChanged;
             _textBox.BorderStyle = BorderStyle.None;
 
             Controls.Add(_textBox);
-            BackColor = new TextBox().BackColor;
+            BackColor = SystemColors.Window;
             ButtonForeColor = DefaultForeColor;
             ButtonForeColorOver = Color.FromArgb(0, 120, 215);
             ButtonForeColorDown = Color.Orange;
             BorderColor = Color.FromArgb(171, 173, 179);
             BorderColorDisabled = Color.FromArgb(120, 120, 120);
-            BackColorDisabled = Color.FromArgb(240, 240, 240);
+            BackColorDisabled = DefaultBackColorDisabled;
             DoubleBuffered = true;
             InterceptArrowKeys = true;
 
@@ -257,9 +264,15 @@ namespace Nikse.SubtitleEdit.Controls
 
         private void _textBox_TextChanged(object sender, EventArgs e)
         {
-            if (decimal.TryParse(_textBox.Text, out var result))
+            if (decimal.TryParse("0" + _textBox.Text, out var result))
             {
-                Value = Math.Round(result, DecimalPlaces);
+                var v = Math.Round(result, DecimalPlaces);
+                if (v == Value)
+                {
+                    return;
+                }
+
+                Value = v;
 
                 if (Value < Minimum)
                 {
@@ -271,6 +284,8 @@ namespace Nikse.SubtitleEdit.Controls
                     Value = Maximum;
                     Invalidate();
                 }
+
+                ValueChanged?.Invoke(this, null);
             }
         }
 
@@ -307,7 +322,7 @@ namespace Nikse.SubtitleEdit.Controls
             if (string.IsNullOrEmpty(_textBox.Text))
             {
                 Value = 0 >= Minimum && 0 <= Maximum ? 0 : Minimum;
-                SetText();
+                SetText(true);
                 ValueChanged?.Invoke(this, null);
                 return;
             }
@@ -315,12 +330,12 @@ namespace Nikse.SubtitleEdit.Controls
             if (_textBox.TextLength > 25)
             {
                 Value = Maximum;
-                SetText();
+                SetText(true);
                 ValueChanged?.Invoke(this, null);
                 return;
             }
 
-            if (decimal.TryParse(_textBox.Text, out var result))
+            if (decimal.TryParse("0" + _textBox.Text, out var result))
             {
                 Value = Math.Round(result + value, DecimalPlaces);
 
@@ -459,6 +474,16 @@ namespace Nikse.SubtitleEdit.Controls
 
         private const int ButtonsWidth = 13;
 
+        public new bool Enabled
+        {
+            get => base.Enabled;
+            set
+            {
+                base.Enabled = value;
+                Invalidate();
+            }
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -469,6 +494,7 @@ namespace Nikse.SubtitleEdit.Controls
             _textBox.Left = RightToLeft == RightToLeft.Yes ? ButtonsWidth : 3;
             _textBox.Height = Height - 4;
             _textBox.Width = Width - ButtonsWidth - 3;
+            _textBox.Invalidate();
             SetText();
 
             if (!Enabled)
@@ -477,7 +503,7 @@ namespace Nikse.SubtitleEdit.Controls
                 return;
             }
 
-            base.OnPaint(e);
+            e.Graphics.Clear(BackColor);
             using (var pen = _textBox.Focused ? new Pen(_buttonForeColorOver, 1f) : new Pen(BorderColor, 1f))
             {
                 var borderRectangle = new Rectangle(e.ClipRectangle.X, e.ClipRectangle.Y, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);
@@ -543,28 +569,46 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
-        private void SetText()
+        private void SetText(bool leaving = false)
         {
+            var selectionStart = _textBox.SelectionStart;
+
+            string newText;
             if (DecimalPlaces <= 0)
             {
-                _textBox.Text = ThousandsSeparator ? $"{Value:#,###,##0}" : $"{Value:########0}";
+                newText = ThousandsSeparator ? $"{Value:#,###,##0}" : $"{Value:########0}";
             }
             else if (DecimalPlaces == 1)
             {
-                _textBox.Text = ThousandsSeparator ? $"{Value:#,###,##0.0}" : $"{Value:########0.0}";
+                newText = ThousandsSeparator ? $"{Value:#,###,##0.0}" : $"{Value:########0.0}";
             }
             else if (DecimalPlaces == 2)
             {
-                _textBox.Text = ThousandsSeparator ? $"{Value:#,###,##0.00}" : $"{Value:#########0.00}";
+                newText = ThousandsSeparator ? $"{Value:#,###,##0.00}" : $"{Value:#########0.00}";
             }
             else if (DecimalPlaces == 3)
             {
-                _textBox.Text = ThousandsSeparator ? $"{Value:#,###,##0.000}" : $"{Value:#########0.000}";
+                newText = ThousandsSeparator ? $"{Value:#,###,##0.000}" : $"{Value:#########0.000}";
             }
             else
             {
-                _textBox.Text = ThousandsSeparator ? $"{Value:#,###,##0.0000}" : $"{Value:#########0.0000}";
+                newText = ThousandsSeparator ? $"{Value:#,###,##0.0000}" : $"{Value:#########0.0000}";
             }
+
+            if (newText == _textBox.Text)
+            {
+                return;
+            }
+
+            if (!leaving &&
+                (_textBox.Text.StartsWith(",") || _textBox.Text.StartsWith(".")) &&
+                (newText.StartsWith("0,") || newText.StartsWith("0.")))
+            {
+                return;
+            }
+
+            _textBox.Text = newText;
+            _textBox.SelectionStart = selectionStart;
         }
 
         private static void DrawArrowDown(PaintEventArgs e, Brush brush, int left, int top, int height)
@@ -591,10 +635,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private void DrawDisabled(PaintEventArgs e)
         {
-            using (var brushBg = new SolidBrush(BackColorDisabled))
-            {
-                e.Graphics.FillRectangle(brushBg, e.ClipRectangle);
-            }
+            e.Graphics.Clear(BackColorDisabled);
 
             using (var pen = new Pen(BorderColorDisabled, 1f))
             {

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Nikse.SubtitleEdit.Logic
+﻿namespace Nikse.SubtitleEdit.Logic
 {
     // The language classes are built for easy xml-serialization (makes save/load code simple)
     public static class LanguageStructure
@@ -155,8 +153,11 @@ namespace Nikse.SubtitleEdit.Logic
         public class AddWaveformBatch
         {
             public string Title { get; set; }
+            public string ExtractTimeCodes { get; set; }
             public string ExtractingAudio { get; set; }
             public string Calculating { get; set; }
+            public string ExtractingTimeCodes { get; set; }
+            public string DetectingShotChanges { get; set; }
             public string Done { get; set; }
             public string Error { get; set; }
         }
@@ -176,6 +177,7 @@ namespace Nikse.SubtitleEdit.Logic
             public string ExtendOnly { get; set; }
             public string EnforceDurationLimits { get; set; }
             public string CheckShotChanges { get; set; }
+            public string BatchCheckShotChanges { get; set; }
         }
 
         public class ApplyDurationLimits
@@ -184,6 +186,7 @@ namespace Nikse.SubtitleEdit.Logic
             public string CheckShotChanges { get; set; }
             public string FixesAvailable { get; set; }
             public string UnableToFix { get; set; }
+            public string BatchCheckShotChanges { get; set; }
         }
 
         public class AudioToText
@@ -392,6 +395,7 @@ namespace Nikse.SubtitleEdit.Logic
         public class BeautifyTimeCodes
         {
             public string Title { get; set; }
+            public string TitleSelectedLines { get; set; }
             public string GroupTimeCodes { get; set; }
             public string AlignTimeCodes { get; set; }
             public string ExtractExactTimeCodes { get; set; }
@@ -407,6 +411,9 @@ namespace Nikse.SubtitleEdit.Logic
             public string NoShotChangesLoaded { get; set; }
             public string XShotChangesLoaded { get; set; }
             public string NoShotChangesLoadedError { get; set; }
+            public string BatchAlignTimeCodes { get; set; }
+            public string BatchUseExactTimeCodes { get; set; }
+            public string BatchSnapToShotChanges { get; set; }
         }
 
         public class BeautifyTimeCodesProfile
@@ -944,6 +951,7 @@ namespace Nikse.SubtitleEdit.Logic
             public string BreakLongLines { get; set; }
             public string RemoveLineBreaks { get; set; }
             public string RemoveLineBreaksAll { get; set; }
+            public string RemoveLineBreaksPixelWidth { get; set; }
             public string FixUppercaseIInsideLowercaseWords { get; set; }
             public string FixDoubleApostrophes { get; set; }
             public string AddPeriods { get; set; }
@@ -978,6 +986,7 @@ namespace Nikse.SubtitleEdit.Logic
             public string FixFirstLetterToUppercaseAfterParagraph { get; set; }
             public string MergeShortLine { get; set; }
             public string MergeShortLineAll { get; set; }
+            public string UnbreakShortLinePixelWidth { get; set; }
             public string BreakLongLine { get; set; }
             public string FixLongDisplayTime { get; set; }
             public string FixInvalidItalicTag { get; set; }
@@ -1439,7 +1448,9 @@ namespace Nikse.SubtitleEdit.Logic
             public string BeforeRenumbering { get; set; }
             public string RenumberedStartingFromX { get; set; }
             public string BeforeBeautifyTimeCodes { get; set; }
+            public string BeforeBeautifyTimeCodesSelectedLines { get; set; }
             public string BeautifiedTimeCodes { get; set; }
+            public string BeautifiedTimeCodesSelectedLines { get; set; }
             public string BeforeRemovalOfTextingForHearingImpaired { get; set; }
             public string TextingForHearingImpairedRemovedOneLine { get; set; }
             public string TextingForHearingImpairedRemovedXLines { get; set; }
@@ -1941,6 +1952,7 @@ namespace Nikse.SubtitleEdit.Logic
                     public string KaraokeEffect { get; set; }
                     public string ShowSelectedLinesEarlierLater { get; set; }
                     public string VisualSyncSelectedLines { get; set; }
+                    public string BeautifyTimeCodesOfSelectedLines { get; set; }
                     public string GoogleAndMicrosoftTranslateSelectedLine { get; set; }
                     public string SelectedLines { get; set; }
                     public string TranslateSelectedLines { get; set; }
@@ -2737,6 +2749,10 @@ namespace Nikse.SubtitleEdit.Logic
             public string RecalculateDurationOfCurrentSubtitle { get; set; }
             public string RecalculateDurationOfCurrentSubtitleByOptimalReadingSpeed { get; set; }
             public string RecalculateDurationOfCurrentSubtitleByMinReadingSpeed { get; set; }
+            public string SetInCueToClosestShotChangeLeftGreenZone { get; set; }
+            public string SetInCueToClosestShotChangeRightGreenZone { get; set; }
+            public string SetOutCueToClosestShotChangeLeftGreenZone { get; set; }
+            public string SetOutCueToClosestShotChangeRightGreenZone { get; set; }
             public string MainCreateStartDownEndUp { get; set; }
             public string MergeDialog { get; set; }
             public string MergeDialogWithNext { get; set; }
@@ -3560,6 +3576,12 @@ namespace Nikse.SubtitleEdit.Logic
         {
             public string Title { get; set; }
             public string VoiceName { get; set; }
+        }
+
+        public class WebVttProperties
+        {
+            public string UseXTimeStamp { get; set; }
+            public string MergeLines { get; set; }
         }
 
         public class WebVttStyleManager

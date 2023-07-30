@@ -11,7 +11,6 @@ namespace Nikse.SubtitleEdit.Core.Common
 {
     public static class ShotChangeHelper
     {
-
         private static string GetShotChangesFileName(string videoFileName)
         {
             var dir = Configuration.ShotChangesDirectory.TrimEnd(Path.DirectorySeparatorChar);
@@ -87,8 +86,13 @@ namespace Nikse.SubtitleEdit.Core.Common
 
         // Util functions
 
-        public static double? GetPreviousShotChangeInMs(List<double> shotChanges, TimeCode currentTime)
+        public static double? GetPreviousShotChange(List<double> shotChanges, TimeCode currentTime)
         {
+            if (shotChanges == null || shotChanges.Count == 0)
+            {
+                return null;
+            }
+
             try
             {
                 return shotChanges.Last(x => SubtitleFormat.MillisecondsToFrames(x * 1000) <= SubtitleFormat.MillisecondsToFrames(currentTime.TotalMilliseconds));
@@ -97,6 +101,17 @@ namespace Nikse.SubtitleEdit.Core.Common
             {
                 return null;
             }
+        }
+
+        public static double? GetPreviousShotChangeInMs(List<double> shotChanges, TimeCode currentTime)
+        {
+            var previousShotChange = GetPreviousShotChange(shotChanges, currentTime);
+            if (previousShotChange != null)
+            {
+                return previousShotChange * 1000;
+            }
+
+            return null;
         }
 
         public static double? GetPreviousShotChangePlusGapInMs(List<double> shotChanges, TimeCode currentTime)
@@ -110,8 +125,13 @@ namespace Nikse.SubtitleEdit.Core.Common
             return null;
         }
 
-        public static double? GetNextShotChangeInMs(List<double> shotChanges, TimeCode currentTime)
+        public static double? GetNextShotChange(List<double> shotChanges, TimeCode currentTime)
         {
+            if (shotChanges == null || shotChanges.Count == 0)
+            {
+                return null;
+            }
+
             try
             {
                 return shotChanges.First(x => SubtitleFormat.MillisecondsToFrames(x * 1000) >= SubtitleFormat.MillisecondsToFrames(currentTime.TotalMilliseconds));
@@ -120,6 +140,17 @@ namespace Nikse.SubtitleEdit.Core.Common
             {
                 return null;
             }
+        }
+
+        public static double? GetNextShotChangeInMs(List<double> shotChanges, TimeCode currentTime)
+        {
+            var nextShotChange = GetNextShotChange(shotChanges, currentTime);
+            if (nextShotChange != null)
+            {
+                return nextShotChange * 1000;
+            }
+
+            return null;
         }
 
         public static double? GetNextShotChangeMinusGapInMs(List<double> shotChanges, TimeCode currentTime)
@@ -132,9 +163,14 @@ namespace Nikse.SubtitleEdit.Core.Common
 
             return null;
         }
-
+        
         public static double? GetClosestShotChange(List<double> shotChanges, TimeCode currentTime)
         {
+            if (shotChanges == null || shotChanges.Count == 0)
+            {
+                return null;
+            }
+
             try
             {
                 return shotChanges.Aggregate((x, y) => Math.Abs(x - currentTime.TotalSeconds) < Math.Abs(y - currentTime.TotalSeconds) ? x : y);

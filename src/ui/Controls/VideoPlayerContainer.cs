@@ -768,7 +768,7 @@ namespace Nikse.SubtitleEdit.Controls
             _panelControls.Controls.Add(_pictureBoxPlayOver);
 
             _pictureBoxPause.Image = (Image)_resources.GetObject("pictureBoxPause.Image");
-            _pictureBoxPause.Location = new Point(23, 126 - 113);
+            _pictureBoxPause.Location = new Point(22, 126 - 113);
             _pictureBoxPause.Name = "_pictureBoxPause";
             _pictureBoxPause.Size = new Size(29, 29);
             _pictureBoxPause.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -777,7 +777,7 @@ namespace Nikse.SubtitleEdit.Controls
             _panelControls.Controls.Add(_pictureBoxPause);
 
             _pictureBoxPauseDown.Image = (Image)_resources.GetObject("pictureBoxPauseDown.Image");
-            _pictureBoxPauseDown.Location = new Point(23, 126 - 113);
+            _pictureBoxPauseDown.Location = new Point(22, 126 - 113);
             _pictureBoxPauseDown.Name = "_pictureBoxPauseDown";
             _pictureBoxPauseDown.Size = new Size(29, 29);
             _pictureBoxPauseDown.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -785,7 +785,7 @@ namespace Nikse.SubtitleEdit.Controls
             _panelControls.Controls.Add(_pictureBoxPauseDown);
 
             _pictureBoxPauseOver.Image = (Image)_resources.GetObject("pictureBoxPauseOver.Image");
-            _pictureBoxPauseOver.Location = new Point(23, 126 - 113);
+            _pictureBoxPauseOver.Location = new Point(22, 126 - 113);
             _pictureBoxPauseOver.Name = "_pictureBoxPauseOver";
             _pictureBoxPauseOver.Size = new Size(29, 29);
             _pictureBoxPauseOver.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -2113,9 +2113,32 @@ namespace Nikse.SubtitleEdit.Controls
 
             if (_pictureBoxBackground.Image is Bitmap bg)
             {
-                _labelVolume.BackColor = bg.GetPixel(_labelVolume.Left, _labelVolume.Top);
-                _labelTimeCode.BackColor = bg.GetPixel(_labelTimeCode.Left, _labelTimeCode.Top);
-                _labelVideoPlayerName.BackColor = bg.GetPixel(_labelVideoPlayerName.Left, _labelVideoPlayerName.Top);
+                try
+                {
+                    _labelVolume.BackColor = bg.GetPixel(_labelVolume.Left, _labelVolume.Top);
+                }
+                catch
+                {
+                    // ignore
+                }
+
+                try
+                {
+                    _labelTimeCode.BackColor = bg.GetPixel(_labelTimeCode.Left, _labelTimeCode.Top);
+                }
+                catch
+                {
+                    // ignore
+                }
+
+                try
+                {
+                    _labelVideoPlayerName.BackColor = bg.GetPixel(_labelVideoPlayerName.Left, _labelVideoPlayerName.Top);
+                }
+                catch
+                {
+                    // ignore
+                }
             }
 
             // Set ForeColor to either white or black depending on background color
