@@ -84,6 +84,7 @@
             this.toolStripLabelFrameRate = new System.Windows.Forms.ToolStripLabel();
             this.toolStripComboBoxFrameRate = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButtonGetFrameRate = new System.Windows.Forms.ToolStripButton();
+            this.toolStripMagicAll = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -627,7 +628,7 @@
             this.toolStripStatusNetworking});
             this.statusStrip1.Location = new System.Drawing.Point(0, 624);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(975, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1584, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -642,7 +643,7 @@
             // 
             this.toolStripSelected.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripSelected.Name = "toolStripSelected";
-            this.toolStripSelected.Size = new System.Drawing.Size(746, 17);
+            this.toolStripSelected.Size = new System.Drawing.Size(1355, 17);
             this.toolStripSelected.Spring = true;
             this.toolStripSelected.Text = "toolStripSelected";
             this.toolStripSelected.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -708,10 +709,11 @@
             this.toolStripSeparatorFrameRate,
             this.toolStripLabelFrameRate,
             this.toolStripComboBoxFrameRate,
-            this.toolStripButtonGetFrameRate});
+            this.toolStripButtonGetFrameRate,
+            this.toolStripMagicAll});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(975, 40);
+            this.toolStrip1.Size = new System.Drawing.Size(1584, 40);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -770,7 +772,7 @@
             // toolStripSeparatorFindReplace
             // 
             this.toolStripSeparatorFindReplace.Name = "toolStripSeparatorFindReplace";
-            this.toolStripSeparatorFindReplace.Size = new System.Drawing.Size(6, 40);
+            this.toolStripSeparatorFindReplace.Size = new System.Drawing.Size(6, 29);
             // 
             // toolStripButtonFind
             // 
@@ -800,7 +802,7 @@
             // toolStripSeparatorFixSyncSpell
             // 
             this.toolStripSeparatorFixSyncSpell.Name = "toolStripSeparatorFixSyncSpell";
-            this.toolStripSeparatorFixSyncSpell.Size = new System.Drawing.Size(6, 40);
+            this.toolStripSeparatorFixSyncSpell.Size = new System.Drawing.Size(6, 29);
             // 
             // toolStripButtonFixCommonErrors
             // 
@@ -962,7 +964,7 @@
             // toolStripSeparatorHelp
             // 
             this.toolStripSeparatorHelp.Name = "toolStripSeparatorHelp";
-            this.toolStripSeparatorHelp.Size = new System.Drawing.Size(6, 40);
+            this.toolStripSeparatorHelp.Size = new System.Drawing.Size(6, 29);
             // 
             // toolStripButtonHelp
             // 
@@ -979,7 +981,7 @@
             // toolStripSeparatorToggle
             // 
             this.toolStripSeparatorToggle.Name = "toolStripSeparatorToggle";
-            this.toolStripSeparatorToggle.Size = new System.Drawing.Size(6, 40);
+            this.toolStripSeparatorToggle.Size = new System.Drawing.Size(6, 29);
             // 
             // toolStripButtonSourceView
             // 
@@ -1022,7 +1024,7 @@
             // toolStripSeparatorSubtitleFormat
             // 
             this.toolStripSeparatorSubtitleFormat.Name = "toolStripSeparatorSubtitleFormat";
-            this.toolStripSeparatorSubtitleFormat.Size = new System.Drawing.Size(6, 40);
+            this.toolStripSeparatorSubtitleFormat.Size = new System.Drawing.Size(6, 29);
             // 
             // toolStripLabelSubtitleFormat
             // 
@@ -1032,25 +1034,33 @@
             // 
             // comboBoxSubtitleFormats
             // 
+            this.comboBoxSubtitleFormats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxSubtitleFormats.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxSubtitleFormats.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxSubtitleFormats.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxSubtitleFormats.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxSubtitleFormats.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.comboBoxSubtitleFormats.DropDownHeight = 295;
             this.comboBoxSubtitleFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            //this.comboBoxSubtitleFormats.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
-            //this.comboBoxSubtitleFormats.IntegralHeight = false;
             this.comboBoxSubtitleFormats.Name = "comboBoxSubtitleFormats";
-            this.comboBoxSubtitleFormats.Size = new System.Drawing.Size(150, 23);
+            this.comboBoxSubtitleFormats.Padding = new System.Windows.Forms.Padding(2);
+            this.comboBoxSubtitleFormats.SelectedIndex = -1;
+            this.comboBoxSubtitleFormats.SelectedItem = null;
+            this.comboBoxSubtitleFormats.SelectedText = null;
+            this.comboBoxSubtitleFormats.Size = new System.Drawing.Size(150, 37);
+            this.comboBoxSubtitleFormats.SelectedIndexChanged += new System.EventHandler(this.ComboBoxSubtitleFormatsSelectedIndexChanged);
             this.comboBoxSubtitleFormats.DropDown += new System.EventHandler(this.comboBoxSubtitleFormats_DropDown);
             this.comboBoxSubtitleFormats.DropDownClosed += new System.EventHandler(this.comboBoxSubtitleFormats_DropDownClosed);
-            this.comboBoxSubtitleFormats.SelectedIndexChanged += new System.EventHandler(this.ComboBoxSubtitleFormatsSelectedIndexChanged);
             // 
             // toolStripSeparatorEncoding
             // 
             this.toolStripSeparatorEncoding.Name = "toolStripSeparatorEncoding";
-            this.toolStripSeparatorEncoding.Size = new System.Drawing.Size(6, 40);
+            this.toolStripSeparatorEncoding.Size = new System.Drawing.Size(6, 29);
             // 
             // toolStripLabelEncoding
             // 
             this.toolStripLabelEncoding.Name = "toolStripLabelEncoding";
-            this.toolStripLabelEncoding.Size = new System.Drawing.Size(81, 15);
+            this.toolStripLabelEncoding.Size = new System.Drawing.Size(81, 37);
             this.toolStripLabelEncoding.Text = "File encoding";
             // 
             // comboBoxEncoding
@@ -1066,19 +1076,19 @@
             "Unicode",
             "Unicode (big endian)"});
             this.comboBoxEncoding.Name = "comboBoxEncoding";
-            this.comboBoxEncoding.Size = new System.Drawing.Size(129, 23);
+            this.comboBoxEncoding.Size = new System.Drawing.Size(129, 40);
             this.comboBoxEncoding.DropDown += new System.EventHandler(this.MenuOpened);
             this.comboBoxEncoding.DropDownClosed += new System.EventHandler(this.MenuClosed);
             // 
             // toolStripSeparatorFrameRate
             // 
             this.toolStripSeparatorFrameRate.Name = "toolStripSeparatorFrameRate";
-            this.toolStripSeparatorFrameRate.Size = new System.Drawing.Size(6, 40);
+            this.toolStripSeparatorFrameRate.Size = new System.Drawing.Size(6, 29);
             // 
             // toolStripLabelFrameRate
             // 
             this.toolStripLabelFrameRate.Name = "toolStripLabelFrameRate";
-            this.toolStripLabelFrameRate.Size = new System.Drawing.Size(67, 15);
+            this.toolStripLabelFrameRate.Size = new System.Drawing.Size(67, 37);
             this.toolStripLabelFrameRate.Text = "Frame rate";
             // 
             // toolStripComboBoxFrameRate
@@ -1086,7 +1096,7 @@
             this.toolStripComboBoxFrameRate.DropDownWidth = 75;
             this.toolStripComboBoxFrameRate.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
             this.toolStripComboBoxFrameRate.Name = "toolStripComboBoxFrameRate";
-            this.toolStripComboBoxFrameRate.Size = new System.Drawing.Size(75, 23);
+            this.toolStripComboBoxFrameRate.Size = new System.Drawing.Size(75, 40);
             this.toolStripComboBoxFrameRate.DropDown += new System.EventHandler(this.MenuOpened);
             this.toolStripComboBoxFrameRate.DropDownClosed += new System.EventHandler(this.MenuClosed);
             this.toolStripComboBoxFrameRate.TextChanged += new System.EventHandler(this.ToolStripComboBoxFrameRateTextChanged);
@@ -1097,10 +1107,22 @@
             this.toolStripButtonGetFrameRate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonGetFrameRate.Image")));
             this.toolStripButtonGetFrameRate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonGetFrameRate.Name = "toolStripButtonGetFrameRate";
-            this.toolStripButtonGetFrameRate.Size = new System.Drawing.Size(23, 19);
+            this.toolStripButtonGetFrameRate.Size = new System.Drawing.Size(23, 37);
             this.toolStripButtonGetFrameRate.Text = "...";
             this.toolStripButtonGetFrameRate.ToolTipText = "Get frame rate from video file";
             this.toolStripButtonGetFrameRate.Click += new System.EventHandler(this.ButtonGetFrameRateClick);
+            // 
+            // toolStripMagicAll
+            // 
+            this.toolStripMagicAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripMagicAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.toolStripMagicAll.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMagicAll.Image")));
+            this.toolStripMagicAll.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripMagicAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripMagicAll.Name = "toolStripMagicAll";
+            this.toolStripMagicAll.Size = new System.Drawing.Size(516, 516);
+            this.toolStripMagicAll.Text = "Show/hide waveform";
+            this.toolStripMagicAll.Click += new System.EventHandler(this.toolStripMagicAll_Click);
             // 
             // menuStrip1
             // 
@@ -1118,7 +1140,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(975, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1584, 24);
             this.menuStrip1.TabIndex = 6;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -1803,7 +1825,7 @@
             // toolStripMenuItemInverseSelection
             // 
             this.toolStripMenuItemInverseSelection.Name = "toolStripMenuItemInverseSelection";
-            this.toolStripMenuItemInverseSelection.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.toolStripMenuItemInverseSelection.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.I)));
             this.toolStripMenuItemInverseSelection.Size = new System.Drawing.Size(301, 22);
             this.toolStripMenuItemInverseSelection.Text = "Inverse selection";
@@ -1882,7 +1904,7 @@
             // fixToolStripMenuItem
             // 
             this.fixToolStripMenuItem.Name = "fixToolStripMenuItem";
-            this.fixToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.fixToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.F)));
             this.fixToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.fixToolStripMenuItem.Text = "Fix common errors...";
@@ -1891,7 +1913,7 @@
             // startNumberingFromToolStripMenuItem
             // 
             this.startNumberingFromToolStripMenuItem.Name = "startNumberingFromToolStripMenuItem";
-            this.startNumberingFromToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.startNumberingFromToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.N)));
             this.startNumberingFromToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.startNumberingFromToolStripMenuItem.Text = "Start numbering from...";
@@ -1900,7 +1922,7 @@
             // removeTextForHearImpairedToolStripMenuItem
             // 
             this.removeTextForHearImpairedToolStripMenuItem.Name = "removeTextForHearImpairedToolStripMenuItem";
-            this.removeTextForHearImpairedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.removeTextForHearImpairedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.H)));
             this.removeTextForHearImpairedToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.removeTextForHearImpairedToolStripMenuItem.Text = "Remove text for hearing impaired...";
@@ -1916,7 +1938,7 @@
             // ChangeCasingToolStripMenuItem
             // 
             this.ChangeCasingToolStripMenuItem.Name = "ChangeCasingToolStripMenuItem";
-            this.ChangeCasingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.ChangeCasingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.C)));
             this.ChangeCasingToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.ChangeCasingToolStripMenuItem.Text = "Change casing...";
@@ -2188,7 +2210,7 @@
             // spellCheckToolStripMenuItem
             // 
             this.spellCheckToolStripMenuItem.Name = "spellCheckToolStripMenuItem";
-            this.spellCheckToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.spellCheckToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
             this.spellCheckToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.spellCheckToolStripMenuItem.Text = "Spell check...";
@@ -2204,7 +2226,7 @@
             // findDoubleWordsToolStripMenuItem
             // 
             this.findDoubleWordsToolStripMenuItem.Name = "findDoubleWordsToolStripMenuItem";
-            this.findDoubleWordsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.findDoubleWordsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.D)));
             this.findDoubleWordsToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.findDoubleWordsToolStripMenuItem.Text = "Find double words";
@@ -2232,7 +2254,7 @@
             // addWordToNameListToolStripMenuItem
             // 
             this.addWordToNameListToolStripMenuItem.Name = "addWordToNameListToolStripMenuItem";
-            this.addWordToNameListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.addWordToNameListToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.L)));
             this.addWordToNameListToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.addWordToNameListToolStripMenuItem.Text = "Add word to names list";
@@ -2443,7 +2465,7 @@
             // toolStripMenuItemAdjustAllTimes
             // 
             this.toolStripMenuItemAdjustAllTimes.Name = "toolStripMenuItemAdjustAllTimes";
-            this.toolStripMenuItemAdjustAllTimes.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.toolStripMenuItemAdjustAllTimes.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.A)));
             this.toolStripMenuItemAdjustAllTimes.Size = new System.Drawing.Size(324, 22);
             this.toolStripMenuItemAdjustAllTimes.Text = "Adjust times (show earlier/later)...";
@@ -2452,7 +2474,7 @@
             // visualSyncToolStripMenuItem
             // 
             this.visualSyncToolStripMenuItem.Name = "visualSyncToolStripMenuItem";
-            this.visualSyncToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.visualSyncToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.V)));
             this.visualSyncToolStripMenuItem.Size = new System.Drawing.Size(324, 22);
             this.visualSyncToolStripMenuItem.Text = "Visual sync...";
@@ -2461,7 +2483,7 @@
             // toolStripMenuItemPointSync
             // 
             this.toolStripMenuItemPointSync.Name = "toolStripMenuItemPointSync";
-            this.toolStripMenuItemPointSync.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.toolStripMenuItemPointSync.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.P)));
             this.toolStripMenuItemPointSync.Size = new System.Drawing.Size(324, 22);
             this.toolStripMenuItemPointSync.Text = "Point sync...";
@@ -3280,7 +3302,7 @@
             this.groupBoxVideo.Margin = new System.Windows.Forms.Padding(0);
             this.groupBoxVideo.Name = "groupBoxVideo";
             this.groupBoxVideo.Padding = new System.Windows.Forms.Padding(0);
-            this.groupBoxVideo.Size = new System.Drawing.Size(975, 305);
+            this.groupBoxVideo.Size = new System.Drawing.Size(1584, 305);
             this.groupBoxVideo.TabIndex = 1;
             this.groupBoxVideo.TabStop = false;
             // 
@@ -3289,7 +3311,7 @@
             this.labelNextWord.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.labelNextWord.AutoSize = true;
             this.labelNextWord.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelNextWord.Location = new System.Drawing.Point(401, 9);
+            this.labelNextWord.Location = new System.Drawing.Point(706, 9);
             this.labelNextWord.Name = "labelNextWord";
             this.labelNextWord.Size = new System.Drawing.Size(71, 17);
             this.labelNextWord.TabIndex = 13;
@@ -3301,8 +3323,8 @@
             this.audioVisualizer.AllowDrop = true;
             this.audioVisualizer.AllowNewSelection = true;
             this.audioVisualizer.AllowOverlap = false;
-            this.audioVisualizer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.audioVisualizer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.audioVisualizer.BackColor = System.Drawing.Color.Black;
             this.audioVisualizer.BackgroundColor = System.Drawing.Color.Black;
@@ -3330,7 +3352,7 @@
             this.audioVisualizer.ShowGridLines = true;
             this.audioVisualizer.ShowSpectrogram = false;
             this.audioVisualizer.ShowWaveform = true;
-            this.audioVisualizer.Size = new System.Drawing.Size(499, 229);
+            this.audioVisualizer.Size = new System.Drawing.Size(1108, 229);
             this.audioVisualizer.StartPositionSeconds = 0D;
             this.audioVisualizer.TabIndex = 6;
             this.audioVisualizer.TextBold = true;
@@ -3358,7 +3380,7 @@
             // labelVideoInfo
             // 
             this.labelVideoInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelVideoInfo.Location = new System.Drawing.Point(603, 12);
+            this.labelVideoInfo.Location = new System.Drawing.Point(1212, 12);
             this.labelVideoInfo.Name = "labelVideoInfo";
             this.labelVideoInfo.Size = new System.Drawing.Size(369, 19);
             this.labelVideoInfo.TabIndex = 12;
@@ -3367,13 +3389,13 @@
             // 
             // trackBarWaveformPosition
             // 
-            this.trackBarWaveformPosition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.trackBarWaveformPosition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBarWaveformPosition.AutoSize = false;
             this.trackBarWaveformPosition.Location = new System.Drawing.Point(674, 267);
             this.trackBarWaveformPosition.Maximum = 1000;
             this.trackBarWaveformPosition.Name = "trackBarWaveformPosition";
-            this.trackBarWaveformPosition.Size = new System.Drawing.Size(297, 20);
+            this.trackBarWaveformPosition.Size = new System.Drawing.Size(906, 20);
             this.trackBarWaveformPosition.TabIndex = 11;
             this.trackBarWaveformPosition.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBarWaveformPosition.ValueChanged += new System.EventHandler(this.trackBarWaveformPosition_ValueChanged);
@@ -3777,6 +3799,7 @@
             // 
             // timeUpDownVideoPosition
             // 
+            this.timeUpDownVideoPosition.BackColor = System.Drawing.SystemColors.Window;
             this.timeUpDownVideoPosition.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.timeUpDownVideoPosition.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
             this.timeUpDownVideoPosition.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
@@ -4056,6 +4079,7 @@
             // 
             // timeUpDownVideoPositionAdjust
             // 
+            this.timeUpDownVideoPositionAdjust.BackColor = System.Drawing.SystemColors.Window;
             this.timeUpDownVideoPositionAdjust.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.timeUpDownVideoPositionAdjust.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
             this.timeUpDownVideoPositionAdjust.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
@@ -4566,7 +4590,7 @@
             // splitContainerMain.Panel2
             // 
             this.splitContainerMain.Panel2.Controls.Add(this.groupBoxVideo);
-            this.splitContainerMain.Size = new System.Drawing.Size(975, 560);
+            this.splitContainerMain.Size = new System.Drawing.Size(1584, 560);
             this.splitContainerMain.SplitterDistance = 251;
             this.splitContainerMain.TabIndex = 8;
             this.splitContainerMain.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainerMain_SplitterMoving);
@@ -4587,8 +4611,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panelVideoPlayer);
-            this.splitContainer1.Size = new System.Drawing.Size(975, 251);
-            this.splitContainer1.SplitterDistance = 743;
+            this.splitContainer1.Size = new System.Drawing.Size(1584, 251);
+            this.splitContainer1.SplitterDistance = 1207;
             this.splitContainer1.TabIndex = 7;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitContainer1SplitterMoved);
             // 
@@ -4608,7 +4632,7 @@
             // 
             this.splitContainerListViewAndText.Panel2.Controls.Add(this.groupBoxEdit);
             this.splitContainerListViewAndText.Panel2MinSize = 105;
-            this.splitContainerListViewAndText.Size = new System.Drawing.Size(740, 251);
+            this.splitContainerListViewAndText.Size = new System.Drawing.Size(1204, 251);
             this.splitContainerListViewAndText.SplitterDistance = 105;
             this.splitContainerListViewAndText.TabIndex = 2;
             this.splitContainerListViewAndText.VisibleChanged += new System.EventHandler(this.ListViewVisibleChanged);
@@ -4628,7 +4652,7 @@
             this.SubtitleListview1.Location = new System.Drawing.Point(0, 0);
             this.SubtitleListview1.Name = "SubtitleListview1";
             this.SubtitleListview1.OwnerDraw = true;
-            this.SubtitleListview1.Size = new System.Drawing.Size(740, 105);
+            this.SubtitleListview1.Size = new System.Drawing.Size(1204, 105);
             this.SubtitleListview1.StateImageList = this.imageListBookmarks;
             this.SubtitleListview1.SubtitleFontBold = false;
             this.SubtitleListview1.SubtitleFontName = "Tahoma";
@@ -4687,7 +4711,7 @@
             this.groupBoxEdit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxEdit.Location = new System.Drawing.Point(0, 0);
             this.groupBoxEdit.Name = "groupBoxEdit";
-            this.groupBoxEdit.Size = new System.Drawing.Size(740, 142);
+            this.groupBoxEdit.Size = new System.Drawing.Size(1204, 142);
             this.groupBoxEdit.TabIndex = 1;
             this.groupBoxEdit.TabStop = false;
             // 
@@ -4762,8 +4786,8 @@
             // textBoxListViewText
             // 
             this.textBoxListViewText.AllowDrop = true;
-            this.textBoxListViewText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.textBoxListViewText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxListViewText.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.textBoxListViewText.ContextMenuStrip = this.contextMenuStripTextBoxListView;
@@ -4785,7 +4809,7 @@
             this.textBoxListViewText.SelectedText = "";
             this.textBoxListViewText.SelectionLength = 0;
             this.textBoxListViewText.SelectionStart = 0;
-            this.textBoxListViewText.Size = new System.Drawing.Size(430, 84);
+            this.textBoxListViewText.Size = new System.Drawing.Size(894, 84);
             this.textBoxListViewText.TabIndex = 5;
             this.textBoxListViewText.TextBoxFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.textBoxListViewText.TextChanged += new System.EventHandler(this.TextBoxListViewTextTextChanged);
@@ -5248,7 +5272,7 @@
             // buttonSplitLine
             // 
             this.buttonSplitLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSplitLine.Location = new System.Drawing.Point(620, 77);
+            this.buttonSplitLine.Location = new System.Drawing.Point(1084, 77);
             this.buttonSplitLine.Name = "buttonSplitLine";
             this.buttonSplitLine.Size = new System.Drawing.Size(114, 23);
             this.buttonSplitLine.TabIndex = 39;
@@ -5261,7 +5285,7 @@
             // 
             this.labelOriginalCharactersPerSecond.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelOriginalCharactersPerSecond.AutoSize = true;
-            this.labelOriginalCharactersPerSecond.Location = new System.Drawing.Point(652, 11);
+            this.labelOriginalCharactersPerSecond.Location = new System.Drawing.Point(1116, 11);
             this.labelOriginalCharactersPerSecond.Name = "labelOriginalCharactersPerSecond";
             this.labelOriginalCharactersPerSecond.Size = new System.Drawing.Size(64, 13);
             this.labelOriginalCharactersPerSecond.TabIndex = 38;
@@ -5271,7 +5295,7 @@
             // 
             this.labelTextOriginalLineTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelTextOriginalLineTotal.AutoSize = true;
-            this.labelTextOriginalLineTotal.Location = new System.Drawing.Point(698, 115);
+            this.labelTextOriginalLineTotal.Location = new System.Drawing.Point(1162, 115);
             this.labelTextOriginalLineTotal.Name = "labelTextOriginalLineTotal";
             this.labelTextOriginalLineTotal.Size = new System.Drawing.Size(35, 13);
             this.labelTextOriginalLineTotal.TabIndex = 37;
@@ -5309,8 +5333,8 @@
             // textBoxListViewTextOriginal
             // 
             this.textBoxListViewTextOriginal.AllowDrop = true;
-            this.textBoxListViewTextOriginal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.textBoxListViewTextOriginal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxListViewTextOriginal.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.textBoxListViewTextOriginal.ContextMenuStrip = this.contextMenuStripTextBoxListView;
@@ -5332,7 +5356,7 @@
             this.textBoxListViewTextOriginal.SelectedText = "";
             this.textBoxListViewTextOriginal.SelectionLength = 0;
             this.textBoxListViewTextOriginal.SelectionStart = 0;
-            this.textBoxListViewTextOriginal.Size = new System.Drawing.Size(16, 84);
+            this.textBoxListViewTextOriginal.Size = new System.Drawing.Size(480, 84);
             this.textBoxListViewTextOriginal.TabIndex = 33;
             this.textBoxListViewTextOriginal.TextBoxFont = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.textBoxListViewTextOriginal.Visible = false;
@@ -5346,7 +5370,7 @@
             // buttonAutoBreak
             // 
             this.buttonAutoBreak.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAutoBreak.Location = new System.Drawing.Point(620, 48);
+            this.buttonAutoBreak.Location = new System.Drawing.Point(1084, 48);
             this.buttonAutoBreak.Name = "buttonAutoBreak";
             this.buttonAutoBreak.Size = new System.Drawing.Size(114, 23);
             this.buttonAutoBreak.TabIndex = 7;
@@ -5378,7 +5402,7 @@
             // 
             this.labelCharactersPerSecond.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelCharactersPerSecond.AutoSize = true;
-            this.labelCharactersPerSecond.Location = new System.Drawing.Point(448, 11);
+            this.labelCharactersPerSecond.Location = new System.Drawing.Point(912, 11);
             this.labelCharactersPerSecond.Name = "labelCharactersPerSecond";
             this.labelCharactersPerSecond.Size = new System.Drawing.Size(133, 13);
             this.labelCharactersPerSecond.TabIndex = 31;
@@ -5387,7 +5411,7 @@
             // buttonUnBreak
             // 
             this.buttonUnBreak.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUnBreak.Location = new System.Drawing.Point(620, 19);
+            this.buttonUnBreak.Location = new System.Drawing.Point(1084, 19);
             this.buttonUnBreak.Name = "buttonUnBreak";
             this.buttonUnBreak.Size = new System.Drawing.Size(114, 23);
             this.buttonUnBreak.TabIndex = 6;
@@ -5397,6 +5421,7 @@
             // 
             // timeUpDownStartTime
             // 
+            this.timeUpDownStartTime.BackColor = System.Drawing.SystemColors.Window;
             this.timeUpDownStartTime.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.timeUpDownStartTime.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
             this.timeUpDownStartTime.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
@@ -5533,7 +5558,7 @@
             this.textBoxSource.Multiline = true;
             this.textBoxSource.Name = "textBoxSource";
             this.textBoxSource.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxSource.Size = new System.Drawing.Size(740, 251);
+            this.textBoxSource.Size = new System.Drawing.Size(1204, 251);
             this.textBoxSource.TabIndex = 12;
             this.textBoxSource.WordWrap = false;
             this.textBoxSource.Click += new System.EventHandler(this.TextBoxSourceClick);
@@ -5689,20 +5714,20 @@
             // 
             // panelVideoPlayer
             // 
-            this.panelVideoPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.panelVideoPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelVideoPlayer.Controls.Add(this.mediaPlayer);
             this.panelVideoPlayer.Location = new System.Drawing.Point(1, 1);
             this.panelVideoPlayer.Name = "panelVideoPlayer";
-            this.panelVideoPlayer.Size = new System.Drawing.Size(220, 246);
+            this.panelVideoPlayer.Size = new System.Drawing.Size(365, 246);
             this.panelVideoPlayer.TabIndex = 5;
             // 
             // mediaPlayer
             // 
             this.mediaPlayer.AllowDrop = true;
-            this.mediaPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.mediaPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mediaPlayer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.mediaPlayer.Chapters = null;
@@ -5715,7 +5740,7 @@
             this.mediaPlayer.ShowFullscreenButton = true;
             this.mediaPlayer.ShowMuteButton = true;
             this.mediaPlayer.ShowStopButton = true;
-            this.mediaPlayer.Size = new System.Drawing.Size(219, 246);
+            this.mediaPlayer.Size = new System.Drawing.Size(364, 246);
             this.mediaPlayer.SubtitleText = "";
             this.mediaPlayer.TabIndex = 5;
             this.mediaPlayer.TextRightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -5779,7 +5804,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(975, 646);
+            this.ClientSize = new System.Drawing.Size(1584, 646);
             this.Controls.Add(this.splitContainerMain);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
@@ -6394,5 +6419,6 @@
         private System.Windows.Forms.Label labelLayer;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemWebVttStyle;
         private System.Windows.Forms.ToolStripMenuItem beautifyTimeCodesOfSelectedLinesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripMagicAll;
     }
 }

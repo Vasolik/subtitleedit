@@ -35608,5 +35608,14 @@ namespace Nikse.SubtitleEdit.Forms
                 }
             }
         }
+
+        private void toolStripMagicAll_Click(object sender, EventArgs e)
+        {
+            comboBoxSubtitleFormats.SelectedIndex = 0;
+            ComboBoxSubtitleFormatsSelectedIndexChanged(null, null);
+            comboBoxSubtitleFormats_DropDownClosed(null, null);
+            SetEncoding(Encoding.UTF8);
+            SaveToolStripMenuItemClick(null, null);
+        }
     }
 }

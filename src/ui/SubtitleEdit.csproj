@@ -2294,6 +2294,9 @@
     <None Include="Resources\rec32.png" />
     <None Include="Resources\Help32.png" />
     <Content Include="Icons\BeautifyTimeCodes.png" />
+    <None Include="Resources\1617614.png" />
+    <None Include="Resources\toolStripMagicAll.Image.png" />
+    <None Include="Resources\toolStripButtonToggleVideo.Image.png" />
     <Content Include="SE2.ico" />
     <None Include="Resources\SE.ico" />
     <None Include="Hunspellx64.dll">
