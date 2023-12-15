@@ -1073,8 +1073,6 @@
             this.comboBoxEncoding.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.comboBoxEncoding.DropDownHeight = 215;
             this.comboBoxEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxEncoding.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
-            this.comboBoxEncoding.IntegralHeight = false;
             this.comboBoxEncoding.Items.AddRange(new object[] {
             "ANSI",
             "UTF-7",

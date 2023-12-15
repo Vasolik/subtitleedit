@@ -210,7 +210,10 @@ namespace Nikse.SubtitleEdit.Core.Translate.Service
 
                     if (i + 1 >= text.Length)
                     {
-                        i = htmlTagStartIndex;
+                        sb.Append(text[htmlTagStartIndex].ToString());
+                        i = htmlTagStartIndex + 1;
+                        isInsideHtmlTag = false;
+
                     }
                     continue;
                 }

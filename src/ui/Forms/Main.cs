@@ -895,7 +895,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void SetEncoding(string encodingName)
         {
-            UiUtil.SetTextEncoding(comboBoxEncoding, encodingName);
+            UiUtil.SetTextEncoding(comboBoxEncoding.ComboBox, encodingName);
         }
 
         private Encoding GetCurrentEncoding()
