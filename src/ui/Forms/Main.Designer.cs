@@ -79,7 +79,7 @@
             this.comboBoxSubtitleFormats = new Nikse.SubtitleEdit.Controls.ToolStripNikseComboBox();
             this.toolStripSeparatorEncoding = new Nikse.SubtitleEdit.Controls.ToolStripNikseSeparator();
             this.toolStripLabelEncoding = new System.Windows.Forms.ToolStripLabel();
-            this.comboBoxEncoding = new System.Windows.Forms.ToolStripComboBox();
+            this.comboBoxEncoding = new Nikse.SubtitleEdit.Controls.ToolStripNikseComboBox();
             this.toolStripSeparatorFrameRate = new Nikse.SubtitleEdit.Controls.ToolStripNikseSeparator();
             this.toolStripLabelFrameRate = new System.Windows.Forms.ToolStripLabel();
             this.toolStripComboBoxFrameRate = new System.Windows.Forms.ToolStripComboBox();
@@ -367,7 +367,7 @@
             this.panelWaveformControls = new System.Windows.Forms.Panel();
             this.toolStripWaveControls = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonWaveformZoomOut = new System.Windows.Forms.ToolStripButton();
-            this.toolStripComboBoxWaveform = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripComboBoxWaveform = new Nikse.SubtitleEdit.Controls.ToolStripNikseComboBox();
             this.toolStripButtonWaveformZoomIn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonWaveformPause = new System.Windows.Forms.ToolStripButton();
@@ -384,12 +384,12 @@
             this.buttonGoogleIt = new System.Windows.Forms.Button();
             this.textBoxSearchWord = new System.Windows.Forms.TextBox();
             this.groupBoxAutoContinue = new System.Windows.Forms.GroupBox();
-            this.comboBoxAutoContinue = new System.Windows.Forms.ComboBox();
+            this.comboBoxAutoContinue = new Nikse.SubtitleEdit.Controls.NikseComboBox();
             this.labelAutoContinueDelay = new System.Windows.Forms.Label();
             this.checkBoxAutoContinue = new System.Windows.Forms.CheckBox();
             this.buttonStop = new System.Windows.Forms.Button();
             this.groupBoxAutoRepeat = new System.Windows.Forms.GroupBox();
-            this.comboBoxAutoRepeat = new System.Windows.Forms.ComboBox();
+            this.comboBoxAutoRepeat = new Nikse.SubtitleEdit.Controls.NikseComboBox();
             this.labelAutoRepeatCount = new System.Windows.Forms.Label();
             this.checkBoxAutoRepeatOn = new System.Windows.Forms.CheckBox();
             this.buttonPlayPrevious = new System.Windows.Forms.Button();
@@ -1024,7 +1024,7 @@
             // toolStripSeparatorSubtitleFormat
             // 
             this.toolStripSeparatorSubtitleFormat.Name = "toolStripSeparatorSubtitleFormat";
-            this.toolStripSeparatorSubtitleFormat.Size = new System.Drawing.Size(6, 29);
+            this.toolStripSeparatorSubtitleFormat.Size = new System.Drawing.Size(6, 40);
             // 
             // toolStripLabelSubtitleFormat
             // 
@@ -1055,7 +1055,7 @@
             // toolStripSeparatorEncoding
             // 
             this.toolStripSeparatorEncoding.Name = "toolStripSeparatorEncoding";
-            this.toolStripSeparatorEncoding.Size = new System.Drawing.Size(6, 29);
+            this.toolStripSeparatorEncoding.Size = new System.Drawing.Size(6, 23);
             // 
             // toolStripLabelEncoding
             // 
@@ -1065,6 +1065,12 @@
             // 
             // comboBoxEncoding
             // 
+            this.comboBoxEncoding.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxEncoding.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxEncoding.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxEncoding.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxEncoding.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxEncoding.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.comboBoxEncoding.DropDownHeight = 215;
             this.comboBoxEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxEncoding.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
@@ -1076,6 +1082,10 @@
             "Unicode",
             "Unicode (big endian)"});
             this.comboBoxEncoding.Name = "comboBoxEncoding";
+            this.comboBoxEncoding.Padding = new System.Windows.Forms.Padding(2);
+            this.comboBoxEncoding.SelectedIndex = -1;
+            this.comboBoxEncoding.SelectedItem = null;
+            this.comboBoxEncoding.SelectedText = null;
             this.comboBoxEncoding.Size = new System.Drawing.Size(129, 40);
             this.comboBoxEncoding.DropDown += new System.EventHandler(this.MenuOpened);
             this.comboBoxEncoding.DropDownClosed += new System.EventHandler(this.MenuClosed);
@@ -3426,7 +3436,7 @@
             this.toolStripSplitButtonPlayRate});
             this.toolStripWaveControls.Location = new System.Drawing.Point(0, 3);
             this.toolStripWaveControls.Name = "toolStripWaveControls";
-            this.toolStripWaveControls.Size = new System.Drawing.Size(197, 25);
+            this.toolStripWaveControls.Size = new System.Drawing.Size(251, 25);
             this.toolStripWaveControls.TabIndex = 0;
             this.toolStripWaveControls.Text = "toolStrip2";
             // 
@@ -3630,8 +3640,16 @@
             // 
             // comboBoxAutoContinue
             // 
+            this.comboBoxAutoContinue.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBoxAutoContinue.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxAutoContinue.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxAutoContinue.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
+            this.comboBoxAutoContinue.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxAutoContinue.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxAutoContinue.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.comboBoxAutoContinue.DropDownHeight = 400;
             this.comboBoxAutoContinue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxAutoContinue.FormattingEnabled = true;
+            this.comboBoxAutoContinue.DropDownWidth = 96;
             this.comboBoxAutoContinue.Items.AddRange(new object[] {
             "0",
             "1",
@@ -3651,6 +3669,9 @@
             "15"});
             this.comboBoxAutoContinue.Location = new System.Drawing.Point(6, 59);
             this.comboBoxAutoContinue.Name = "comboBoxAutoContinue";
+            this.comboBoxAutoContinue.SelectedIndex = -1;
+            this.comboBoxAutoContinue.SelectedItem = null;
+            this.comboBoxAutoContinue.SelectedText = null;
             this.comboBoxAutoContinue.Size = new System.Drawing.Size(96, 21);
             this.comboBoxAutoContinue.TabIndex = 2;
             // 
@@ -3698,8 +3719,16 @@
             // 
             // comboBoxAutoRepeat
             // 
+            this.comboBoxAutoRepeat.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBoxAutoRepeat.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxAutoRepeat.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxAutoRepeat.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
+            this.comboBoxAutoRepeat.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxAutoRepeat.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxAutoRepeat.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.comboBoxAutoRepeat.DropDownHeight = 400;
             this.comboBoxAutoRepeat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxAutoRepeat.FormattingEnabled = true;
+            this.comboBoxAutoRepeat.DropDownWidth = 96;
             this.comboBoxAutoRepeat.Items.AddRange(new object[] {
             "0",
             "1",
@@ -3713,6 +3742,9 @@
             "9"});
             this.comboBoxAutoRepeat.Location = new System.Drawing.Point(6, 60);
             this.comboBoxAutoRepeat.Name = "comboBoxAutoRepeat";
+            this.comboBoxAutoRepeat.SelectedIndex = -1;
+            this.comboBoxAutoRepeat.SelectedItem = null;
+            this.comboBoxAutoRepeat.SelectedText = null;
             this.comboBoxAutoRepeat.Size = new System.Drawing.Size(96, 21);
             this.comboBoxAutoRepeat.TabIndex = 2;
             // 
@@ -4590,7 +4622,7 @@
             // splitContainerMain.Panel2
             // 
             this.splitContainerMain.Panel2.Controls.Add(this.groupBoxVideo);
-            this.splitContainerMain.Size = new System.Drawing.Size(1584, 560);
+            this.splitContainerMain.Size = new System.Drawing.Size(975, 560);
             this.splitContainerMain.SplitterDistance = 251;
             this.splitContainerMain.TabIndex = 8;
             this.splitContainerMain.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainerMain_SplitterMoving);
@@ -4611,8 +4643,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panelVideoPlayer);
-            this.splitContainer1.Size = new System.Drawing.Size(1584, 251);
-            this.splitContainer1.SplitterDistance = 1207;
+            this.splitContainer1.Size = new System.Drawing.Size(975, 251);
+            this.splitContainer1.SplitterDistance = 743;
             this.splitContainer1.TabIndex = 7;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitContainer1SplitterMoved);
             // 
@@ -4632,7 +4664,7 @@
             // 
             this.splitContainerListViewAndText.Panel2.Controls.Add(this.groupBoxEdit);
             this.splitContainerListViewAndText.Panel2MinSize = 105;
-            this.splitContainerListViewAndText.Size = new System.Drawing.Size(1204, 251);
+            this.splitContainerListViewAndText.Size = new System.Drawing.Size(740, 251);
             this.splitContainerListViewAndText.SplitterDistance = 105;
             this.splitContainerListViewAndText.TabIndex = 2;
             this.splitContainerListViewAndText.VisibleChanged += new System.EventHandler(this.ListViewVisibleChanged);
@@ -4652,7 +4684,7 @@
             this.SubtitleListview1.Location = new System.Drawing.Point(0, 0);
             this.SubtitleListview1.Name = "SubtitleListview1";
             this.SubtitleListview1.OwnerDraw = true;
-            this.SubtitleListview1.Size = new System.Drawing.Size(1204, 105);
+            this.SubtitleListview1.Size = new System.Drawing.Size(740, 105);
             this.SubtitleListview1.StateImageList = this.imageListBookmarks;
             this.SubtitleListview1.SubtitleFontBold = false;
             this.SubtitleListview1.SubtitleFontName = "Tahoma";
@@ -5272,7 +5304,7 @@
             // buttonSplitLine
             // 
             this.buttonSplitLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSplitLine.Location = new System.Drawing.Point(1084, 77);
+            this.buttonSplitLine.Location = new System.Drawing.Point(620, 77);
             this.buttonSplitLine.Name = "buttonSplitLine";
             this.buttonSplitLine.Size = new System.Drawing.Size(114, 23);
             this.buttonSplitLine.TabIndex = 39;
@@ -5285,7 +5317,7 @@
             // 
             this.labelOriginalCharactersPerSecond.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelOriginalCharactersPerSecond.AutoSize = true;
-            this.labelOriginalCharactersPerSecond.Location = new System.Drawing.Point(1116, 11);
+            this.labelOriginalCharactersPerSecond.Location = new System.Drawing.Point(652, 11);
             this.labelOriginalCharactersPerSecond.Name = "labelOriginalCharactersPerSecond";
             this.labelOriginalCharactersPerSecond.Size = new System.Drawing.Size(64, 13);
             this.labelOriginalCharactersPerSecond.TabIndex = 38;
@@ -5295,7 +5327,7 @@
             // 
             this.labelTextOriginalLineTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelTextOriginalLineTotal.AutoSize = true;
-            this.labelTextOriginalLineTotal.Location = new System.Drawing.Point(1162, 115);
+            this.labelTextOriginalLineTotal.Location = new System.Drawing.Point(698, 115);
             this.labelTextOriginalLineTotal.Name = "labelTextOriginalLineTotal";
             this.labelTextOriginalLineTotal.Size = new System.Drawing.Size(35, 13);
             this.labelTextOriginalLineTotal.TabIndex = 37;
@@ -5333,8 +5365,8 @@
             // textBoxListViewTextOriginal
             // 
             this.textBoxListViewTextOriginal.AllowDrop = true;
-            this.textBoxListViewTextOriginal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxListViewTextOriginal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxListViewTextOriginal.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.textBoxListViewTextOriginal.ContextMenuStrip = this.contextMenuStripTextBoxListView;
@@ -5720,7 +5752,7 @@
             this.panelVideoPlayer.Controls.Add(this.mediaPlayer);
             this.panelVideoPlayer.Location = new System.Drawing.Point(1, 1);
             this.panelVideoPlayer.Name = "panelVideoPlayer";
-            this.panelVideoPlayer.Size = new System.Drawing.Size(365, 246);
+            this.panelVideoPlayer.Size = new System.Drawing.Size(220, 246);
             this.panelVideoPlayer.TabIndex = 5;
             // 
             // mediaPlayer
@@ -5999,7 +6031,7 @@
         private Nikse.SubtitleEdit.Controls.ToolStripNikseSeparator toolStripSeparatorSubtitleFormat;
         private System.Windows.Forms.ToolStripLabel toolStripLabelSubtitleFormat;
         private System.Windows.Forms.ToolStripLabel toolStripLabelEncoding;
-        private System.Windows.Forms.ToolStripComboBox comboBoxEncoding;
+        private Nikse.SubtitleEdit.Controls.ToolStripNikseComboBox comboBoxEncoding;
         private System.Windows.Forms.ToolStripButton toolStripButtonToggleVideo;
         private Nikse.SubtitleEdit.Controls.ToolStripNikseSeparator toolStripSeparatorEncoding;
         private Nikse.SubtitleEdit.Controls.ToolStripNikseSeparator toolStripSeparatorFrameRate;
@@ -6031,11 +6063,11 @@
         private System.Windows.Forms.Button buttonGoogleIt;
         private System.Windows.Forms.TextBox textBoxSearchWord;
         private System.Windows.Forms.GroupBox groupBoxAutoContinue;
-        private System.Windows.Forms.ComboBox comboBoxAutoContinue;
+        private Nikse.SubtitleEdit.Controls.NikseComboBox comboBoxAutoContinue;
         private System.Windows.Forms.Label labelAutoContinueDelay;
         private System.Windows.Forms.CheckBox checkBoxAutoContinue;
         private System.Windows.Forms.GroupBox groupBoxAutoRepeat;
-        private System.Windows.Forms.ComboBox comboBoxAutoRepeat;
+        private Nikse.SubtitleEdit.Controls.NikseComboBox comboBoxAutoRepeat;
         private System.Windows.Forms.Label labelAutoRepeatCount;
         private System.Windows.Forms.CheckBox checkBoxAutoRepeatOn;
         private System.Windows.Forms.Button buttonStop;
@@ -6091,7 +6123,7 @@
         private System.Windows.Forms.Panel panelWaveformControls;
         private System.Windows.Forms.ToolStrip toolStripWaveControls;
         private System.Windows.Forms.ToolStripButton toolStripButtonWaveformZoomIn;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxWaveform;
+        private Nikse.SubtitleEdit.Controls.ToolStripNikseComboBox toolStripComboBoxWaveform;
         private System.Windows.Forms.ToolStripButton toolStripButtonWaveformZoomOut;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
         private System.Windows.Forms.ToolStripButton toolStripButtonWaveformPause;
