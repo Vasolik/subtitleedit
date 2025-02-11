@@ -12,6 +12,9 @@ namespace Nikse.SubtitleEdit.Controls
         public event EventHandler SelectedIndexChanged;
 
         // ReSharper disable once InconsistentNaming
+        public new event EventHandler TextChanged;
+
+        // ReSharper disable once InconsistentNaming
         public event EventHandler DropDown;
 
         // ReSharper disable once InconsistentNaming
@@ -38,6 +41,7 @@ namespace Nikse.SubtitleEdit.Controls
             if (Control is ToolStripNikseComboBoxControl cbc)
             {
                 cbc.Owner = this;
+                BackColor = cbc.BackColor;
             }
 
             Padding = new Padding(2);
@@ -45,6 +49,11 @@ namespace Nikse.SubtitleEdit.Controls
             ComboBox.SelectedIndexChanged += (sender, args) =>
             {
                 SelectedIndexChanged?.Invoke(sender, args);
+            };
+
+            ComboBox.TextChanged += (sender, args) =>
+            {
+                TextChanged?.Invoke(sender, args);
             };
 
             ComboBox.DropDown += (sender, args) =>
@@ -117,6 +126,11 @@ namespace Nikse.SubtitleEdit.Controls
         {
             get => ComboBox.DropDownHeight;
             set => ComboBox.DropDownHeight = value;
+        }
+        public int DropDownWidth
+        {
+            get => ComboBox.DropDownWidth;
+            set => ComboBox.DropDownWidth = value;
         }
 
         public Color ButtonForeColor

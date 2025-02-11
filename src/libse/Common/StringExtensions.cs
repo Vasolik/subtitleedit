@@ -136,13 +136,15 @@ namespace Nikse.SubtitleEdit.Core.Common
                 var ch = s[i];
                 if (ch == '\r')
                 {
-                    if (i < max - 2 && s[i + 1] == '\r' && s[i + 2] == '\n') // \r\r\n
-                    {
-                        lines.Add(s.Substring(start, i - start));
-                        i += 3;
-                        start = i;
-                        continue;
-                    }
+                    // See https://github.com/SubtitleEdit/subtitleedit/issues/8854
+                    // SE now tries to follow how VS code opens text file
+                    //if (i < max - 2 && s[i + 1] == '\r' && s[i + 2] == '\n') // \r\r\n
+                    //{
+                    //    lines.Add(s.Substring(start, i - start));
+                    //    i += 3;
+                    //    start = i;
+                    //    continue;
+                    //}
 
                     if (i < max - 1 && s[i + 1] == '\n') // \r\n
                     {
@@ -498,6 +500,19 @@ namespace Nikse.SubtitleEdit.Core.Common
             return RestoreSavedTags(properCaseText, tags);
         }
 
+        public static string ToLowercaseButKeepTags(this string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return input;
+            }
+
+            var sb = new StringBuilder();
+            var tags = RemoveAndSaveTags(input, sb, new SubRip());
+            var lowercaseText = sb.ToString().ToLowerInvariant();
+            return RestoreSavedTags(lowercaseText, tags);
+        }
+
         public static string ToggleCasing(this string input, SubtitleFormat format, string overrideFromStringInit = null)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -758,7 +773,7 @@ namespace Nikse.SubtitleEdit.Core.Common
 
         private static readonly HashSet<char> NeutralSentenceEndingChars = new HashSet<char>
         {
-            '.', '!', '?', ']', ')', '…', '♪', '؟'
+            '.', '!', '?', ']', ')', '…', '♪', '؟', '。', '？'
         };
 
         private static readonly HashSet<char> GreekSentenceEndingChars = new HashSet<char>

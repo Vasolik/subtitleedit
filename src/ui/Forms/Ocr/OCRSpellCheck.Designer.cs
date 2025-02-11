@@ -41,14 +41,14 @@
             this.buttonChangeAll = new System.Windows.Forms.Button();
             this.buttonChange = new System.Windows.Forms.Button();
             this.buttonSkipAll = new System.Windows.Forms.Button();
-            this.textBoxWord = new System.Windows.Forms.TextBox();
+            this.textBoxWord = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.buttonSkipOnce = new System.Windows.Forms.Button();
             this.buttonAddToNames = new System.Windows.Forms.Button();
             this.groupBoxEditWholeText = new System.Windows.Forms.GroupBox();
             this.buttonChangeAllWholeText = new System.Windows.Forms.Button();
             this.buttonSkipText = new System.Windows.Forms.Button();
             this.buttonChangeWholeText = new System.Windows.Forms.Button();
-            this.textBoxWholeText = new System.Windows.Forms.TextBox();
+            this.textBoxWholeText = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.groupBoxTextAsImage = new System.Windows.Forms.GroupBox();
             this.pictureBoxText = new System.Windows.Forms.PictureBox();
             this.groupBoxText = new System.Windows.Forms.GroupBox();
@@ -206,6 +206,7 @@
             // 
             // textBoxWord
             // 
+            this.textBoxWord.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxWord.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxWord.Location = new System.Drawing.Point(6, 19);
             this.textBoxWord.Name = "textBoxWord";
@@ -250,9 +251,9 @@
             // 
             // buttonChangeAllWholeText
             // 
-            this.buttonChangeAllWholeText.Location = new System.Drawing.Point(6, 115);
+            this.buttonChangeAllWholeText.Location = new System.Drawing.Point(6, 117);
             this.buttonChangeAllWholeText.Name = "buttonChangeAllWholeText";
-            this.buttonChangeAllWholeText.Size = new System.Drawing.Size(141, 21);
+            this.buttonChangeAllWholeText.Size = new System.Drawing.Size(141, 23);
             this.buttonChangeAllWholeText.TabIndex = 36;
             this.buttonChangeAllWholeText.Text = "Change all";
             this.buttonChangeAllWholeText.UseVisualStyleBackColor = true;
@@ -262,7 +263,7 @@
             // 
             this.buttonSkipText.Location = new System.Drawing.Point(156, 88);
             this.buttonSkipText.Name = "buttonSkipText";
-            this.buttonSkipText.Size = new System.Drawing.Size(139, 21);
+            this.buttonSkipText.Size = new System.Drawing.Size(139, 23);
             this.buttonSkipText.TabIndex = 35;
             this.buttonSkipText.Text = "Skip text";
             this.buttonSkipText.UseVisualStyleBackColor = true;
@@ -272,7 +273,7 @@
             // 
             this.buttonChangeWholeText.Location = new System.Drawing.Point(6, 88);
             this.buttonChangeWholeText.Name = "buttonChangeWholeText";
-            this.buttonChangeWholeText.Size = new System.Drawing.Size(143, 21);
+            this.buttonChangeWholeText.Size = new System.Drawing.Size(143, 23);
             this.buttonChangeWholeText.TabIndex = 34;
             this.buttonChangeWholeText.Text = "Change";
             this.buttonChangeWholeText.UseVisualStyleBackColor = true;
@@ -280,6 +281,7 @@
             // 
             // textBoxWholeText
             // 
+            this.textBoxWholeText.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxWholeText.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxWholeText.Location = new System.Drawing.Point(6, 19);
             this.textBoxWholeText.Multiline = true;
@@ -394,14 +396,14 @@
             this.buttonEditWord.UseVisualStyleBackColor = true;
             this.buttonEditWord.Click += new System.EventHandler(this.ButtonEditWordClick);
             // 
-            // contextMenuStrip2
+            // contextMenuStripForm
             // 
             this.contextMenuStripForm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.useLargerFontForThisWindowToolStripMenuItem});
             this.contextMenuStripForm.Name = "contextMenuStripForm";
-            this.contextMenuStripForm.Size = new System.Drawing.Size(237, 48);
+            this.contextMenuStripForm.Size = new System.Drawing.Size(237, 26);
             // 
-            // useLargerFontForThisWindowToolStripMenuItem1
+            // useLargerFontForThisWindowToolStripMenuItem
             // 
             this.useLargerFontForThisWindowToolStripMenuItem.Name = "useLargerFontForThisWindowToolStripMenuItem";
             this.useLargerFontForThisWindowToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
@@ -457,14 +459,14 @@
         private System.Windows.Forms.Button buttonChangeAll;
         private System.Windows.Forms.Button buttonChange;
         private System.Windows.Forms.Button buttonSkipAll;
-        private System.Windows.Forms.TextBox textBoxWord;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxWord;
         private System.Windows.Forms.Button buttonSkipOnce;
         private System.Windows.Forms.Button buttonAddToNames;
         private System.Windows.Forms.GroupBox groupBoxTextAsImage;
         private System.Windows.Forms.PictureBox pictureBoxText;
         private System.Windows.Forms.GroupBox groupBoxEditWholeText;
         private System.Windows.Forms.Button buttonChangeWholeText;
-        private System.Windows.Forms.TextBox textBoxWholeText;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxWholeText;
         private System.Windows.Forms.GroupBox groupBoxText;
         private System.Windows.Forms.Button buttonEditWord;
         private System.Windows.Forms.Button buttonEditWholeText;

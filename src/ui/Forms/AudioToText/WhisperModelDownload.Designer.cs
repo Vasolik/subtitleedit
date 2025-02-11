@@ -31,8 +31,8 @@
             this.labelPleaseWait = new System.Windows.Forms.Label();
             this.buttonDownload = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.comboBoxModels = new System.Windows.Forms.ComboBox();
-            this.textBoxError = new System.Windows.Forms.TextBox();
+            this.comboBoxModels = new Nikse.SubtitleEdit.Controls.NikseComboBox();
+            this.textBoxError = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.labelFileName = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -72,18 +72,33 @@
             // 
             // comboBoxModels
             // 
+            this.comboBoxModels.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBoxModels.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxModels.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxModels.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
+            this.comboBoxModels.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxModels.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxModels.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.comboBoxModels.DropDownHeight = 400;
             this.comboBoxModels.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxModels.DropDownWidth = 271;
             this.comboBoxModels.FormattingEnabled = true;
             this.comboBoxModels.Location = new System.Drawing.Point(15, 31);
+            this.comboBoxModels.MaxLength = 32767;
             this.comboBoxModels.Name = "comboBoxModels";
-            this.comboBoxModels.Size = new System.Drawing.Size(271, 21);
+            this.comboBoxModels.SelectedIndex = -1;
+            this.comboBoxModels.SelectedItem = null;
+            this.comboBoxModels.SelectedText = "";
+            this.comboBoxModels.Size = new System.Drawing.Size(271, 23);
             this.comboBoxModels.TabIndex = 0;
+            this.comboBoxModels.UsePopupWindow = false;
             // 
             // textBoxError
             // 
             this.textBoxError.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxError.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxError.Location = new System.Drawing.Point(97, 86);
             this.textBoxError.Multiline = true;
             this.textBoxError.Name = "textBoxError";
@@ -132,8 +147,8 @@
         private System.Windows.Forms.Label labelPleaseWait;
         private System.Windows.Forms.Button buttonDownload;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.ComboBox comboBoxModels;
-        private System.Windows.Forms.TextBox textBoxError;
+        private Nikse.SubtitleEdit.Controls.NikseComboBox comboBoxModels;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxError;
         private System.Windows.Forms.Label labelFileName;
     }
 }

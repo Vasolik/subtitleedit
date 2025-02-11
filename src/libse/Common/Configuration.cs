@@ -13,7 +13,7 @@ namespace Nikse.SubtitleEdit.Core.Common
     {
         private static readonly Lazy<Configuration> Instance = new Lazy<Configuration>(() => new Configuration());
 
-        private readonly Lazy<Settings> _settings;
+        private Lazy<Settings.Settings> _settings;
         private readonly IEnumerable<Encoding> _encodings;
 
         public static readonly string BaseDirectory = GetBaseDirectory();
@@ -25,7 +25,7 @@ namespace Nikse.SubtitleEdit.Core.Common
         public static readonly string TimeCodesDirectory = DataDirectory + "TimeCodes" + Path.DirectorySeparatorChar;
         public static readonly string AutoBackupDirectory = DataDirectory + "AutoBackup" + Path.DirectorySeparatorChar;
         public static readonly string VobSubCompareDirectory = DataDirectory + "VobSub" + Path.DirectorySeparatorChar;
-        public static readonly string TesseractDirectory = DataDirectory + "Tesseract531" + Path.DirectorySeparatorChar;
+        public static readonly string TesseractDirectory = DataDirectory + "Tesseract550" + Path.DirectorySeparatorChar;
         public static readonly string Tesseract302Directory = DataDirectory + "Tesseract302" + Path.DirectorySeparatorChar;
         public static readonly string WaveformsDirectory = DataDirectory + "Waveforms" + Path.DirectorySeparatorChar;
         public static readonly string PluginsDirectory = DataDirectory + "Plugins";
@@ -34,6 +34,7 @@ namespace Nikse.SubtitleEdit.Core.Common
         public static readonly string SettingsFileName = DataDirectory + "Settings.xml";
         public static readonly string TesseractDataDirectory = GetTesseractDataDirectory();
         public static readonly string Tesseract302DataDirectory = GetTesseract302DataDirectory();
+        public static readonly string PaddleOcrDirectory = DataDirectory + "PaddleOCR";
 
         public static readonly string DefaultLinuxFontName = "DejaVu Serif";
 
@@ -47,7 +48,8 @@ namespace Nikse.SubtitleEdit.Core.Common
 
             foreach (var pluginFileName in Directory.GetFiles(PluginsDirectory, "*.*"))
             {
-                if (pluginFileName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                if (pluginFileName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) && 
+                    !pluginFileName.EndsWith("DeeplProTranslate.dll", StringComparison.OrdinalIgnoreCase))
                 {
                     plugins.Add(pluginFileName);
                 }
@@ -59,7 +61,12 @@ namespace Nikse.SubtitleEdit.Core.Common
         private Configuration()
         {
             _encodings = GetAvailableEncodings();
-            _settings = new Lazy<Settings>(Settings.GetSettings);
+            _settings = new Lazy<Settings.Settings>(Core.Settings.Settings.GetSettings);
+        }
+
+        public void SetSettings(Settings.Settings settings)
+        {
+            _settings = new Lazy<Settings.Settings>(() => settings);
         }
 
         private const int PlatformWindows = 1;
@@ -113,7 +120,7 @@ namespace Nikse.SubtitleEdit.Core.Common
                  : PlatformWindows;
         }
 
-        public static Settings Settings => Instance.Value._settings.Value;
+        public static Settings.Settings Settings => Instance.Value._settings.Value;
 
         public static IEnumerable<Encoding> AvailableEncodings => Instance.Value._encodings;
 
@@ -294,6 +301,5 @@ namespace Nikse.SubtitleEdit.Core.Common
 
             return encodings.AsEnumerable();
         }
-
     }
 }

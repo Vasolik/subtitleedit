@@ -3,8 +3,10 @@ using Nikse.SubtitleEdit.Core.Http;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -13,16 +15,17 @@ namespace Nikse.SubtitleEdit.Forms
         public string FFmpegPath { get; internal set; }
         public bool AutoClose { get; internal set; }
         private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly string _title;
 
-        public DownloadFfmpeg()
+        public DownloadFfmpeg(string title)
         {
             UiUtil.PreInitialize(this);
             InitializeComponent();
             UiUtil.FixFonts(this);
-            Text = string.Format(LanguageSettings.Current.Settings.DownloadX, "FFmpeg");
-            buttonOK.Text = LanguageSettings.Current.General.Ok;
+            _title = title;
+            Text = string.Format(LanguageSettings.Current.Settings.DownloadX, title);
             buttonCancel.Text = LanguageSettings.Current.General.Cancel;
-            UiUtil.FixLargeFonts(this, buttonOK);
+            UiUtil.FixLargeFonts(this, buttonCancel);
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -34,27 +37,36 @@ namespace Nikse.SubtitleEdit.Forms
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
-
         private void buttonCancel_Click(object sender, EventArgs e)
         {
+            if (buttonCancel.Text == LanguageSettings.Current.General.Ok)
+            {
+                DialogResult = DialogResult.OK;
+                return;
+            }
+
             _cancellationTokenSource.Cancel();
             DialogResult = DialogResult.Cancel;
         }
 
         private void DownloadFfmpeg_Shown(object sender, EventArgs e)
         {
-            var url = "https://github.com/SubtitleEdit/support-files/raw/master/ffpmeg/ffmpeg-" + IntPtr.Size * 8 + ".zip";
+            var url = "https://github.com/SubtitleEdit/support-files/releases/download/ffmpeg-v7-1/ffmpeg-7.1.zip";
+            if (IntPtr.Size == 32)
+            {
+                url = "https://github.com/SubtitleEdit/support-files/releases/download/ffmpegwin32v5.1/ffmpeg-win32-n5.1.zip";
+            }
+
+            if (_title.Contains("ffprobe", StringComparison.OrdinalIgnoreCase))
+            {
+                url = "https://github.com/SubtitleEdit/support-files/releases/download/ffmpeg-v7-1/ffprobe-7.1.zip";
+            }
 
             try
             {
                 labelPleaseWait.Text = LanguageSettings.Current.General.PleaseWait;
-                buttonOK.Enabled = false;
                 Cursor = Cursors.WaitCursor;
-                var httpClient = DownloaderFactory.MakeHttpClient();
+                using (var httpClient = DownloaderFactory.MakeHttpClient())
                 using (var downloadStream = new MemoryStream())
                 {
                     var downloadTask = httpClient.DownloadAsync(url, downloadStream, new Progress<float>((progress) =>
@@ -81,7 +93,6 @@ namespace Nikse.SubtitleEdit.Forms
             catch (Exception exception)
             {
                 labelPleaseWait.Text = string.Empty;
-                buttonOK.Enabled = true;
                 Cursor = Cursors.Default;
                 MessageBox.Show($"Unable to download {url}!" + Environment.NewLine + Environment.NewLine +
                     exception.Message + Environment.NewLine + Environment.NewLine + exception.StackTrace);
@@ -89,7 +100,7 @@ namespace Nikse.SubtitleEdit.Forms
             }
         }
 
-        private void CompleteDownload(Stream downloadStream)
+        private void CompleteDownload(MemoryStream downloadStream)
         {
             if (downloadStream.Length == 0)
             {
@@ -100,6 +111,19 @@ namespace Nikse.SubtitleEdit.Forms
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
+            }
+
+            var sha512Hashes = new[]
+            {
+                "42a42cbed3175165a71cc573960306f422373a3f30864cf81b476675bdb485aca81d904f1f5c67b0a3397b62a468ca4a4fcad6507103e7b8908e56ab63be6255", // ffmpeg
+                "74db8a0b8226c3104c52a986f3bd000b6eb57ab4a017d44aa10c00fb9310ce06a634e581cce76c5d82410dfd7b6cddfaceb8b7bdca17ee6c39e7213843041ab4", // ffprobe
+            };
+            var hash = Utilities.GetSha512Hash(downloadStream.ToArray());
+            if (!sha512Hashes.Contains(hash))
+            {
+                MessageBox.Show("ffmpeg SHA 512 hash does not match - download aborted!"); ;
+                DialogResult = DialogResult.Cancel;
+                return;
             }
 
             downloadStream.Position = 0;
@@ -131,8 +155,8 @@ namespace Nikse.SubtitleEdit.Forms
                 return;
             }
 
-            buttonOK.Enabled = true;
-            labelPleaseWait.Text = string.Format(LanguageSettings.Current.SettingsFfmpeg.XDownloadOk, "ffmpeg");
+            buttonCancel.Text = LanguageSettings.Current.General.Ok;
+            labelPleaseWait.Text = string.Format(LanguageSettings.Current.SettingsFfmpeg.XDownloadOk, _title);
         }
     }
 }

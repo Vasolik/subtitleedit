@@ -32,15 +32,28 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
             labelNote.Text = LanguageSettings.Current.WhisperAdvanced.Info;
             buttonOK.Text = LanguageSettings.Current.General.Ok;
             buttonCancel.Text = LanguageSettings.Current.General.Cancel;
+            buttonStandard.Text = LanguageSettings.Current.WhisperAdvanced.Standard;
+            buttonStandardAsia.Text = LanguageSettings.Current.WhisperAdvanced.StandardAsia;
+            buttonHighlightCurrentWord.Text = LanguageSettings.Current.WhisperAdvanced.HighlightCurrentWord;
+            buttonSingleWords.Text = LanguageSettings.Current.WhisperAdvanced.SingleWords;
+            buttonSentence.Text = LanguageSettings.Current.WhisperAdvanced.Sentence;
             comboBoxWhisperExtra.Text = Configuration.Settings.Tools.WhisperExtraSettings;
 
-            if (whisperEngine == WhisperChoice.Cpp)
+            if (whisperEngine == WhisperChoice.Cpp || whisperEngine == WhisperChoice.CppCuBlas)
             {
                 tabControlCommandLineHelp.SelectedTab = TabPageCPP;
             }
             else if (whisperEngine == WhisperChoice.ConstMe)
             {
                 tabControlCommandLineHelp.SelectedTab = tabPageConstMe;
+            }
+            else if (whisperEngine == WhisperChoice.CTranslate2)
+            {
+                tabControlCommandLineHelp.SelectedTab = tabPageFasterWhisper;
+            }
+            else if (whisperEngine == WhisperChoice.PurfviewFasterWhisperXxl)
+            {
+                tabControlCommandLineHelp.SelectedTab = tabPageFasterWhisperXxl;
             }
             else
             {
@@ -57,7 +70,6 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
             {
                 // ignore
             }
-
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
@@ -70,6 +82,15 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
             }
 
             Configuration.Settings.Tools.WhisperExtraSettings = comboBoxWhisperExtra.Text;
+
+            if (Configuration.Settings.Tools.WhisperChoice == WhisperChoice.PurfviewFasterWhisperXxl)
+            {
+                if (Configuration.Settings.Tools.WhisperPurfviewFasterWhisperDefaultCmd != comboBoxWhisperExtra.Text)
+                {
+                    Configuration.Settings.Tools.WhisperPurfviewFasterWhisperDefaultCmd = string.Empty;
+                }
+            }
+
             DialogResult = DialogResult.OK;
         }
 
@@ -88,6 +109,75 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
             {
                 DialogResult = DialogResult.Cancel;
             }
+        }
+
+        private void WhisperAdvanced_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+            }
+        }
+
+        private void WhisperAdvanced_Shown(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Focus();
+            comboBoxWhisperExtra.SelectAll();
+        }
+
+        private void buttonSingleWords_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--one_word 2";
+        }
+
+        private void buttonSentence_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--sentence";
+        }
+
+        private void buttonStandard_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--standard";
+        }
+
+        private void buttonHighlightWord_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = $"--highlight_words true --max_line_width {Configuration.Settings.General.SubtitleLineMaximumLength} --max_line_count {Configuration.Settings.General.MaxNumberOfLines}";
+        }
+
+        private void buttonStandardAsia_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--standard_asia";
+        }
+
+        private void buttonXxlStandard_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--standard";
+        }
+
+        private void buttonXxlStandardAsia_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--standard_asia";
+        }
+
+        private void WhisperAdvanced_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonXxlSentence_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--sentence";
+        }
+
+        private void buttonXxlSingleWord_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = "--one_word 2";
+        }
+
+        private void buttonXxlHighlightWord_Click(object sender, EventArgs e)
+        {
+            comboBoxWhisperExtra.Text = $"--highlight_words true --max_line_width {Configuration.Settings.General.SubtitleLineMaximumLength} --max_line_count {Configuration.Settings.General.MaxNumberOfLines}";
         }
     }
 }

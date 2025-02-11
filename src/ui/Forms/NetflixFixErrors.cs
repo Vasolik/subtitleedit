@@ -2,6 +2,7 @@
 using Nikse.SubtitleEdit.Core.Enums;
 using Nikse.SubtitleEdit.Core.NetflixQualityCheck;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
+using Nikse.SubtitleEdit.Forms.Options;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Nikse.SubtitleEdit.Forms.FixCommonErrors;
 
@@ -23,6 +23,7 @@ namespace Nikse.SubtitleEdit.Forms
         private readonly string _videoFileName;
         private readonly double _frameRate;
         private bool _loading;
+        private string _language;
         private NetflixQualityController _netflixQualityController;
 
         public NetflixFixErrors(Subtitle subtitle, SubtitleFormat subtitleFormat, string subtitleFileName, string videoFileName, double frameRate)
@@ -51,9 +52,10 @@ namespace Nikse.SubtitleEdit.Forms
             buttonFixesInverse.Text = LanguageSettings.Current.FixCommonErrors.InverseSelection;
             buttonOK.Text = LanguageSettings.Current.General.Ok;
             _loading = true;
-            var language = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitle);
-            InitializeLanguages(language);
-            RefreshCheckBoxes(language);
+            _language = LanguageAutoDetect.AutoDetectGoogleLanguage(_subtitle);
+            comboBoxLanguage.SelectedIndexChanged += RuleCheckedChanged;
+            InitializeLanguages(_language);
+            RefreshCheckBoxes(_language);
             _loading = false;
             RuleCheckedChanged(null, null);
             UiUtil.FixLargeFonts(this, buttonOK);
@@ -108,9 +110,11 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void InitializeLanguages(string language)
         {
+            comboBoxLanguage.SelectedIndexChanged -= RuleCheckedChanged;
+
             comboBoxLanguage.BeginUpdate();
             comboBoxLanguage.Items.Clear();
-            foreach (var ci in Utilities.GetSubtitleLanguageCultures())
+            foreach (var ci in Utilities.GetSubtitleLanguageCultures(true))
             {
                 comboBoxLanguage.Items.Add(new LanguageItem(ci, ci.EnglishName));
             }
@@ -131,18 +135,28 @@ namespace Nikse.SubtitleEdit.Forms
                 }
             }
             comboBoxLanguage.SelectedIndex = languageIndex;
-            comboBoxLanguage.SelectedIndexChanged += RuleCheckedChanged;
+
             comboBoxLanguage.EndUpdate();
+
+            comboBoxLanguage.Sorted = false;
+            comboBoxLanguage.Items.Add(LanguageSettings.Current.General.ChangeLanguageFilter);
+
+            if (comboBoxLanguage.SelectedIndex < 0 && comboBoxLanguage.Items.Count > 0)
+            {
+                comboBoxLanguage.SelectedIndex = 0;
+            }
+
+            comboBoxLanguage.SelectedIndexChanged += RuleCheckedChanged;
         }
 
-        private async void RuleCheckedChanged(object sender, EventArgs e)
+        private void RuleCheckedChanged(object sender, EventArgs e)
         {
             if (_loading)
             {
                 return;
             }
 
-            await Task.Run(() => _netflixQualityController.RunChecks(_subtitle, GetAllSelectedChecks())).ConfigureAwait(true);
+            _netflixQualityController.RunChecks(_subtitle, GetAllSelectedChecks());
             labelTotal.Text = string.Format(LanguageSettings.Current.NetflixQualityCheck.FoundXIssues, _netflixQualityController.Records.Count);
             linkLabelOpenReportFolder.Left = labelTotal.Left + labelTotal.Width + 15;
             linkLabelOpenReportFolder.Text = LanguageSettings.Current.NetflixQualityCheck.OpenReportInFolder;
@@ -161,7 +175,6 @@ namespace Nikse.SubtitleEdit.Forms
             }
 
             listViewFixes.Items.AddRange(listViewItems.ToArray());
-
             listViewFixes.EndUpdate();
         }
 
@@ -287,7 +300,20 @@ namespace Nikse.SubtitleEdit.Forms
                 return;
             }
 
-            _loading = true;
+            if (comboBoxLanguage.SelectedIndex > 0 && comboBoxLanguage.Text == LanguageSettings.Current.General.ChangeLanguageFilter)
+            {
+                using (var form = new DefaultLanguagesChooser(Configuration.Settings.General.DefaultLanguages))
+                {
+                    if (form.ShowDialog(this) == DialogResult.OK)
+                    {
+                        Configuration.Settings.General.DefaultLanguages = form.DefaultLanguages;
+                    }
+                }
+
+                InitializeLanguages(_language);
+                return;
+            }
+
             var languageItem = (LanguageItem)comboBoxLanguage.Items[comboBoxLanguage.SelectedIndex];
             RefreshCheckBoxes(languageItem.Code.TwoLetterISOLanguageName);
             _loading = false;

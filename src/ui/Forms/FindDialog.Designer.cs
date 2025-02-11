@@ -28,21 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBoxFind = new System.Windows.Forms.TextBox();
+            this.components = new System.ComponentModel.Container();
+            this.textBoxFind = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.buttonFind = new System.Windows.Forms.Button();
             this.radioButtonNormal = new System.Windows.Forms.RadioButton();
             this.radioButtonCaseSensitive = new System.Windows.Forms.RadioButton();
             this.radioButtonRegEx = new System.Windows.Forms.RadioButton();
-            this.comboBoxFind = new System.Windows.Forms.ComboBox();
+            this.comboBoxFind = new Nikse.SubtitleEdit.Controls.NikseComboBox();
             this.buttonCount = new System.Windows.Forms.Button();
             this.labelCount = new System.Windows.Forms.Label();
             this.checkBoxWholeWord = new System.Windows.Forms.CheckBox();
             this.buttonFindPrev = new System.Windows.Forms.Button();
             this.labelFindWhat = new System.Windows.Forms.Label();
+            this.contextMenuStripNormal = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripNormal.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxFind
             // 
+            this.textBoxFind.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxFind.Location = new System.Drawing.Point(12, 28);
             this.textBoxFind.Name = "textBoxFind";
             this.textBoxFind.Size = new System.Drawing.Size(232, 21);
@@ -97,13 +105,29 @@
             // 
             // comboBoxFind
             // 
+            this.comboBoxFind.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBoxFind.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxFind.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxFind.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
+            this.comboBoxFind.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxFind.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxFind.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.comboBoxFind.DropDownHeight = 400;
+            this.comboBoxFind.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.comboBoxFind.DropDownWidth = 232;
             this.comboBoxFind.FormattingEnabled = true;
             this.comboBoxFind.Location = new System.Drawing.Point(12, 28);
+            this.comboBoxFind.MaxLength = 32767;
             this.comboBoxFind.Name = "comboBoxFind";
+            this.comboBoxFind.SelectedIndex = -1;
+            this.comboBoxFind.SelectedItem = null;
+            this.comboBoxFind.SelectedText = "";
             this.comboBoxFind.Size = new System.Drawing.Size(232, 21);
             this.comboBoxFind.TabIndex = 0;
-            this.comboBoxFind.TextChanged += new System.EventHandler(this.comboBoxFind_TextChanged);
+            this.comboBoxFind.TabStop = false;
+            this.comboBoxFind.UsePopupWindow = false;
             this.comboBoxFind.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ComboBoxFind_KeyDown);
+            this.comboBoxFind.TextChanged += new System.EventHandler(this.comboBoxFind_TextChanged);
             // 
             // buttonCount
             // 
@@ -154,6 +178,48 @@
             this.labelFindWhat.TabIndex = 12;
             this.labelFindWhat.Text = "Find what:";
             // 
+            // contextMenuStripNormal
+            // 
+            this.contextMenuStripNormal.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cutToolStripMenuItem,
+            this.copyToolStripMenuItem,
+            this.pasteToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.contextMenuStripNormal.Name = "contextMenuStripNormal";
+            this.contextMenuStripNormal.Size = new System.Drawing.Size(145, 92);
+            this.contextMenuStripNormal.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripNormal_Opening);
+            // 
+            // cutToolStripMenuItem
+            // 
+            this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
+            this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.cutToolStripMenuItem.Text = "Cut";
+            this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            // 
+            // pasteToolStripMenuItem
+            // 
+            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
+            this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.pasteToolStripMenuItem.Text = "Paste";
+            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
             // FindDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -180,7 +246,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Find";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindDialog_FormClosing);
+            this.Shown += new System.EventHandler(this.FindDialog_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormFindDialog_KeyDown);
+            this.contextMenuStripNormal.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -188,16 +256,21 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBoxFind;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxFind;
         private System.Windows.Forms.Button buttonFind;
         private System.Windows.Forms.RadioButton radioButtonNormal;
         private System.Windows.Forms.RadioButton radioButtonCaseSensitive;
         private System.Windows.Forms.RadioButton radioButtonRegEx;
-        private System.Windows.Forms.ComboBox comboBoxFind;
+        private Nikse.SubtitleEdit.Controls.NikseComboBox comboBoxFind;
         private System.Windows.Forms.Button buttonCount;
         private System.Windows.Forms.Label labelCount;
         private System.Windows.Forms.CheckBox checkBoxWholeWord;
         private System.Windows.Forms.Button buttonFindPrev;
         private System.Windows.Forms.Label labelFindWhat;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripNormal;
+        private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

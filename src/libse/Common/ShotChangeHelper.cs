@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Nikse.SubtitleEdit.Core.Forms;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
@@ -19,9 +18,56 @@ namespace Nikse.SubtitleEdit.Core.Common
                 Directory.CreateDirectory(dir);
             }
 
-            var newFileName = MovieHasher.GenerateHash(videoFileName) + ".shotchanges";
+            var videoFileNameWithoutExtension = Path.GetFileNameWithoutExtension(videoFileName)
+                .Replace(".", string.Empty)
+                .Replace("_", string.Empty);
+            if (videoFileNameWithoutExtension.Length > 25)
+            {
+                videoFileNameWithoutExtension = videoFileNameWithoutExtension.Substring(0, 25);
+            }
+
+            var newFileName = $"{MovieHasher.GenerateHash(videoFileName)}_{videoFileNameWithoutExtension}.shotchanges";
             newFileName = Path.Combine(dir, newFileName);
             return newFileName;
+        }
+
+        /// <summary>
+        /// Find shot changes file name
+        /// </summary>
+        /// <param name="videoFileName">Video file name</param>
+        /// <returns>Return file name of existing shot changes, or null</returns>
+        private static string FindShotChangesFileName(string videoFileName)
+        {
+            var dir = Configuration.ShotChangesDirectory.TrimEnd(Path.DirectorySeparatorChar);
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            var videoFileNameWithoutExtension = Path.GetFileNameWithoutExtension(videoFileName)
+                .Replace(".", string.Empty)
+                .Replace("_", string.Empty);
+            if (videoFileNameWithoutExtension.Length > 25)
+            {
+                videoFileNameWithoutExtension = videoFileNameWithoutExtension.Substring(0, 25);
+            }
+
+            var hash = MovieHasher.GenerateHash(videoFileName);
+
+            var newFileName = Path.Combine(dir, $"{hash}_{videoFileNameWithoutExtension}.shotchanges");
+            if (File.Exists(newFileName))
+            {
+                return newFileName;
+            }
+
+            var searchFileName = $"{hash}*.shotchanges";
+            var files = Directory.GetFiles(dir, searchFileName);
+            if (files.Length > 0)
+            {
+                return files[0];
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -38,8 +84,8 @@ namespace Nikse.SubtitleEdit.Core.Common
                 return list;
             }
 
-            var shotChangesFileName = GetShotChangesFileName(videoFileName);
-            if (!File.Exists(shotChangesFileName))
+            var shotChangesFileName = FindShotChangesFileName(videoFileName);
+            if (shotChangesFileName == null)
             {
                 return list;
             }
@@ -93,14 +139,14 @@ namespace Nikse.SubtitleEdit.Core.Common
                 return null;
             }
 
-            try
+            var maxDifference = (TimeCodesBeautifierUtils.GetFrameDurationMs() - 1) / 1000;
+            var previousShotChange = shotChanges.FirstOnOrBefore(currentTime.TotalSeconds, maxDifference, -1);
+            if (previousShotChange >= 0)
             {
-                return shotChanges.Last(x => SubtitleFormat.MillisecondsToFrames(x * 1000) <= SubtitleFormat.MillisecondsToFrames(currentTime.TotalMilliseconds));
+                return previousShotChange;
             }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static double? GetPreviousShotChangeInMs(List<double> shotChanges, TimeCode currentTime)
@@ -132,14 +178,14 @@ namespace Nikse.SubtitleEdit.Core.Common
                 return null;
             }
 
-            try
+            var maxDifference = (TimeCodesBeautifierUtils.GetFrameDurationMs() - 1) / 1000;
+            var nextShotChange = shotChanges.FirstOnOrAfter(currentTime.TotalSeconds, maxDifference, -1);
+            if (nextShotChange >= 0)
             {
-                return shotChanges.First(x => SubtitleFormat.MillisecondsToFrames(x * 1000) >= SubtitleFormat.MillisecondsToFrames(currentTime.TotalMilliseconds));
+                return nextShotChange;
             }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static double? GetNextShotChangeInMs(List<double> shotChanges, TimeCode currentTime)
@@ -171,14 +217,7 @@ namespace Nikse.SubtitleEdit.Core.Common
                 return null;
             }
 
-            try
-            {
-                return shotChanges.Aggregate((x, y) => Math.Abs(x - currentTime.TotalSeconds) < Math.Abs(y - currentTime.TotalSeconds) ? x : y);
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            return shotChanges.ClosestTo(currentTime.TotalSeconds);
         }
 
         public static bool IsCueOnShotChange(List<double> shotChanges, TimeCode currentTime, bool isInCue)

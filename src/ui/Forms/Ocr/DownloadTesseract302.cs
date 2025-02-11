@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using System.Windows.Forms;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
@@ -30,7 +31,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
 
             try
             {
-                var httpClient = DownloaderFactory.MakeHttpClient();
+                using (var httpClient = DownloaderFactory.MakeHttpClient())
                 using (var downloadStream = new MemoryStream())
                 {
                     var downloadTask = httpClient.DownloadAsync(url, downloadStream, new Progress<float>((progress) =>

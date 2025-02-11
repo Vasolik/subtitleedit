@@ -31,28 +31,28 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.groupBoxImportText = new System.Windows.Forms.GroupBox();
-            this.textBoxIImport = new System.Windows.Forms.TextBox();
+            this.buttonFromSeCache = new System.Windows.Forms.Button();
+            this.textBoxIImport = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.groupBoxTimeCodes = new System.Windows.Forms.GroupBox();
             this.radioButtonMilliseconds = new System.Windows.Forms.RadioButton();
             this.radioButtonSeconds = new System.Windows.Forms.RadioButton();
             this.radioButtonFrames = new System.Windows.Forms.RadioButton();
             this.radioButtonHHMMSSMS = new System.Windows.Forms.RadioButton();
             this.buttonOpenText = new System.Windows.Forms.Button();
-            this.textBoxLog = new System.Windows.Forms.TextBox();
+            this.textBoxLog = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.groupBoxGenerateShotChanges = new System.Windows.Forms.GroupBox();
             this.labelThresholdDescription = new System.Windows.Forms.Label();
-            this.numericUpDownThreshold = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownThreshold = new Nikse.SubtitleEdit.Controls.NikseUpDown();
             this.labelFfmpegThreshold = new System.Windows.Forms.Label();
             this.buttonDownloadFfmpeg = new System.Windows.Forms.Button();
             this.buttonImportWithFfmpeg = new System.Windows.Forms.Button();
-            this.textBoxGenerate = new System.Windows.Forms.TextBox();
+            this.textBoxGenerate = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.labelProgress = new System.Windows.Forms.Label();
             this.groupBoxImportText.SuspendLayout();
             this.groupBoxTimeCodes.SuspendLayout();
             this.groupBoxGenerateShotChanges.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThreshold)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -83,6 +83,7 @@
             // 
             this.groupBoxImportText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxImportText.Controls.Add(this.buttonFromSeCache);
             this.groupBoxImportText.Controls.Add(this.textBoxIImport);
             this.groupBoxImportText.Controls.Add(this.groupBoxTimeCodes);
             this.groupBoxImportText.Controls.Add(this.buttonOpenText);
@@ -94,12 +95,24 @@
             this.groupBoxImportText.TabStop = false;
             this.groupBoxImportText.Text = "Import shot changes";
             // 
+            // buttonFromSeCache
+            // 
+            this.buttonFromSeCache.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonFromSeCache.Location = new System.Drawing.Point(30, 21);
+            this.buttonFromSeCache.Name = "buttonFromSeCache";
+            this.buttonFromSeCache.Size = new System.Drawing.Size(153, 23);
+            this.buttonFromSeCache.TabIndex = 7;
+            this.buttonFromSeCache.Text = "From existing cache...";
+            this.buttonFromSeCache.UseVisualStyleBackColor = true;
+            this.buttonFromSeCache.Click += new System.EventHandler(this.buttonFromSeCache_Click);
+            // 
             // textBoxIImport
             // 
             this.textBoxIImport.AllowDrop = true;
             this.textBoxIImport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxIImport.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxIImport.Location = new System.Drawing.Point(6, 48);
             this.textBoxIImport.MaxLength = 0;
             this.textBoxIImport.Multiline = true;
@@ -182,6 +195,7 @@
             this.textBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxLog.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxLog.Location = new System.Drawing.Point(7, 19);
             this.textBoxLog.MaxLength = 0;
             this.textBoxLog.Multiline = true;
@@ -222,6 +236,13 @@
             // 
             // numericUpDownThreshold
             // 
+            this.numericUpDownThreshold.BackColor = System.Drawing.SystemColors.Window;
+            this.numericUpDownThreshold.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.numericUpDownThreshold.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.numericUpDownThreshold.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
+            this.numericUpDownThreshold.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.numericUpDownThreshold.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.numericUpDownThreshold.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.numericUpDownThreshold.DecimalPlaces = 2;
             this.numericUpDownThreshold.Increment = new decimal(new int[] {
             1,
@@ -242,6 +263,8 @@
             this.numericUpDownThreshold.Name = "numericUpDownThreshold";
             this.numericUpDownThreshold.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownThreshold.TabIndex = 4;
+            this.numericUpDownThreshold.TabStop = false;
+            this.numericUpDownThreshold.ThousandsSeparator = false;
             this.numericUpDownThreshold.Value = new decimal(new int[] {
             4,
             0,
@@ -286,6 +309,7 @@
             this.textBoxGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxGenerate.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxGenerate.Location = new System.Drawing.Point(6, 48);
             this.textBoxGenerate.MaxLength = 0;
             this.textBoxGenerate.Multiline = true;
@@ -348,7 +372,6 @@
             this.groupBoxTimeCodes.PerformLayout();
             this.groupBoxGenerateShotChanges.ResumeLayout(false);
             this.groupBoxGenerateShotChanges.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThreshold)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -365,17 +388,18 @@
         private System.Windows.Forms.RadioButton radioButtonFrames;
 		private System.Windows.Forms.RadioButton radioButtonHHMMSSMS;
         private System.Windows.Forms.GroupBox groupBoxGenerateShotChanges;
-        private System.Windows.Forms.TextBox textBoxGenerate;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxGenerate;
         private System.Windows.Forms.Button buttonOpenText;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button buttonImportWithFfmpeg;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button buttonDownloadFfmpeg;
-        private System.Windows.Forms.TextBox textBoxIImport;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxIImport;
         private System.Windows.Forms.Label labelThresholdDescription;
-        private System.Windows.Forms.NumericUpDown numericUpDownThreshold;
+        private Nikse.SubtitleEdit.Controls.NikseUpDown numericUpDownThreshold;
         private System.Windows.Forms.Label labelFfmpegThreshold;
-        private System.Windows.Forms.TextBox textBoxLog;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxLog;
         private System.Windows.Forms.Label labelProgress;
+        private System.Windows.Forms.Button buttonFromSeCache;
     }
 }

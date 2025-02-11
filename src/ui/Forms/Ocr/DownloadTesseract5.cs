@@ -5,12 +5,13 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
     public sealed partial class DownloadTesseract5 : Form
     {
-        public const string TesseractDownloadUrl = "https://github.com/SubtitleEdit/support-files/raw/master/Tesseract531.zip";
+        public const string TesseractDownloadUrl = "https://github.com/SubtitleEdit/support-files/releases/download/tesseract550/Tesseract550.zip";
         private readonly CancellationTokenSource _cancellationTokenSource;
 
         public DownloadTesseract5(string version)
@@ -29,7 +30,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             try
             {
                 Utilities.SetSecurityProtocol();
-                var httpClient = DownloaderFactory.MakeHttpClient();
+                using (var httpClient = DownloaderFactory.MakeHttpClient())
                 using (var downloadStream = new MemoryStream())
                 {
                     var downloadTask = httpClient.DownloadAsync(TesseractDownloadUrl, downloadStream, new Progress<float>((progress) =>

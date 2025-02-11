@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -180,6 +181,25 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
             }
         }
 
+        public double VideoBitrate
+        {
+            get
+            {
+                lock (_lockObj)
+                {
+                    if (_mpvHandle == IntPtr.Zero)
+                    {
+                        return 0;
+                    }
+
+                    var mpvFormatDouble = 5;
+                    double d = 0;
+                    _mpvGetPropertyDouble(_mpvHandle, GetUtf8Bytes("video-bitrate"), mpvFormatDouble, ref d);
+                    return d;
+                }
+            }
+        }
+
         public override double CurrentPosition
         {
             get
@@ -222,7 +242,7 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                         _pausePosition = value;
                     }
 
-                    DoMpvCommand("seek", value.ToString(CultureInfo.InvariantCulture), "absolute");
+                    DoMpvCommand("seek", value.ToString(CultureInfo.InvariantCulture), "absolute", "exact");
                 }
             }
         }
@@ -417,8 +437,8 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
 
         public override bool IsPlaying => !IsPaused;
 
-        private List<KeyValuePair<int, string>> _audioTrackIds;
-        public List<KeyValuePair<int, string>> AudioTracks
+        private List<AudioTrack> _audioTrackIds;
+        public List<AudioTrack> AudioTracks
         {
             get
             {
@@ -429,13 +449,14 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
 
                 if (_mpvHandle == IntPtr.Zero)
                 {
-                    return new List<KeyValuePair<int, string>>();
+                    return new List<AudioTrack>();
                 }
 
-                _audioTrackIds = new List<KeyValuePair<int, string>>();
+                _audioTrackIds = new List<AudioTrack>();
                 var lpBuffer = IntPtr.Zero;
                 _mpvGetPropertyString(_mpvHandle, GetUtf8Bytes("track-list"), MpvFormatString, ref lpBuffer);
                 string trackListJson = Marshal.PtrToStringAnsi(lpBuffer);
+                var idx = 0;
                 foreach (var json in Json.ReadObjectArray(trackListJson))
                 {
                     var trackType = Json.ReadTag(json, "type");
@@ -444,7 +465,8 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                         var lang = Json.ReadTag(json, "lang");
                         if (int.TryParse(Json.ReadTag(json, "id"), out var id))
                         {
-                            _audioTrackIds.Add(new KeyValuePair<int, string>(id, lang));
+                            _audioTrackIds.Add(new AudioTrack(id, lang, idx));
+                            idx++;  
                         }
                     }
                 }
@@ -475,7 +497,8 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                     return 0;
                 }
 
-                var idx = _audioTrackIds.FindIndex(x => x.Key == id);
+                var audioTrack = _audioTrackIds.FirstOrDefault(x => x.TrackNumber == id);
+                var idx = audioTrack == null ? -1 : _audioTrackIds.IndexOf(audioTrack);
                 var number = AudioTracks.Count > 1 && idx != -1 ? idx : 0;
                 _mpvFree(lpBuffer);
                 return number;
@@ -485,7 +508,7 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                 string id = "1";
                 if (AudioTracks.Count > 1 && value >= 0 && value < _audioTrackIds.Count)
                 {
-                    id = _audioTrackIds[value].Key.ToString();
+                    id = _audioTrackIds[value].TrackNumber.ToString(CultureInfo.InvariantCulture);
                 }
                 DoMpvCommand("set", "aid", id);
             }
@@ -672,6 +695,13 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                     var logFileName = Path.Combine(Configuration.DataDirectory, "mpv-log-" + Guid.NewGuid() + ".txt");
                     _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("log-file"), GetUtf8Bytes(logFileName));
                 }
+
+                
+                if (_mpvSetOptionString(_mpvHandle, GetUtf8Bytes("input-cursor-passthrough"), GetUtf8Bytes("yes")) != 0)
+                {
+                    // if --input-cursor-passthrough=yes is not avaliable, use --input-cursor=no
+                    _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("input-cursor"), GetUtf8Bytes("no"));
+                }
             }
             else if (!Directory.Exists(videoFileName))
             {
@@ -714,6 +744,7 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                 _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("keep-open"), GetUtf8Bytes("always")); // don't auto close video
                 _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("no-sub"), GetUtf8Bytes(string.Empty)); // don't load subtitles (does not seem to work anymore)
                 _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("sid"), GetUtf8Bytes("no")); // don't load subtitles
+                _mpvSetOptionString(_mpvHandle, GetUtf8Bytes("hr-seek"), GetUtf8Bytes("yes")); // don't load subtitles
 
                 if (videoFileName.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
                     videoFileName.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
@@ -751,6 +782,8 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                 _videoLoadedTimer.Start();
 
                 SetVideoOwner(ownerControl);
+
+                VideoFileName = videoFileName;
             }
         }
 
@@ -823,9 +856,9 @@ namespace Nikse.SubtitleEdit.Logic.VideoPlayers
                 }
             }
             Application.DoEvents();
-            OnVideoLoaded?.Invoke(this, null);
-            Application.DoEvents();
             Pause();
+            Application.DoEvents();
+            OnVideoLoaded?.Invoke(this, null);
         }
 
         public override void DisposeVideoPlayer()

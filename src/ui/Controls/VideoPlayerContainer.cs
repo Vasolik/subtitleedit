@@ -7,6 +7,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Settings;
 
 namespace Nikse.SubtitleEdit.Controls
 {
@@ -53,6 +54,23 @@ namespace Nikse.SubtitleEdit.Controls
 
         public float FontSizeFactor { get; set; }
 
+        private static int GetSubtitlesHeight()
+        {
+            var subtitlesHeight = 57;
+
+            var configValue = Configuration.Settings.General.VideoPlayerPreviewBoxHeight;
+            if (configValue > 25 && configValue < 300) // only allow reasonable values
+            {
+                subtitlesHeight = configValue;
+            }
+            else
+            {
+                Configuration.Settings.General.VideoPlayerPreviewBoxHeight = subtitlesHeight;
+            }
+
+            return subtitlesHeight;
+        }
+
         public VideoPlayer VideoPlayer
         {
             get => _videoPlayer;
@@ -70,7 +88,7 @@ namespace Nikse.SubtitleEdit.Controls
                 }
                 else
                 {
-                    _subtitlesHeight = 57;
+                    _subtitlesHeight = GetSubtitlesHeight();
                 }
                 DeleteTempMpvFileName();
                 VideoPlayerContainerResize(this, null);
@@ -83,12 +101,12 @@ namespace Nikse.SubtitleEdit.Controls
         public int VideoHeight { get; set; }
 
         private bool _isMuted;
+        private readonly bool _loading;
         private double? _muteOldVolume;
         public bool PlayedWithCustomSpeed;
         private readonly System.ComponentModel.ComponentResourceManager _resources;
         public int ControlsHeight = 47;
-        private const int OriginalSubtitlesHeight = 57;
-        private int _subtitlesHeight = OriginalSubtitlesHeight;
+        private int _subtitlesHeight = GetSubtitlesHeight();
         private readonly Color _backgroundColor = Color.FromArgb(18, 18, 18);
         private Panel _panelControls;
 
@@ -125,9 +143,9 @@ namespace Nikse.SubtitleEdit.Controls
         private readonly PictureBox _pictureBoxProgressBar = new PictureBox();
         private readonly PictureBox _pictureBoxVolumeBarBackground = new PictureBox();
         private readonly PictureBox _pictureBoxVolumeBar = new PictureBox();
-        private readonly Label _labelTimeCode = new Label();
-        private readonly Label _labelVideoPlayerName = new Label();
-        private readonly Label _labelVolume = new Label();
+        private readonly NikseLabel _labelTimeCode = new NikseLabel();
+        private readonly NikseLabel _labelVideoPlayerName = new NikseLabel();
+        private readonly NikseLabel _labelVolume = new NikseLabel();
         private readonly ToolTip _currentPositionToolTip = new ToolTip();
         private int _lastCurrentPositionToolTipX;
         private int _lastCurrentPositionToolTipY;
@@ -198,6 +216,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public VideoPlayerContainer()
         {
+            _loading = true;
             Chapters = Array.Empty<MatroskaChapter>();
             FontSizeFactor = 1.0F;
             BorderStyle = BorderStyle.None;
@@ -213,7 +232,7 @@ namespace Nikse.SubtitleEdit.Controls
             ShowAllControls();
             if (Configuration.IsRunningOnLinux)
             {
-                System.Threading.SynchronizationContext.Current.Post(TimeSpan.FromMilliseconds(1500), () =>
+                TaskDelayHelper.RunDelayed(TimeSpan.FromMilliseconds(1500), () =>
                 {
                     if (string.IsNullOrEmpty(_labelVideoPlayerName.Text))
                     {
@@ -237,7 +256,12 @@ namespace Nikse.SubtitleEdit.Controls
             PictureBoxFastForwardMouseEnter(null, null);
             PictureBoxFastForwardOverMouseLeave(null, null);
 
+            _pictureBoxVolumeBarBackground.BringToFront();
+            _pictureBoxVolumeBar.BringToFront();
+            _labelVolume.BringToFront();
+
             _labelTimeCode.Click += LabelTimeCodeClick;
+            _loading = false;
         }
 
         private bool _showDuration = true;
@@ -285,6 +309,7 @@ namespace Nikse.SubtitleEdit.Controls
 
             _labelTimeCode.Visible = true;
             _labelTimeCode.BringToFront();
+            _labelVolume.BringToFront();
         }
 
         public void EnableMouseWheelStep()
@@ -327,8 +352,14 @@ namespace Nikse.SubtitleEdit.Controls
 
         private void ControlMouseWheel(object sender, MouseEventArgs e)
         {
-            int delta = e.Delta;
-            double newPosition = CurrentPosition - delta / 256.0;
+            var delta = e.Delta;
+            if (Configuration.Settings.VideoControls.WaveformMouseWheelScrollUpIsForward)
+            {
+                delta = -delta;
+            }
+
+            var newPosition = CurrentPosition - delta / 256.0;
+
             if (newPosition < 0)
             {
                 newPosition = 0;
@@ -482,11 +513,12 @@ namespace Nikse.SubtitleEdit.Controls
                 SubtitleFormat format = new AdvancedSubStationAlpha();
                 string text;
 
-                if (subtitle.Header != null && subtitle.Header.Contains("lang=\"ja\"", StringComparison.Ordinal) && subtitle.Header.Contains("bouten-", StringComparison.Ordinal))
+                var uiFormatType = uiFormat.GetType();
+                if (uiFormatType == typeof(NetflixImsc11Japanese))
                 {
-                    text = NetflixImsc11JapaneseToAss.Convert(subtitle, 1280, 720);
+                    text = NetflixImsc11JapaneseToAss.Convert(subtitle, VideoWidth, VideoHeight);
                 }
-                else if (uiFormat.Name == WebVTT.NameOfFormat || uiFormat.Name == WebVTTFileWithLineNumber.NameOfFormat)
+                else if (uiFormatType == typeof(WebVTT) || uiFormatType == typeof(WebVTTFileWithLineNumber))
                 {
                     //TODO: add some caching!?
                     var defaultStyle = GetMpvPreviewStyle(Configuration.Settings.General);
@@ -499,9 +531,9 @@ namespace Nikse.SubtitleEdit.Controls
                 }
                 else
                 {
-                    if (subtitle.Header == null || !subtitle.Header.Contains("[V4+ Styles]") || uiFormat.Name != AdvancedSubStationAlpha.NameOfFormat)
+                    if (subtitle.Header == null || !subtitle.Header.Contains("[V4+ Styles]") || uiFormatType != typeof(AdvancedSubStationAlpha))
                     {
-                        if (string.IsNullOrEmpty(subtitle.Header) && uiFormat.Name == SubStationAlpha.NameOfFormat)
+                        if (string.IsNullOrEmpty(subtitle.Header) && uiFormatType == typeof(SubStationAlpha))
                         {
                             subtitle.Header = SubStationAlpha.DefaultHeader;
                         }
@@ -525,18 +557,44 @@ namespace Nikse.SubtitleEdit.Controls
                             }
                         }
 
-                        if (subtitle.Header == null || !(subtitle.Header.Contains("[V4+ Styles]") && uiFormat.Name == SubStationAlpha.NameOfFormat))
+                        if (subtitle.Header == null || !(subtitle.Header.Contains("[V4+ Styles]") && uiFormatType == typeof(SubStationAlpha)))
                         {
                             subtitle.Header = MpvPreviewStyleHeader;
                         }
 
                         if (oldSub.Header != null && oldSub.Header.Length > 20 && oldSub.Header.Substring(3, 3) == "STL")
                         {
-                            subtitle.Header = subtitle.Header.Replace("Style: Default,", "Style: Box,arial,20,&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000,0,0,0,0,100,100,0,0,3,2,0,2,10,10,10,1" +
+                            subtitle.Header = subtitle.Header.Replace("Style: Default,", "Style: Box," +
+                                Configuration.Settings.General.VideoPlayerPreviewFontName + "," +
+                                Configuration.Settings.General.VideoPlayerPreviewFontSize + ",&H00FFFFFF,&H0300FFFF,&H00000000,&H02000000," +
+                                (Configuration.Settings.General.VideoPlayerPreviewFontBold ? "-1" : "0") + ",0,0,0,100,100,0,0,3,2,0,2,10,10,10,1" +
                                                                        Environment.NewLine + "Style: Default,");
+
+                            var useBox = false;
+                            if (Configuration.Settings.SubtitleSettings.EbuStlTeletextUseBox)
+                            {
+                                try
+                                {
+                                    var encoding = Ebu.GetEncoding(oldSub.Header.Substring(0, 3));
+                                    var buffer = encoding.GetBytes(oldSub.Header);
+                                    var header = Ebu.ReadHeader(buffer);
+                                    if (header.DisplayStandardCode != "0")
+                                    {
+                                        useBox = true;
+                                    }
+                                }
+                                catch
+                                {
+                                    // ignore
+                                }
+                            }
+
                             for (var index = 0; index < subtitle.Paragraphs.Count; index++)
                             {
                                 var p = subtitle.Paragraphs[index];
+
+                                p.Extra = useBox ? "Box" : "Default";
+
                                 if (p.Text.Contains("<box>"))
                                 {
                                     p.Extra = "Box";
@@ -1050,6 +1108,11 @@ namespace Nikse.SubtitleEdit.Controls
 
         public void VideoPlayerContainerResize(object sender, EventArgs e)
         {
+            if (_loading)
+            {
+                return;
+            }
+
             ControlsHeight = _pictureBoxBackground.Height;
             PanelPlayer.Height = Height - (ControlsHeight + _subtitlesHeight);
             PanelPlayer.Width = Width;
@@ -1161,7 +1224,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private void PictureBoxPlayOverMouseUp(object sender, MouseEventArgs e)
         {
-            if (IsMouseOverControl((PictureBox)sender, e.Location))
+            if (IsMouseOverControl((PictureBox)sender, e.Location) && !string.IsNullOrEmpty(VideoPlayer?.VideoFileName))
             {
                 HideAllPlayImages();
                 _pictureBoxPause.Visible = true;
@@ -1306,6 +1369,12 @@ namespace Nikse.SubtitleEdit.Controls
                 PanelPlayer.Dock = DockStyle.Fill;
                 _panelControls.BringToFront();
             }
+        }
+
+        public void UnSetFullFixed()
+        {
+            PanelPlayer.Dock = DockStyle.None;
+            VideoPlayerContainerResize(null, null);
         }
 
         public void ShowFullScreenControls()
@@ -1745,9 +1814,15 @@ namespace Nikse.SubtitleEdit.Controls
         {
             string displayTimeCode;
             var dur = TimeCode.FromSeconds(duration + Configuration.Settings.General.CurrentVideoOffsetInMs / TimeCode.BaseUnit);
+            var showDuration = _showDuration && Width > 365;
+            if (Width < 275)
+            {
+                return string.Empty;
+            }
+
             if (SmpteMode)
             {
-                if (_showDuration || Configuration.Settings.General.CurrentVideoOffsetInMs != 0)
+                if (showDuration || Configuration.Settings.General.CurrentVideoOffsetInMs != 0)
                 {
                     var span = TimeCode.FromSeconds(positionInSeconds + 0.017 + Configuration.Settings.General.CurrentVideoOffsetInMs / TimeCode.BaseUnit);
                     displayTimeCode = $"{span.ToDisplayString()} / {dur.ToDisplayString()} SMPTE";
@@ -1766,7 +1841,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
             else
             {
-                if (_showDuration || Configuration.Settings.General.CurrentVideoOffsetInMs != 0)
+                if (showDuration || Configuration.Settings.General.CurrentVideoOffsetInMs != 0)
                 {
                     var span = TimeCode.FromSeconds(positionInSeconds + Configuration.Settings.General.CurrentVideoOffsetInMs / TimeCode.BaseUnit);
                     displayTimeCode = $"{span.ToDisplayString()} / {dur.ToDisplayString()}";
@@ -1963,14 +2038,20 @@ namespace Nikse.SubtitleEdit.Controls
             {
                 if (VideoPlayer != null)
                 {
+                    var v = value;
+
                     if (SmpteMode)
                     {
-                        VideoPlayer.CurrentPosition = value * 1.001;
+                        v *= 1.001;
                     }
-                    else
+
+                    if (Configuration.Settings.General.UseTimeFormatHHMMSSFF)
                     {
-                        VideoPlayer.CurrentPosition = value;
+                        var tc = TimeCode.FromSeconds(v);
+                        v = tc.AlignToFrame().TotalSeconds; ;
                     }
+
+                    VideoPlayer.CurrentPosition = v;
                 }
                 else
                 {
@@ -2148,7 +2229,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
             else
             {
-                _labelVolume.ForeColor = Color.White;
+                _labelVolume.ForeColor = Color.FromArgb(228, 228, 228);
             }
 
             if (_labelTimeCode.BackColor.R + _labelTimeCode.BackColor.G + _labelTimeCode.BackColor.B > 255 * 1.5)
@@ -2157,7 +2238,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
             else
             {
-                _labelTimeCode.ForeColor = Color.White;
+                _labelTimeCode.ForeColor = Color.FromArgb(228, 228, 228);
             }
 
             if (_labelVideoPlayerName.BackColor.R + _labelVideoPlayerName.BackColor.G + _labelVideoPlayerName.BackColor.B > 255 * 1.5)
@@ -2166,7 +2247,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
             else
             {
-                _labelVideoPlayerName.ForeColor = Color.White;
+                _labelVideoPlayerName.ForeColor = Color.FromArgb(228, 228, 228);
             }
         }
 

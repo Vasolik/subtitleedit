@@ -9,6 +9,7 @@ using System.Xml;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.ShotChanges
 {
@@ -16,7 +17,7 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
     {
         public List<double> ShotChangesInSeconds = new List<double>();
         private readonly double _frameRate = 25;
-        private readonly double _duration = 0;
+        private readonly double _duration;
         private readonly string _videoFileName;
         private bool _abort;
         private bool _pause;
@@ -87,12 +88,13 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
         private void buttonOpenText_Click(object sender, EventArgs e)
         {
             openFileDialog1.Title = buttonOpenText.Text;
-            openFileDialog1.Filter = LanguageSettings.Current.ImportText.TextFiles + "|*.txt;*.shotchanges;*.xml;*.json" +
+            openFileDialog1.Filter = LanguageSettings.Current.ImportText.TextFiles + "|*.txt;*.shotchanges;*.xml;*.json;*.dat" +
                                      "|Matroska xml chapter file|*.xml" +
                                      "|EZTitles shotchanges XML file|*.xml" +
                                      "|JSON shot changes file|*.json" +
                                      "|" + LanguageSettings.Current.General.AllFiles + "|*.*";
             openFileDialog1.FileName = string.Empty;
+            openFileDialog1.InitialDirectory = Path.GetDirectoryName(_videoFileName);
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 LoadTextFile(openFileDialog1.FileName);
@@ -119,16 +121,24 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
                     return;
                 }
 
-                res = LoadFromJsonShotchangesFile(fileName);
+                res = LoadFromJsonShotChangesFile(fileName);
                 if (!string.IsNullOrEmpty(res))
                 {
                     textBoxIImport.Text = res;
-                    radioButtonHHMMSSMS.Checked = true;
+                    radioButtonSeconds.Checked = true;
+                    return;
+                }
+
+                res = LoadFromJsonShotChangesFile2(fileName);
+                if (!string.IsNullOrEmpty(res))
+                {
+                    textBoxIImport.Text = res;
+                    radioButtonSeconds.Checked = true;
                     return;
                 }
 
                 var encoding = LanguageAutoDetect.GetEncodingFromFile(fileName);
-                string s = File.ReadAllText(fileName, encoding).Trim();
+                var s = File.ReadAllText(fileName, encoding).Trim();
                 if (s.Contains('.'))
                 {
                     radioButtonSeconds.Checked = true;
@@ -142,7 +152,7 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
                 if (!s.Contains(Environment.NewLine) && s.Contains(';'))
                 {
                     var sb = new StringBuilder();
-                    foreach (string line in s.Split(';'))
+                    foreach (var line in s.Split(';'))
                     {
                         if (!string.IsNullOrWhiteSpace(line))
                         {
@@ -162,7 +172,7 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
             }
         }
 
-        private string LoadFromMatroskaChapterFile(string fileName)
+        private static string LoadFromMatroskaChapterFile(string fileName)
         {
             try
             {
@@ -208,9 +218,13 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
                 {
                     foreach (XmlNode shotChange in xmlNodeList)
                     {
-                        sb.AppendLine(shotChange.Attributes["frame"]?.InnerText);
+                        if (shotChange.Attributes != null)
+                        {
+                            sb.AppendLine(shotChange.Attributes["frame"]?.InnerText);
+                        }
                     }
                 }
+
                 return sb.ToString();
             }
             catch
@@ -219,16 +233,16 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
             }
         }
 
-        private string LoadFromJsonShotchangesFile(string fileName)
+        private static string LoadFromJsonShotChangesFile(string fileName)
         {
             try
             {
                 var text = FileUtil.ReadAllTextShared(fileName, Encoding.UTF8);
                 var list = new List<double>();
-                foreach (string line in text.Split(','))
+                foreach (var line in text.Split(','))
                 {
-                    string s = line.Trim() + "}";
-                    string start = Json.ReadTag(s, "frame_time");
+                    var s = line.Trim() + "}";
+                    var start = Json.ReadTag(s, "frame_time");
                     if (start != null)
                     {
                         if (double.TryParse(start, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var startSeconds))
@@ -239,10 +253,11 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
                 }
 
                 var sb = new StringBuilder();
-                foreach (double ms in list.OrderBy(p => p))
+                foreach (var ms in list.OrderBy(p => p))
                 {
                     sb.AppendLine(new TimeCode(ms).ToShortStringHHMMSSFF());
                 }
+
                 return sb.ToString();
             }
             catch
@@ -251,6 +266,36 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
             }
         }
 
+        private static string LoadFromJsonShotChangesFile2(string fileName)
+        {
+            try
+            {
+                var text = FileUtil.ReadAllTextShared(fileName, Encoding.UTF8);
+                var list = new List<double>();
+                var parser = new SeJsonParser();
+                var arr = parser.GetArrayElementsByName(text, "shotchanges");
+
+                foreach (var line in arr)
+                {
+                    if (double.TryParse(line, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var startSeconds))
+                    {
+                        list.Add(startSeconds);
+                    }
+                }
+
+                var sb = new StringBuilder();
+                foreach (var seconds in list.OrderBy(p => p))
+                {
+                    sb.AppendLine(seconds.ToString(CultureInfo.InvariantCulture));
+                }
+
+                return sb.ToString();
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         private static readonly char[] SplitChars = { ':', '.', ',' };
 
@@ -264,9 +309,10 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
             else
             {
                 ShotChangesInSeconds = new List<double>();
+                var useInvariantCulture = textBoxIImport.Text.Contains('.');
                 foreach (var line in lines)
                 {
-                    if (double.TryParse(line, out var d))
+                    if (double.TryParse(line, NumberStyles.AllowDecimalPoint, useInvariantCulture ? CultureInfo.InvariantCulture : CultureInfo.CurrentUICulture, out var d))
                     {
                         if (radioButtonFrames.Checked)
                         {
@@ -396,7 +442,7 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
                     progressBar1.Maximum = Convert.ToInt32(_duration / 1000);
                 }
 
-                progressBar1.Value = Convert.ToInt32(_shotChangesGenerator.LastSeconds);
+                progressBar1.Value = Math.Min(Convert.ToInt32(_shotChangesGenerator.LastSeconds), progressBar1.Maximum);
                 labelProgress.Text = FormatSeconds(_shotChangesGenerator.LastSeconds) + @" / " + FormatSeconds(_duration / 1000);
             }
 
@@ -413,12 +459,17 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
 
         private void ImportShotChanges_Shown(object sender, EventArgs e)
         {
+            var dir = Configuration.ShotChangesDirectory.TrimEnd(Path.DirectorySeparatorChar);
+            var searchFileName = "*.shotchanges";
+            var files = Directory.GetFiles(dir, searchFileName);
+            buttonFromSeCache.Enabled = files.Length > 0;
+
             Activate();
         }
 
         private void buttonDownloadFfmpeg_Click(object sender, EventArgs e)
         {
-            using (var form = new DownloadFfmpeg())
+            using (var form = new DownloadFfmpeg("FFmpeg"))
             {
                 if (form.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(form.FFmpegPath))
                 {
@@ -428,6 +479,16 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
                     numericUpDownThreshold.Enabled = true;
                     Configuration.Settings.Save();
                 }
+            }
+        }
+
+        private void buttonFromSeCache_Click(object sender, EventArgs e)
+        {
+            var form = new ImportShotChangesFromSe();
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                ShotChangesInSeconds = form.ShotChanges;
+                DialogResult = DialogResult.OK;
             }
         }
     }
