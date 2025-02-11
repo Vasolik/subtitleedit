@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Assa
 {
@@ -26,6 +27,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             ".ico"
         };
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string NewFooter { get; private set; }
         private bool _loading;
 

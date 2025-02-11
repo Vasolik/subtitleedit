@@ -10,18 +10,23 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class AddWaveform : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int AudioTrackNumber { get; set; } = -1;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SourceVideoFileName { get; private set; }
         private bool _cancel;
         private string _peakWaveFileName;
         private string _wavFileName;
         private string _spectrogramDirectory;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WavePeakData Peaks { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SpectrogramData Spectrogram { get; private set; }
         private string _encodeParameters;
         private const string RetryEncodeParameters = "acodec=s16l";

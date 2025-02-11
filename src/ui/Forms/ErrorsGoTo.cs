@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -147,6 +148,7 @@ namespace Nikse.SubtitleEdit.Forms
             return errors;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ErrorIndex { get; private set; }
 
         private void listViewErrors_DoubleClick(object sender, EventArgs e)

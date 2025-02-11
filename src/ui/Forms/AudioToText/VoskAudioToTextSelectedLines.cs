@@ -9,6 +9,7 @@ using Nikse.SubtitleEdit.Core.AudioToText;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using Vosk;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.AudioToText
 {
@@ -24,6 +25,7 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
         private readonly Form _parentForm;
         private Model _model;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle TranscribedSubtitle { get; private set; }
 
         public VoskAudioToTextSelectedLines(List<AudioClipsGet.AudioClip> audioClips, Form parentForm)

@@ -1,14 +1,20 @@
 ﻿using Nikse.SubtitleEdit.Logic;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.AudioToText
 {
     public sealed partial class PostProcessingSettings : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool AddPeriods { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool MergeLines { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool SplitLines { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool FixCasing { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool FixShortDuration { get; set; }
 
         public PostProcessingSettings()

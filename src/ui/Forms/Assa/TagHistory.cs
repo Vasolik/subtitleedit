@@ -3,11 +3,13 @@ using System.Linq;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Assa
 {
     public sealed partial class TagHistory : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string HistoryStyle { get; private set; }
 
         public TagHistory()

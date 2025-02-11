@@ -2,11 +2,13 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class AlignmentPicker : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ContentAlignment Alignment { get; private set; }
         private readonly string _text;
 

@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -13,6 +14,7 @@ namespace Nikse.SubtitleEdit.Forms
     {
         public const string Url = "https://github.com/yt-dlp/yt-dlp/releases/download/2025.01.15/yt-dlp.exe";
         public const string Sha512Hash = "cbb9e381d6e23f56ee21e47aadafb5570f4f01f93faee063d1df6832b1d4a3d1c499c9a510e364ff64339618e72162e183c681777f642f22a29aa7520786d238";
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool AutoClose { get; internal set; }
         private readonly CancellationTokenSource _cancellationTokenSource;
 

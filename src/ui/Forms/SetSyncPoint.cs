@@ -5,6 +5,7 @@ using Nikse.SubtitleEdit.Logic.VideoPlayers;
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -21,6 +22,7 @@ namespace Nikse.SubtitleEdit.Forms
         private readonly Keys _mainGeneralGoToPrevSubtitle = UiUtil.GetKeys(Configuration.Settings.Shortcuts.GeneralGoToPrevSubtitle);
         private readonly Keys _mainGeneralGoToPrevSubtitlePlayTranslate = UiUtil.GetKeys(Configuration.Settings.Shortcuts.GeneralGoToPrevSubtitlePlayTranslate);
         private string _subtitleFileName;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string VideoFileName { get; private set; }
 
         public SetSyncPoint()

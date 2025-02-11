@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
@@ -47,16 +48,20 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public NOcrChar NOcrChar { get; private set; }
 
         public Point FormPosition => new Point(Left, Top);
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ExpandSelection { get; private set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShrinkSelection { get; private set; }
 
         public bool IsItalic => checkBoxItalic.Checked;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UseOnce { get; private set; }
 
         internal void Initialize(Bitmap vobSubImage, ImageSplitterItem character, Point position, bool italicChecked, bool showExpand, bool showShrink, string text)

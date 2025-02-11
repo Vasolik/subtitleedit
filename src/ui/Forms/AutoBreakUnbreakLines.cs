@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -15,6 +16,7 @@ namespace Nikse.SubtitleEdit.Forms
 
         private string _language;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, string> FixedText { get; private set; } = new Dictionary<string, string>();
 
         public AutoBreakUnbreakLines()

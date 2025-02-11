@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Controls
 {
@@ -20,54 +21,63 @@ namespace Nikse.SubtitleEdit.Controls
         private int _rightRedZone = 7;
         private int _rightGreenZone = 12;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float FrameRate
         {
             get => _frameRate;
             set { _frameRate = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string PreviewText
         {
             get => _previewText;
             set { _previewText = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowShotChange
         {
             get => _showShotChange;
             set { _showShotChange = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int LeftGap
         {
             get => _leftGap;
             set { _leftGap = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int LeftRedZone
         {
             get => _leftRedZone;
             set { _leftRedZone = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int LeftGreenZone
         {
             get => _leftGreenZone;
             set { _leftGreenZone = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int RightGap
         {
             get => _rightGap;
             set { _rightGap = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int RightRedZone
         {
             get => _rightRedZone;
             set { _rightRedZone = value; Invalidate(); }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int RightGreenZone
         {
             get => _rightGreenZone;

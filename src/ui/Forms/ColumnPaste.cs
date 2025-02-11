@@ -2,16 +2,22 @@
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class ColumnPaste : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PasteAll { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PasteTimeCodesOnly { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PasteTextOnly { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PasteOriginalTextOnly { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PasteOverwrite { get; set; }
 
         public ColumnPaste(bool isOriginalAvailable, bool onlyText)

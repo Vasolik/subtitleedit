@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.Core.Common;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.BinaryEdit
 {
@@ -10,8 +11,11 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
     {
         private readonly Bitmap _bitmap;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public decimal Factor { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool FixAlignment { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ContentAlignment Alignment { get; private set; }
 
         public BinEditResize(Bitmap bitmap)

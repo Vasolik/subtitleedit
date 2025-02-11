@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -34,7 +35,9 @@ namespace Nikse.SubtitleEdit.Forms
         private const int IndexDefault = 2;
         private const int IndexForced = 3;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string VideoFileName { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public long MillisecondsEncoding { get; private set; }
 
         public GenerateVideoWithSoftSubs(Subtitle subtitle, string inputVideoFileName, VideoInfo videoInfo)

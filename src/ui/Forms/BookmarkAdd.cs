@@ -1,6 +1,7 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -17,6 +18,7 @@ namespace Nikse.SubtitleEdit.Forms
             textBoxBookmarkComment.Text = p?.Bookmark;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Comment { get; private set; }
 
         private void buttonOK_Click(object sender, System.EventArgs e)

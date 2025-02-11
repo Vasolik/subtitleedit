@@ -2,14 +2,18 @@
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class ChangeSpeedInPercent : PositionAndSizeForm
     {
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double AdjustFactor { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool AdjustAllLines { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public decimal Percentage { get; private set; }
 
         public ChangeSpeedInPercent(int numberOfSelectedLines)

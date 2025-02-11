@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Controls
 {
@@ -25,6 +26,7 @@ namespace Nikse.SubtitleEdit.Controls
             _loadingDone = true;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Color BackColor
         {
             get
@@ -55,6 +57,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Color ForeColor
         {
             get
@@ -85,6 +88,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Font Font
         {
             get => !_loadingDone ? DefaultFont : base.Font;
@@ -117,6 +121,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override RightToLeft RightToLeft
         {
             get
@@ -144,6 +149,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedIndex
         {
             get
@@ -164,6 +170,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int TopIndex
         {
             get
@@ -184,6 +191,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object SelectedItem
         {
             get => _listBox?.SelectedItem;
@@ -196,6 +204,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Sorted
         {
             get => _listBox != null && _listBox.Sorted;
@@ -208,6 +217,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override string Text
         {
             get => _listBox != null ? _listBox.Text : string.Empty;
@@ -241,6 +251,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public ListBox.SelectedIndexCollection SelectedIndices => _listBox.SelectedIndices;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool FormattingEnabled
         {
             get => _listBox != null && _listBox.FormattingEnabled;
@@ -253,6 +264,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SelectionMode SelectionMode
         {
             get
@@ -275,6 +287,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public ListBox.SelectedObjectCollection SelectedItems => _listBox.SelectedItems;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ItemHeight
         {
             get => _listBox.ItemHeight;

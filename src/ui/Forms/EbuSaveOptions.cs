@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -14,6 +15,7 @@ namespace Nikse.SubtitleEdit.Forms
         private Ebu.EbuGeneralSubtitleInformation _header;
         private Subtitle _subtitle;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public byte JustificationCode { get; private set; }
 
         public EbuSaveOptions()

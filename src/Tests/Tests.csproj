@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net481</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <LangVersion>12.0</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include="Files\auto_detect_Danish.srt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -48,29 +46,23 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Dictionaries\en_US.aff" />
     <EmbeddedResource Include="Dictionaries\en_US.dic" />
     <EmbeddedResource Include="Dictionaries\names.xml" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="MSTest" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\libse\LibSE.csproj" />
     <ProjectReference Include="..\ui\SubtitleEdit.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
-
 </Project>

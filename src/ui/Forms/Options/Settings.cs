@@ -3369,6 +3369,7 @@ namespace Nikse.SubtitleEdit.Forms.Options
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ResetApplied { get; private set; }
 
         private void toolStripMenuItemShortcutsCollapse_Click(object sender, EventArgs e)

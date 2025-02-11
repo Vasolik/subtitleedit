@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -12,8 +13,10 @@ namespace Nikse.SubtitleEdit.Forms
     {
         private Subtitle _subtitle;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int NumberOfSplits { get; private set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle SplitSubtitle { get; private set; }
 
         public SplitLongLines()

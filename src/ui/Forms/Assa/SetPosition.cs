@@ -11,11 +11,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Assa
 {
     public sealed partial class SetPosition : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle UpdatedSubtitle { get; private set; }
         private readonly Subtitle _subtitle;
         private readonly Subtitle _subtitleWithNewHeader;

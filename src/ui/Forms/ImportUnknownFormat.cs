@@ -5,11 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public partial class ImportUnknownFormat : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle ImportedSubtitle { get; private set; }
         private readonly Timer _refreshTimer = new Timer();
         private readonly string _fileName;

@@ -7,6 +7,7 @@ using System.Drawing.Text;
 using System.Globalization;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.Core.Settings;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Controls
 {
@@ -39,27 +40,44 @@ namespace Nikse.SubtitleEdit.Controls
         public const int InvalidIndex = -1;
         public int SelectedIndex => SelectedIndices.Count == 1 ? SelectedIndices[0] : InvalidIndex;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexNumber { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexStart { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexEnd { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexDuration { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexWpm { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexCps { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexGap { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexActor { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexRegion { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexText { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexTextOriginal { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexExtra { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ColumnIndexNetwork { get; private set; }
 
         public bool IsOriginalTextColumnVisible => ColumnIndexTextOriginal >= 0;
         private string _lineSeparatorString = " || ";
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SubtitleFontName { get; set; } = "Tahoma";
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool SubtitleFontBold { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SubtitleFontSize { get; set; } = 8;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UseSyntaxColoring { get; set; }
         private Settings _settings;
         private bool _saveColumnWidthChanges;
@@ -87,6 +105,7 @@ namespace Nikse.SubtitleEdit.Controls
         private readonly Timer _syntaxColorLineTimer;
         private readonly Timer _setStartAndDurationTimer;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int FirstVisibleIndex { get; set; } = -1;
 
         public void InitializeLanguage(LanguageStructure.General general, Settings settings)

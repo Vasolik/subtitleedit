@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -28,6 +29,7 @@ namespace Nikse.SubtitleEdit.Forms
             UiUtil.FixLargeFonts(this, buttonOK);
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Paragraph> TypewriterParagraphs { get; private set; }
 
         private void FormEffectTypewriter_KeyDown(object sender, KeyEventArgs e)

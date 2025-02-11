@@ -4,14 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
     public partial class AddBetterMultiMatchNOcr : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ImageSplitterItem ExpandItem { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ExpandCount { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ExpandItalic { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ExpandText { get; set; }
 
         private NikseBitmap _wholeImage;

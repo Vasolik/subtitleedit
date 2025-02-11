@@ -8,12 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class ExportCustomTextFormat : Form
     {
         public const string EnglishDoNotModify = "[Do not modify]";
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FormatOk { get; set; }
         private static readonly Regex CurlyCodePattern = new Regex("{\\d+}", RegexOptions.Compiled);
 

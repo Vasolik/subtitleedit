@@ -1,13 +1,17 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Logic;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public partial class RubyJapanese : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string RubyText { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool RubyItalic { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string RubyBaseText { get; private set; }
 
         public RubyJapanese(string before, string text, string after)

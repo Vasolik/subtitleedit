@@ -2,6 +2,7 @@
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -46,6 +47,7 @@ namespace Nikse.SubtitleEdit.Forms
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int LinesChanged { get; private set; }
 
         public bool ChangeNamesToo => radioButtonFixOnlyNames.Checked || radioButtonNormal.Checked && checkBoxFixNames.Checked;

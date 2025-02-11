@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
 {
@@ -25,8 +26,10 @@ namespace Nikse.SubtitleEdit.Forms.BeautifyTimeCodes
         private List<double> _shotChanges = new List<double>();
 
         public List<double> ShotChangesInSeconds = new List<double>(); // For storing imported/generated shot changes that will be returned to the main form
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle FixedSubtitle { get; private set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<UnfixableParagraphsPair> UnfixableParagraphs { get; private set; }
         public struct UnfixableParagraphsPair
         {

@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Translate
 {
@@ -15,6 +16,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
         private readonly Subtitle _subtitle;
         private readonly Subtitle _subtitleOriginal;
         private bool _abort;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle TranslatedSubtitle { get; private set; }
 
         public TranslateViaCopyPaste(Subtitle sub)

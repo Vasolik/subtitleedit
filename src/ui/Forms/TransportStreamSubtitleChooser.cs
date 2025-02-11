@@ -9,13 +9,16 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public partial class TransportStreamSubtitleChooser : PositionAndSizeForm
     {
         public int SelectedIndex => listBoxTracks.SelectedIndex;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsTeletext { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Srt { get; private set; }
 
         public class StreamTrackItem

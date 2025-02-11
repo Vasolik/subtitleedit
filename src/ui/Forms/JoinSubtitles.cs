@@ -9,13 +9,16 @@ using System.Text;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.Core.Enums;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class JoinSubtitles : PositionAndSizeForm
     {
         private readonly List<string> _fileNamesToJoin = new List<string>();
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle JoinedSubtitle { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SubtitleFormat JoinedFormat { get; private set; }
 
         public JoinSubtitles()

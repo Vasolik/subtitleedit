@@ -5,6 +5,7 @@ using Nikse.SubtitleEdit.Logic.VideoPlayers;
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -17,7 +18,9 @@ namespace Nikse.SubtitleEdit.Forms
         private readonly Subtitle _subtitle;
         private readonly string _videoFileName;
         private VideoInfo _videoInfo;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string VideoFileName { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TimeSpan VideoPosition { get; private set; }
 
         public GetVideoPosition(Subtitle subtitle, string videoFileName, VideoInfo videoInfo, TimeSpan timeSpan, string title)
