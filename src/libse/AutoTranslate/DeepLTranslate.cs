@@ -17,7 +17,7 @@ namespace Nikse.SubtitleEdit.Core.AutoTranslate
         private string _apiKey;
         private string _apiUrl;
         private string _formality;
-        private HttpClient _client;
+        private HttpClient _httpClient;
 
         public static string StaticName { get; set; } = "DeepL V2 translate";
         public override string ToString() => StaticName;
@@ -37,9 +37,9 @@ namespace Nikse.SubtitleEdit.Core.AutoTranslate
                 return;
             }
 
-            _client = new HttpClient();
-            _client.BaseAddress = new Uri(_apiUrl.Trim().TrimEnd('/'));
-            _client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "DeepL-Auth-Key " + _apiKey.Trim());
+            _httpClient = HttpClientFactoryWithProxy.CreateHttpClientWithProxy();
+            _httpClient.BaseAddress = new Uri(_apiUrl.Trim().TrimEnd('/'));
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "DeepL-Auth-Key " + _apiKey.Trim());
             _formality = string.IsNullOrWhiteSpace(_formality) ? "default" : _formality.Trim();
         }
 
@@ -86,7 +86,8 @@ namespace Nikse.SubtitleEdit.Core.AutoTranslate
             {
                 MakeTranslationPair("Arabic", "ar"),
                 MakeTranslationPair("Bulgarian", "bg"),
-                MakeTranslationPair("Chinese", "zh"),
+                MakeTranslationPair("Chinese (simplified)", "zh-hans"),
+                MakeTranslationPair("Chinese (traditional)", "zh-hant"),
                 MakeTranslationPair("Czech", "cs"),
                 MakeTranslationPair("Danish", "da"),
                 MakeTranslationPair("Dutch", "nl", true),
@@ -129,26 +130,23 @@ namespace Nikse.SubtitleEdit.Core.AutoTranslate
             return new TranslationPair(name, code, hasFormality);
         }
 
-        public Task<string> Translate(string text, string sourceLanguageCode, string targetLanguageCode, CancellationToken cancellationToken)
+        public async Task<string> Translate(string text, string sourceLanguageCode, string targetLanguageCode, CancellationToken cancellationToken)
         {
-            var postContent = MakeContent(text, sourceLanguageCode, targetLanguageCode);
-            var result = _client.PostAsync("/v2/translate", postContent, cancellationToken).Result;
-            var resultContent = result.Content.ReadAsStringAsync().Result;
-
-            if (result.StatusCode == HttpStatusCode.ServiceUnavailable)
+            int[] retryDelays = { 555, 3007, 7013 };
+            HttpResponseMessage result = null;
+            string resultContent = null;
+            for (var attempt = 0; attempt <= retryDelays.Length; attempt++)
             {
-                Task.Delay(555).Wait();
-                postContent = MakeContent(text, sourceLanguageCode, targetLanguageCode);
-                result = _client.PostAsync("/v2/translate", postContent, cancellationToken).Result;
-                resultContent = result.Content.ReadAsStringAsync().Result;
-            }
+                var postContent = MakeContent(text, sourceLanguageCode, targetLanguageCode);
+                result = await _httpClient.PostAsync("/v2/translate", postContent, cancellationToken);
+                resultContent = await result.Content.ReadAsStringAsync();
 
-            if (result.StatusCode == HttpStatusCode.ServiceUnavailable)
-            {
-                Task.Delay(1007).Wait();
-                postContent = MakeContent(text, sourceLanguageCode, targetLanguageCode);
-                result = _client.PostAsync("/v2/translate", postContent, cancellationToken).Result;
-                resultContent = result.Content.ReadAsStringAsync().Result;
+                if (!ShouldRetry(result, resultContent) || attempt == retryDelays.Length)
+                {
+                    break;
+                }
+
+                await Task.Delay(retryDelays[attempt], cancellationToken);
             }
 
             if (!result.IsSuccessStatusCode)
@@ -164,8 +162,6 @@ namespace Nikse.SubtitleEdit.Core.AutoTranslate
 
             try
             {
-
-
                 var resultList = new List<string>();
                 var parser = new JsonParser();
                 var x = (Dictionary<string, object>)parser.Parse(resultContent);
@@ -190,13 +186,22 @@ namespace Nikse.SubtitleEdit.Core.AutoTranslate
                     }
                 }
 
-                return Task.FromResult(string.Join(Environment.NewLine, resultList));
+                return string.Join(Environment.NewLine, resultList);
             }
             catch (Exception ex)
             {
                 SeLogger.Error(ex, "DeepLTranslate.Translate: " + ex.Message + Environment.NewLine + resultContent);
                 throw;
             }
+        }
+
+        public static bool ShouldRetry(HttpResponseMessage result, string resultContent)
+        {
+            const int httpStatusCodeTooManyRequests = 429;
+
+            return result.StatusCode == HttpStatusCode.ServiceUnavailable ||
+                   (int)result.StatusCode == httpStatusCodeTooManyRequests ||
+                   (result != null && resultContent.Contains("<head><title>429 Too Many Requests</title></head>", StringComparison.Ordinal));
         }
 
         private FormUrlEncodedContent MakeContent(string text, string sourceLanguageCode, string targetLanguageCode)
@@ -212,7 +217,7 @@ namespace Nikse.SubtitleEdit.Core.AutoTranslate
 
         public void Dispose()
         {
-            _client?.Dispose();
+            _httpClient?.Dispose();
         }
     }
 }

@@ -123,11 +123,12 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                 new GoogleTranslateV2(),
                 new MicrosoftTranslator(),
                 new DeepLTranslate(),
+                new OllamaTranslate(),
                 new LibreTranslate(),
                 new MyMemoryApi(),
                 new ChatGptTranslate(),
                 new LmStudioTranslate(),
-                new OllamaTranslate(),
+                new KoboldCppTranslate(),
                 new AnthropicTranslate(),
                 new GroqTranslate(),
                 new DeepSeekTranslate(),
@@ -142,7 +143,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             };
 
             nikseComboBoxEngine.Items.Clear();
-            nikseComboBoxEngine.Items.AddRange(_autoTranslatorEngines.Select(p => p.Name).ToArray<object>());
+            nikseComboBoxEngine.Items.AddItems(_autoTranslatorEngines);
 
             if (!string.IsNullOrEmpty(Configuration.Settings.Tools.AutoTranslateLastName))
             {
@@ -391,6 +392,21 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                 return;
             }
 
+            if (engineType == typeof(KoboldCppTranslate))
+            {
+                if (string.IsNullOrEmpty(Configuration.Settings.Tools.KoboldCppUrl))
+                {
+                    Configuration.Settings.Tools.KoboldCppUrl = "http://localhost:5001/api/generate/";
+                }
+
+                FillUrls(new List<string>
+                {
+                    Configuration.Settings.Tools.KoboldCppUrl.TrimEnd('/'),
+                });
+
+                return;
+            }
+
             if (engineType == typeof(OllamaTranslate))
             {
                 if (Configuration.Settings.Tools.OllamaApiUrl == null)
@@ -520,7 +536,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                 comboBoxFormality.DropDownStyle = ComboBoxStyle.DropDown;
                 comboBoxFormality.Items.Clear();
                 comboBoxFormality.Items.AddRange(AvalAi.Models);
-                comboBoxFormality.Text = Configuration.Settings.Tools.AvalAiModel ;
+                comboBoxFormality.Text = Configuration.Settings.Tools.AvalAiModel;
 
                 return;
             }
@@ -561,6 +577,16 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                 nikseTextBoxApiKey.Left = labelApiKey.Right + 3;
                 labelApiKey.Visible = true;
                 nikseTextBoxApiKey.Visible = true;
+
+                labelFormality.Text = LanguageSettings.Current.AudioToText.Model;
+                labelFormality.Visible = true;
+                comboBoxFormality.Left = labelFormality.Right + 3;
+                comboBoxFormality.Visible = true;
+                comboBoxFormality.DropDownStyle = ComboBoxStyle.DropDown;
+                comboBoxFormality.Items.Clear();
+                comboBoxFormality.Items.AddRange(GeminiTranslate.Models);
+                comboBoxFormality.Text = Configuration.Settings.Tools.GeminiModel;
+
                 return;
             }
 
@@ -742,12 +768,12 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                     }
                 }
 
-                comboBox.Items.AddRange(languagesToAdd.OrderBy(p => p.Name).ToArray<object>());
+                comboBox.Items.AddItems(languagesToAdd.OrderBy(p => p.Name));
             }
 
             if (!languagesFilled)
             {
-                comboBox.Items.AddRange(languages.OrderBy(p => p.Name).ToArray<object>());
+                comboBox.Items.AddItems(languages.OrderBy(p => p.Name));
             }
 
             comboBox.Items.Add(LanguageSettings.Current.General.ChangeLanguageFilter);
@@ -776,16 +802,24 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             var installedLanguages = new List<string>();
             foreach (InputLanguage language in InputLanguage.InstalledInputLanguages)
             {
-                var layoutName = language.LayoutName;
-                // related to https://github.com/SubtitleEdit/subtitleedit/issues/8084
-                if (string.IsNullOrEmpty(layoutName))
+                try
                 {
-                    continue;
+                    var layoutName = language.LayoutName;
+                    // related to https://github.com/SubtitleEdit/subtitleedit/issues/8084
+                    if (string.IsNullOrEmpty(layoutName))
+                    {
+                        continue;
+                    }
+                    var iso639 = Iso639Dash2LanguageCode.GetTwoLetterCodeFromEnglishName(layoutName);
+                    if (!string.IsNullOrEmpty(iso639) && !installedLanguages.Contains(iso639))
+                    {
+                        installedLanguages.Add(iso639.ToLowerInvariant());
+                    }
                 }
-                var iso639 = Iso639Dash2LanguageCode.GetTwoLetterCodeFromEnglishName(layoutName);
-                if (!string.IsNullOrEmpty(iso639) && !installedLanguages.Contains(iso639))
+                catch (Exception ex)
                 {
-                    installedLanguages.Add(iso639.ToLowerInvariant());
+                    SeLogger.Error(ex);
+                    // log and ignore   
                 }
             }
 
@@ -1123,7 +1157,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                         MessageBoxButtons.OKCancel,
                         MessageBoxIcon.Error);
             }
-            else if (linesTranslate == 0 && engineType == typeof(DeepLTranslate) && 
+            else if (linesTranslate == 0 && engineType == typeof(DeepLTranslate) &&
                      _autoTranslator.Error != null &&
                      _autoTranslator.Error.Contains("Wrong endpoint. Use https://api-free.deepl.com"))
             {
@@ -1178,10 +1212,11 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                     engineType == typeof(NoLanguageLeftBehindServe) ||
                     engineType == typeof(LibreTranslate) ||
                     engineType == typeof(LmStudioTranslate) ||
+                    engineType == typeof(KoboldCppTranslate) ||
                     engineType == typeof(OllamaTranslate))
                 {
                     var err = string.IsNullOrEmpty(_autoTranslator.Error) ? string.Empty : _autoTranslator.Error + Environment.NewLine;
-                    var dr = MessageBox.Show(
+                    var dr = MessageBox.Show(this,
                         string.Format(LanguageSettings.Current.GoogleTranslate.XRequiresALocalWebServer, _autoTranslator.Name)
                         + Environment.NewLine + err
                         + Environment.NewLine + LanguageSettings.Current.GoogleTranslate.ReadMore + Environment.NewLine,
@@ -1194,14 +1229,14 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                 }
                 else
                 {
-                    MessageBox.Show(exception.Message + Environment.NewLine + exception.StackTrace +
+                    MessageBox.Show(this, exception.Message + Environment.NewLine + exception.StackTrace +
                         Environment.NewLine +
                         _autoTranslator.Error, MessageBoxIcon.Error);
                 }
             }
             else
             {
-                MessageBox.Show(exception.Message + Environment.NewLine + exception.StackTrace +
+                MessageBox.Show(this, exception.Message + Environment.NewLine + exception.StackTrace +
                         Environment.NewLine +
                         _autoTranslator.Error, MessageBoxIcon.Error);
             }
@@ -1255,6 +1290,11 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                 Configuration.Settings.Tools.LmStudioModel = comboBoxFormality.Text.Trim();
             }
 
+            if (engineType == typeof(KoboldCppTranslate))
+            {
+                Configuration.Settings.Tools.KoboldCppUrl = nikseComboBoxUrl.Text.Trim();
+            }
+
             if (engineType == typeof(OllamaTranslate))
             {
                 Configuration.Settings.Tools.OllamaApiUrl = nikseComboBoxUrl.Text.Trim();
@@ -1295,6 +1335,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             if (engineType == typeof(GeminiTranslate) && !string.IsNullOrWhiteSpace(nikseTextBoxApiKey.Text))
             {
                 Configuration.Settings.Tools.GeminiProApiKey = nikseTextBoxApiKey.Text.Trim();
+                Configuration.Settings.Tools.GeminiModel = comboBoxFormality.Text.Trim();
             }
 
             if (engineType == typeof(PapagoTranslate) && !string.IsNullOrWhiteSpace(nikseTextBoxApiKey.Text))
@@ -1374,7 +1415,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
 
         private IAutoTranslator GetCurrentEngine()
         {
-            return _autoTranslatorEngines.First(p => p.Name == nikseComboBoxEngine.Text);
+            return (IAutoTranslator)nikseComboBoxEngine.SelectedItem;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -1707,15 +1748,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
                 var parser = new SeJsonParser();
                 var resultJson = Encoding.UTF8.GetString(bytes);
                 var names = parser.GetAllTagsByNameAsStrings(resultJson, "name");
-                var models = Configuration.Settings.Tools.OllamaModels.Split(',').ToList();
-                foreach (var name in names.OrderByDescending(name => name))
-                {
-                    if (!models.Contains(name))
-                    {
-                        models.Insert(0, name);
-                    }
-                }
-
+                var models = names.OrderBy(name => name).ToList();
                 Configuration.Settings.Tools.OllamaModels = string.Join(",", models);
                 return models;
             }

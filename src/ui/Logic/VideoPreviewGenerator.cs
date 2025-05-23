@@ -117,6 +117,7 @@ namespace Nikse.SubtitleEdit.Logic
             {
                 processMakeVideo.StartInfo.RedirectStandardOutput = true;
                 processMakeVideo.StartInfo.RedirectStandardError = true;
+
                 processMakeVideo.OutputDataReceived += dataReceivedHandler;
                 processMakeVideo.ErrorDataReceived += dataReceivedHandler;
             }
@@ -644,6 +645,8 @@ namespace Nikse.SubtitleEdit.Logic
                 {
                     FileName = GetFfmpegLocation(),
                     Arguments = $"-i \"{inputFileName}\" -i \"{audioFileName}\" -c:v copy -map 0:v:0 -map 1:a:0 {audioEncodingString}{stereoString}\"{outputFileName}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 }
@@ -735,7 +738,7 @@ namespace Nikse.SubtitleEdit.Logic
                 StartInfo =
                 {
                     FileName = GetFfmpegLocation(),
-                    Arguments = $" -y -f lavfi -i \"color=c=black@0.0:s={width}x{height}:r={frameRate}:d={timeCode},format=rgba,subtitles=f={Path.GetFileName(assaSubtitleFileName)}:alpha=1\" -c:v png {outputVideoFileName}".TrimStart(),
+                    Arguments = $" -y -f lavfi -i \"color=c=black@0.0:s={width}x{height}:r={frameRate}:d={timeCode},format=rgba,subtitles=f={Path.GetFileName(assaSubtitleFileName)}:alpha=1\" -c:v prores_ks -profile:v 4444 -pix_fmt yuva444p10le {outputVideoFileName}".TrimStart(),
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     WorkingDirectory = Path.GetDirectoryName(assaSubtitleFileName) ?? string.Empty,

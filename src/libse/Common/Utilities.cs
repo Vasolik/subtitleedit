@@ -4,6 +4,7 @@ using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -2656,19 +2657,6 @@ namespace Nikse.SubtitleEdit.Core.Common
             return text;
         }
 
-        /// <summary>
-        /// Creates a task that will complete after a time delay.
-        /// </summary>
-        /// <param name="millisecondsDelay">The number of milliseconds to wait before completing the returned task.</param>
-        /// <returns>A task that represents the time delay.</returns>
-        public static Task TaskDelay(int millisecondsDelay)
-        {
-            var tcs = new TaskCompletionSource<object>();
-            var t = new System.Threading.Timer(_ => tcs.SetResult(null));
-            t.Change(millisecondsDelay, -1);
-            return tcs.Task;
-        }
-
         public static SubtitleFormat LoadMatroskaTextSubtitle(MatroskaTrackInfo matroskaSubtitleInfo, MatroskaFile matroska, List<MatroskaSubtitle> sub, Subtitle subtitle)
         {
             if (subtitle == null)
@@ -3312,6 +3300,15 @@ namespace Nikse.SubtitleEdit.Core.Common
         public static SubtitleFormat GetSubtitleFormatByFriendlyName(object value)
         {
             throw new NotImplementedException();
+        }
+
+        public static string PngToBase64String(Bitmap bitmap)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                bitmap.Save(memoryStream, ImageFormat.Png);
+                return Convert.ToBase64String(memoryStream.ToArray());
+            }
         }
     }
 }
