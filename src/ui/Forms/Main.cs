@@ -92,7 +92,8 @@ namespace Nikse.SubtitleEdit.Forms
         private long _sourceTextTicks = -1;
 
         private int _videoAudioTrackNumber = -1;
-
+        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int VideoAudioTrackNumber
         {
             get => _videoAudioTrackNumber;
@@ -220,7 +221,8 @@ namespace Nikse.SubtitleEdit.Forms
         private object _dictateTextBox;
         private bool _hasCurrentVosk;
         private int _openSaveCounter;
-
+        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsMenuOpen { get; private set; }
 
         private bool AutoRepeatContinueOn => tabControlModes.SelectedIndex == 0 && checkBoxAutoContinue.Checked;

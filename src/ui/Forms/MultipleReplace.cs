@@ -11,6 +11,7 @@ using System.Xml;
 using Nikse.SubtitleEdit.Controls.Adapters;
 using Nikse.SubtitleEdit.Core.Settings;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -34,7 +35,9 @@ namespace Nikse.SubtitleEdit.Forms
         private IReloadSubtitle _reloadSubtitle;
         private Subtitle _original;
         private bool _sortAscending;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle FixedSubtitle { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int FixCount { get; private set; }
         public List<int> DeleteIndices { get; }
 

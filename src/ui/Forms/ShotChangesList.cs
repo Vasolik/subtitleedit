@@ -9,13 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class ShotChangesList : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<double> ShotChanges { get; set; }
         private readonly string _subtitleFileName;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double ShotChangeSeconds { get; private set; }
 
         public ShotChangesList(string subtitleFileName, List<double> shotChanges)

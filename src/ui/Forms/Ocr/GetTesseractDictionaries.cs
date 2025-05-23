@@ -11,12 +11,14 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
     public sealed partial class GetTesseractDictionaries : Form
     {
         private string _dictionaryFileName;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal string ChosenLanguage { get; private set; }
         private readonly List<TesseractDictionary> _dictionaries;
         private readonly CancellationTokenSource _cancellationTokenSource;

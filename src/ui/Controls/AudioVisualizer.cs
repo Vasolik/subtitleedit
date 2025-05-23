@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.Core.Forms;
 using System.Diagnostics;
-using System.Drawing.Imaging;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Controls
 {
@@ -74,9 +74,8 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ClosenessForBorderSelection { get; set; } = 15;
-        public float SpectrogramAlpha { get; set; } = 1.0f;
-        public int WaveformAlpha { get; set; } = 255;
         private const int MinimumSelectionMilliseconds = 100;
 
         private long _buttonDownTimeTicks;
@@ -102,6 +101,7 @@ namespace Nikse.SubtitleEdit.Controls
         private double _gapAtStart = -1;
 
         private SpectrogramData _spectrogram;
+        private const int SpectrogramDisplayHeight = 128;
 
         public delegate void ParagraphEventHandler(object sender, ParagraphEventArgs e);
         public event ParagraphEventHandler OnNewSelectionRightClicked;
@@ -123,11 +123,17 @@ namespace Nikse.SubtitleEdit.Controls
 
         private double _wholeParagraphMinMilliseconds;
         private double _wholeParagraphMaxMilliseconds = double.MaxValue;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Keys InsertAtVideoPositionShortcut { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Keys Move100MsLeft { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Keys Move100MsRight { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Keys MoveOneSecondLeft { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Keys MoveOneSecondRight { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool MouseWheelScrollUpIsForward { get; set; } = true;
 
         public const double ZoomMinimum = 0.1;
@@ -136,6 +142,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public int ShotChangeSnapPixels = 8;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double ZoomFactor
         {
             get => _zoomFactor;
@@ -165,6 +172,7 @@ namespace Nikse.SubtitleEdit.Controls
         public const double VerticalZoomMaximum = 20.0;
         private double _verticalZoomFactor = 1.0; // 1.0=no zoom
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double VerticalZoomFactor
         {
             get => _verticalZoomFactor;
@@ -194,6 +202,10 @@ namespace Nikse.SubtitleEdit.Controls
         /// <summary>
         /// Shot changes (seconds)
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        /// <summary>
+        /// Shot changes (seconds)
+        /// </summary>
         public List<double> ShotChanges
         {
             get => _shotChanges;
@@ -206,6 +218,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private MatroskaChapter[] _chapters = Array.Empty<MatroskaChapter>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MatroskaChapter[] Chapters
         {
             get => _chapters;
@@ -220,6 +233,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private bool _showSpectrogram;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowSpectrogram
         {
             get => _showSpectrogram;
@@ -233,10 +247,12 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool AllowOverlap { get; set; }
 
         private bool _showWaveform;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowWaveform
         {
             get => _showWaveform;
@@ -252,6 +268,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private double _startPositionSeconds;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double StartPositionSeconds
         {
             get => _startPositionSeconds;
@@ -278,25 +295,43 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Paragraph NewSelectionParagraph { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Paragraph SelectedParagraph { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Paragraph RightClickedParagraph { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double RightClickedSeconds { get; private set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string WaveformNotLoadedText { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color BackgroundColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color Color { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color SelectedColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color ParagraphColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color TextColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color CursorColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color ChaptersColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float TextSize { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool TextBold { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color GridColor { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowGridLines { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool AllowNewSelection { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Locked { get; set; }
 
         public double EndPositionSeconds
@@ -312,6 +347,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WavePeakData WavePeaks
         {
             get => _wavePeaks;
@@ -565,7 +601,7 @@ namespace Nikse.SubtitleEdit.Controls
             {
                 var showSpectrogram = _showSpectrogram && IsSpectrogramAvailable;
                 var showSpectrogramOnly = showSpectrogram && !_showWaveform;
-                var waveformHeight = Height;
+                var waveformHeight = Height - (showSpectrogram ? SpectrogramDisplayHeight : 0);
 
                 // background
                 graphics.Clear(BackgroundColor);
@@ -579,14 +615,14 @@ namespace Nikse.SubtitleEdit.Controls
                 // spectrogram
                 if (showSpectrogram)
                 {
-                    DrawSpectrogram(graphics, waveformHeight);
+                    DrawSpectrogram(graphics);
                 }
 
                 // waveform
                 if (_showWaveform)
                 {
-                    using (var penNormal = new Pen(Color.FromArgb(this.WaveformAlpha, Color)))
-                    using (var penSelected = new Pen(Color.FromArgb(this.WaveformAlpha, SelectedColor))) // selected paragraph
+                    using (var penNormal = new Pen(Color))
+                    using (var penSelected = new Pen(SelectedColor)) // selected paragraph
                     {
                         var isSelectedHelper = new IsSelectedHelper(_allSelectedParagraphs, _wavePeaks.SampleRate);
                         var baseHeight = (int)(_wavePeaks.HighestPeak / _verticalZoomFactor);
@@ -2381,7 +2417,7 @@ namespace Nikse.SubtitleEdit.Controls
             Invalidate();
         }
 
-        private void DrawSpectrogram(Graphics graphics, int height) // Add transparency parameter
+        private void DrawSpectrogram(Graphics graphics)
         {
             var width = (int)Math.Round((EndPositionSeconds - _startPositionSeconds) / _spectrogram.SampleDuration);
             using (var bmpCombined = new Bitmap(width, _spectrogram.FftSize / 2))
@@ -2399,27 +2435,8 @@ namespace Nikse.SubtitleEdit.Controls
                     imageIndex++;
                 }
 
-                var destRect = new Rectangle(0, Height - height, Width, height);
-
-                // Create ImageAttributes
-                using (ImageAttributes imageAttributes = new ImageAttributes())
-                {
-                    // Create a color matrix for transparency
-                    float[][] colorMatrixElements = {
-                new float[] { 1, 0, 0, 0, 0 },
-                new float[] { 0, 1, 0, 0, 0 },
-                new float[] { 0, 0, 1, 0, 0 },
-                new float[] { 0, 0, 0, this.SpectrogramAlpha, 0 },
-                new float[] { 0, 0, 0, 0, 1 }
-            };
-                    ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
-
-                    // Set the color matrix in ImageAttributes
-                    imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-                    // Draw the image with transparency
-                    graphics.DrawImage(bmpCombined, destRect, 0, 0, bmpCombined.Width, bmpCombined.Height, GraphicsUnit.Pixel, imageAttributes);
-                }
+                var displayHeight = _showWaveform ? SpectrogramDisplayHeight : Height;
+                graphics.DrawImage(bmpCombined, new Rectangle(0, Height - displayHeight, Width, displayHeight));
             }
         }
 

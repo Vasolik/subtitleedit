@@ -9,11 +9,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Assa
 {
     public sealed partial class ApplyCustomStyles : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle UpdatedSubtitle { get; private set; }
         private readonly Subtitle _subtitle;
         private ListBox _intellisenseList;

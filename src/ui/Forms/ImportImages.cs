@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -16,6 +17,7 @@ namespace Nikse.SubtitleEdit.Forms
         private static readonly Regex TimeCodeFormat1WithExtension = new Regex(@"^\d+_\d+_\d+_\d+__\d+_\d+_\d+_\d+_\d+\..+$", RegexOptions.Compiled);
         private static readonly Regex TimeCodeFormat2 = new Regex(@"^\d+_\d+_\d+_\d+__\d+_\d+_\d+_\d+$", RegexOptions.Compiled);
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle Subtitle { get; private set; }
         private readonly HashSet<string> _filesAlreadyInList;
         public ImportImages()

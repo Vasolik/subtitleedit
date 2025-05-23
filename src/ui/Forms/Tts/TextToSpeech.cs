@@ -2,7 +2,6 @@
 using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Core.TextToSpeech;
-using Nikse.SubtitleEdit.Core.Translate;
 using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Collections.Generic;
@@ -14,16 +13,18 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Translate;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Tts
 {
     public sealed partial class TextToSpeech : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle EditedSubtitle { get; set; }
 
         private readonly Subtitle _subtitle;
@@ -148,7 +149,6 @@ namespace Nikse.SubtitleEdit.Forms.Tts
             checkBoxAudioEncoding.Text = LanguageSettings.Current.TextToSpeech.CustomAudioEncoding;
             linkLabelCustomAudio.Text = LanguageSettings.Current.Settings.Title;
             linkLabelCustomAudio.Left = checkBoxAudioEncoding.Right;
-            checkBoxVoiceOver.Text = LanguageSettings.Current.TextToSpeech.UseVoiceOver;
             labelStability.Text = LanguageSettings.Current.TextToSpeech.Stability;
             labelSimilarity.Text = LanguageSettings.Current.TextToSpeech.Similarity;
             nikseUpDownSimilarity.Left = labelSimilarity.Right + 3;
@@ -426,7 +426,6 @@ namespace Nikse.SubtitleEdit.Forms.Tts
 
         private void AddAudioToVideoFile(string audioFileName)
         {
-            Process addAudioProcess;
             var videoExt = ".mkv";
             if (_videoFileName.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase))
             {
@@ -448,42 +447,18 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 stereo = true;
             }
 
-            if (checkBoxVoiceOver.Checked)
-            {
-                addAudioProcess = VideoPreviewGenerator.AddVoiceOver(_videoFileName, audioFileName, outputFileName, audioEncoding, stereo);
-            }
-            else
-            {
-                addAudioProcess = VideoPreviewGenerator.AddAudioTrack(_videoFileName, audioFileName, outputFileName, audioEncoding, stereo);
-            }
-
+            var addAudioProcess = VideoPreviewGenerator.AddAudioTrack(_videoFileName, audioFileName, outputFileName, audioEncoding, stereo);
             addAudioProcess.Start();
-
             while (!addAudioProcess.HasExited)
             {
-                string line = addAudioProcess.StandardError.ReadLine();
-                labelProgress.Text = "Writing Audio to Video: " + showffmpegOutput(line);
-
                 Application.DoEvents();
                 if (_abort)
                 {
-                    addAudioProcess.Kill();         // kill process if abortet
                     break;
                 }
             }
+
             labelProgress.Text = string.Empty;
-        }
-
-        static string showffmpegOutput(string ffmpegOutput)
-        {
-            Match match = Regex.Match(ffmpegOutput, "size=.*?KiB");
-
-            if (match.Success)
-            {
-                return match.Value;
-            }
-
-            return string.Empty;
         }
 
         private static void Cleanup(string waveFolder, string resultAudioFile)
@@ -835,7 +810,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                     }
                 }
 
-                var modelFileName = Path.Combine(piperPath, FixInvalidFileNameCharacters(voice.ModelShort));
+                var modelFileName = Path.Combine(piperPath, voice.ModelShort);
                 if (!File.Exists(modelFileName))
                 {
                     using (var form = new PiperDownload("Piper TextToSpeech voice: " + voice.Voice) { AutoClose = true, ModelUrl = voice.Model, ModelFileName = modelFileName, PiperPath = piperPath })
@@ -847,7 +822,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                     }
                 }
 
-                var configFileName = Path.Combine(piperPath, FixInvalidFileNameCharacters(voice.ConfigShort));
+                var configFileName = Path.Combine(piperPath, voice.ConfigShort);
                 if (!File.Exists(configFileName))
                 {
                     using (var form = new PiperDownload("Piper TextToSpeech voice config: " + voice.Voice) { AutoClose = true, ModelUrl = voice.Config, ModelFileName = configFileName, PiperPath = piperPath })
@@ -865,7 +840,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                     {
                         WorkingDirectory = piperPath,
                         FileName = Configuration.IsRunningOnWindows ? piperExe : "piper",
-                        Arguments = $"-m \"{FixInvalidFileNameCharacters(voice.ModelShort)}\" -c \"{FixInvalidFileNameCharacters(voice.ConfigShort)}\" -f out.wav",
+                        Arguments = $"-m \"{voice.ModelShort}\" -c \"{voice.ConfigShort}\" -f out.wav",
                         UseShellExecute = false,
                         CreateNoWindow = true,
                         RedirectStandardInput = true,
@@ -903,11 +878,6 @@ namespace Nikse.SubtitleEdit.Forms.Tts
             labelProgress.Text = string.Empty;
 
             return true;
-        }
-
-        private string FixInvalidFileNameCharacters(string s)
-        {
-            return s.Replace("ã", "a");
         }
 
         private bool GenerateParagraphAudioTortoiseTts(Subtitle subtitle, bool showProgressBar, string overrideFileName)
@@ -1781,7 +1751,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                         if (murfLanguage != null)
                         {
                             nikseComboBoxRegion.Text = murfLanguage.Name;
-                        }
+                        }   
                         nikseComboBoxVoice.Text = Configuration.Settings.Tools.TextToSpeechMurfVoice;
                     }
                 }

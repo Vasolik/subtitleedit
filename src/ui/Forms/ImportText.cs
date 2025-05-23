@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -23,8 +24,11 @@ namespace Nikse.SubtitleEdit.Forms
         private readonly bool _exit;
         private int _startFromNumber = 1;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle FixedSubtitle { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SubtitleFormat Format { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string VideoFileName { get; private set; }
 
         public ImportText(string fileName, Subtitle currentlyLoadedSubtitle, Form parentForm)

@@ -1,12 +1,14 @@
 ﻿using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class EbuColorPicker : Form
     {
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Color { get; private set; }
 
         public EbuColorPicker(bool showBlack)

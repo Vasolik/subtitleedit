@@ -1,31 +1,19 @@
 ﻿using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.ContainerFormats.Matroska;
-using Nikse.SubtitleEdit.Core.Settings;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using Nikse.SubtitleEdit.Logic.VideoPlayers;
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Settings;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Controls
 {
     public sealed class VideoPlayerContainer : Panel
     {
-        public class DoubleBufferedPanel : Panel
-        {
-            public DoubleBufferedPanel()
-            {
-                DoubleBuffered = true;
-                SetStyle(ControlStyles.OptimizedDoubleBuffer |
-                         ControlStyles.AllPaintingInWmPaint |
-                         ControlStyles.UserPaint, true);
-                UpdateStyles();
-            }
-        }
-
         public class RichTextBoxViewOnly : RichTextBox
         {
             public RichTextBoxViewOnly()
@@ -60,11 +48,13 @@ namespace Nikse.SubtitleEdit.Controls
         public event EventHandler OnEmptyPlayerClicked;
         public event EventHandler OnPlayerClicked;
 
-        public DoubleBufferedPanel PanelPlayer { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Panel PanelPlayer { get; private set; }
         private Panel _panelSubtitle;
         private string _subtitleText = string.Empty;
         private VideoPlayer _videoPlayer;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float FontSizeFactor { get; set; }
 
         private static int GetSubtitlesHeight()
@@ -84,6 +74,7 @@ namespace Nikse.SubtitleEdit.Controls
             return subtitlesHeight;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public VideoPlayer VideoPlayer
         {
             get => _videoPlayer;
@@ -105,13 +96,15 @@ namespace Nikse.SubtitleEdit.Controls
                 }
                 DeleteTempMpvFileName();
                 VideoPlayerContainerResize(this, null);
-                ShowPlayerLogo();
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RichTextBoxViewOnly TextBox { get; private set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int VideoWidth { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int VideoHeight { get; set; }
 
         private bool _isMuted;
@@ -164,10 +157,10 @@ namespace Nikse.SubtitleEdit.Controls
         private int _lastCurrentPositionToolTipX;
         private int _lastCurrentPositionToolTipY;
 
-        private Bitmap _playerIcon;
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MatroskaChapter[] Chapters { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RightToLeft TextRightToLeft
         {
             get => TextBox.RightToLeft;
@@ -179,6 +172,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowStopButton
         {
             get => _pictureBoxStop.Visible || _pictureBoxStopOver.Visible || _pictureBoxStopDown.Visible;
@@ -196,6 +190,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowMuteButton
         {
             get => _pictureBoxMute.Visible || _pictureBoxMuteOver.Visible || _pictureBoxMuteDown.Visible;
@@ -213,6 +208,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowFullscreenButton
         {
             get => _pictureBoxFullscreen.Visible || _pictureBoxFullscreenOver.Visible || _pictureBoxFullscreenDown.Visible;
@@ -278,74 +274,6 @@ namespace Nikse.SubtitleEdit.Controls
 
             _labelTimeCode.Click += LabelTimeCodeClick;
             _loading = false;
-
-            ShowPlayerLogo();
-            PanelPlayer.Paint += PanelPlayerPaint;
-        }
-
-        public void ShowPlayerLogo()
-        {
-            var path = Path.Combine(Configuration.BaseDirectory, "icons", $"{Configuration.Settings.General.VideoPlayer.ToLowerInvariant()}.png");
-            if (!File.Exists(path))
-            {
-                _playerIcon = new Bitmap(1, 1);
-                return;
-            }
-
-            _playerIcon = new Bitmap(path);
-
-            if (_videoPlayer == null)
-            {
-                PanelPlayer.Visible = true;
-                PanelPlayer.BringToFront();
-            }
-        }
-
-        private void PanelPlayerPaint(object sender, PaintEventArgs e)
-        {
-            if (_videoPlayer != null)
-            {
-                return;
-            }
-
-            Image img = _playerIcon;
-
-            var w = img.Width;
-            var h = img.Height;
-
-            if (PanelPlayer.Height < h)
-            {
-                w -= h - (PanelPlayer.Height);
-                h = PanelPlayer.Height;
-            }
-
-            var left = (PanelPlayer.Width / 2) - (w / 2);
-            var top = (PanelPlayer.Height / 2) - (h / 2);
-         
-
-            float opacity = 0.4f; // Adjust opacity (0.0 = fully transparent, 1.0 = fully opaque)
-
-            ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = opacity; // Set the alpha channel (transparency)
-
-            ImageAttributes attributes = new ImageAttributes();
-            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-            var offset = 30;
-            if (PanelPlayer.Height <= top + offset + h)
-            {
-                offset -= (top + offset + h) - PanelPlayer.Height;
-                if (offset < 0)
-                {
-                    offset = 0;
-                }
-            }
-
-            // Draw the image with the modified opacity
-            e.Graphics.DrawImage(img,
-                                 new Rectangle(left, top + offset, w, h),
-                                 0, 0, img.Width, img.Height,
-                                 GraphicsUnit.Pixel, attributes);
         }
 
         private bool _showDuration = true;
@@ -495,6 +423,7 @@ namespace Nikse.SubtitleEdit.Controls
             OnPlayerClicked?.Invoke(sender, e);
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Paragraph LastParagraph { get; set; }
 
         public void SetSubtitleText(string text, Paragraph p, Subtitle subtitle, SubtitleFormat format)
@@ -743,6 +672,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SubtitleText
         {
             get => _subtitleText;
@@ -772,7 +702,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private Control MakePlayerPanel()
         {
-            PanelPlayer = new DoubleBufferedPanel { BackColor = _backgroundColor, Left = 0, Top = 0 };
+            PanelPlayer = new Panel { BackColor = _backgroundColor, Left = 0, Top = 0 };
             return PanelPlayer;
         }
 
@@ -1860,6 +1790,7 @@ namespace Nikse.SubtitleEdit.Controls
         /// </summary>
         public bool SmpteMode => Configuration.Settings.General.CurrentVideoIsSmpte;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UsingFrontCenterAudioChannelOnly { get; set; } = false;
 
         public void RefreshProgressBar()
@@ -2062,6 +1993,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public bool IsPaused => VideoPlayer?.IsPaused == true;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double Volume
         {
             get
@@ -2100,6 +2032,10 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        /// <summary>
+        /// Current position in seconds
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Current position in seconds
         /// </summary>
@@ -2201,6 +2137,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public void PauseAndDisposePlayer()
         {
+            PanelPlayer.Hide();
             Pause();
             SubtitleText = string.Empty;
             Chapters = Array.Empty<MatroskaChapter>();
@@ -2216,7 +2153,6 @@ namespace Nikse.SubtitleEdit.Controls
             PanelPlayer.BringToFront();
             PanelPlayer.MouseDown += PanelPlayerMouseDown;
             VideoPlayerContainerResize(this, null);
-            PanelPlayer.Paint += PanelPlayerPaint;
 
             DeleteTempMpvFileName();
             _retryCount = 3;

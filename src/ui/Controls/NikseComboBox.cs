@@ -37,6 +37,7 @@ namespace Nikse.SubtitleEdit.Controls
         private NikseComboBoxPopUp _popUp;
 
         [Category("NikseComboBox"), Description("Gets or sets DropDownStyle"), RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ComboBoxStyle DropDownStyle
         {
             get => _dropDownStyle;
@@ -92,6 +93,7 @@ namespace Nikse.SubtitleEdit.Controls
         }
 
         private int _selectedIndex = -1;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedIndex
         {
             get => _selectedIndex;
@@ -145,6 +147,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public override bool Focused => _comboBoxMouseEntered || _listViewShown || (_textBox != null && _textBox.Focused) || base.Focused;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object SelectedItem
         {
             get
@@ -218,6 +221,7 @@ namespace Nikse.SubtitleEdit.Controls
             TextChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override string Text
         {
             get => GetValue(_textBox.Text);
@@ -231,6 +235,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SelectedText
         {
             get => GetValue(_textBox.SelectedText);
@@ -268,6 +273,7 @@ namespace Nikse.SubtitleEdit.Controls
         private Brush _buttonForeColorBrush;
         [Category("NikseComboBox"), Description("Gets or sets the button foreground color"),
          RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color ButtonForeColor
         {
             get => _buttonForeColor;
@@ -293,6 +299,7 @@ namespace Nikse.SubtitleEdit.Controls
         private Color _buttonForeColorOver;
         private Brush _buttonForeColorOverBrush;
         [Category("NikseComboBox"), Description("Gets or sets the button foreground mouse over color"), RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color ButtonForeColorOver
         {
             get => _buttonForeColorOver;
@@ -314,6 +321,7 @@ namespace Nikse.SubtitleEdit.Controls
         private Color _buttonForeColorDown;
         private Brush _buttonForeColorDownBrush;
         [Category("NikseComboBox"), Description("Gets or sets the button foreground mouse down color"), RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color ButtonForeColorDown
         {
             get => _buttonForeColorDown;
@@ -334,6 +342,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private Color _borderColor;
         [Category("NikseComboBox"), Description("Gets or sets the border color"), RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color BorderColor
         {
             get => _borderColor;
@@ -353,6 +362,7 @@ namespace Nikse.SubtitleEdit.Controls
         private Color _backColorDisabled;
         [Category("NikseComboBox"), Description("Gets or sets the disabled background color"),
          RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color BackColorDisabled
         {
             get => _backColorDisabled;
@@ -369,6 +379,7 @@ namespace Nikse.SubtitleEdit.Controls
         }
 
         [Category("NikseComboBox"), Description("Gets or sets the background color"), RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Color BackColor
         {
             get => base.BackColor;
@@ -391,6 +402,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private Color _borderColorDisabled;
         [Category("NikseComboBox"), Description("Gets or sets the disabled border color"), RefreshProperties(RefreshProperties.Repaint)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color BorderColorDisabled
         {
             get => _borderColorDisabled;
@@ -751,6 +763,7 @@ namespace Nikse.SubtitleEdit.Controls
         private int? _dropDownWidth;
         private ComboBoxStyle _dropDownStyle;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int DropDownWidth
         {
             get => _dropDownWidth ?? Width;
@@ -758,6 +771,10 @@ namespace Nikse.SubtitleEdit.Controls
         }
 
 
+        /// <summary>
+        /// Max drop down height
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Max drop down height
         /// </summary>
@@ -888,6 +905,10 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
+        /// <summary>
+        /// Show picker in a window.
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         /// <summary>
         /// Show picker in a window.
         /// </summary>
@@ -1092,6 +1113,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         private const int ButtonsWidth = 13;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new bool Enabled
         {
             get => base.Enabled;
@@ -1204,6 +1226,7 @@ namespace Nikse.SubtitleEdit.Controls
                 textFormatFlags);
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override RightToLeft RightToLeft
         {
             get => base.RightToLeft;
@@ -1221,8 +1244,10 @@ namespace Nikse.SubtitleEdit.Controls
 
         public bool DroppedDown => _listViewShown;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool FormattingEnabled { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int MaxLength
         {
             get

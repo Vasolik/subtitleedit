@@ -14,6 +14,7 @@ using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using Vosk;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.AudioToText
 {
@@ -35,6 +36,7 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
         private int _initialWidth = 725;
         private readonly List<string> _outputBatchFileNames = new List<string>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle TranscribedSubtitle { get; private set; }
 
         public VoskAudioToText(string videoFileName, int audioTrackNumber, Form parentForm)

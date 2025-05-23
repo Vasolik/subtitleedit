@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
@@ -25,6 +26,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
         private readonly Bitmap _bitmap;
         private List<NOcrChar> _history = new List<NOcrChar>();
         private int _historyIndex = -1;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Changed { get; private set; }
 
         public VobSubNOcrEdit(NOcrDb nOcrDb, Bitmap bitmap, string fileName)

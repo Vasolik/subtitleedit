@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -12,7 +13,9 @@ namespace Nikse.SubtitleEdit.Forms
     {
 
         private Subtitle _subtitle;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int FixCount { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int MinGapMs { get; internal set; }
 
         public SetMinimumDisplayTimeBetweenParagraphs()
@@ -76,12 +79,14 @@ namespace Nikse.SubtitleEdit.Forms
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public sealed override string Text
         {
             get => base.Text;
             set => base.Text = value;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle FixedSubtitle { get; private set; }
 
         public void Initialize(Subtitle subtitle)

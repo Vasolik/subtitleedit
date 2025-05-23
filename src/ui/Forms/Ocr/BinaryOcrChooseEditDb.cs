@@ -6,11 +6,13 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
     public sealed partial class BinaryOcrChooseEditDb : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ImageCompareDatabaseName { get; private set; }
 
         public BinaryOcrChooseEditDb(string binaryImageDb)

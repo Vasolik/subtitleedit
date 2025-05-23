@@ -12,6 +12,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
@@ -20,6 +21,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
         private Dictionary<string, string> _dictionaryDownloadLinks = new Dictionary<string, string>();
         private string _xmlName;
         private string _dictionaryFileName;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal string ChosenLanguage { get; private set; }
         private readonly CancellationTokenSource _cancellationTokenSource;
 

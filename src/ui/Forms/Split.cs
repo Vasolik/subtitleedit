@@ -6,12 +6,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class Split : Form
     {
         private Subtitle _subtitle;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowBasic { get; private set; }
         private int _totalNumberOfCharacters;
         private bool _loading = true;

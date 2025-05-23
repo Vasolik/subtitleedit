@@ -10,6 +10,7 @@ using Nikse.SubtitleEdit.Core.Common;
 using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using Nikse.SubtitleEdit.Logic;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.ShotChanges
 {
@@ -79,6 +80,7 @@ namespace Nikse.SubtitleEdit.Forms.ShotChanges
             labelThresholdDescription.Width = buttonImportWithFfmpeg.Right - labelThresholdDescription.Left;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public sealed override string Text
         {
             get => base.Text;

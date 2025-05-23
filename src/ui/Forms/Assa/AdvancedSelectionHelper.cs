@@ -4,11 +4,13 @@ using Nikse.SubtitleEdit.Logic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Assa
 {
     public sealed partial class AdvancedSelectionHelper : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int[] Indices { get; private set; }
         private readonly Subtitle _subtitle;
         private bool _loading;

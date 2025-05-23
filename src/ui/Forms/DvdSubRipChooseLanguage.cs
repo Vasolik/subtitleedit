@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -31,7 +32,9 @@ namespace Nikse.SubtitleEdit.Forms
         private List<Color> _palette;
         private List<string> _languages;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<VobSubMergedPack> SelectedVobSubMergedPacks { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SelectedLanguageString { get; private set; }
 
         public DvdSubRipChooseLanguage()

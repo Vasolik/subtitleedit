@@ -12,6 +12,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -32,7 +33,9 @@ namespace Nikse.SubtitleEdit.Forms
         private int _testAllIndex = -1;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SelectedEnglishName { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string LastDownload { get; private set; }
 
         public GetDictionaries()

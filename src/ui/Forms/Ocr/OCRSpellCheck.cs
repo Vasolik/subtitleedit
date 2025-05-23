@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
@@ -28,14 +29,19 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             InspectCompareMatches,
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsBinaryImageCompareOrNOcr
         {
             get => buttonEditImageDb.Visible;
             set => buttonEditImageDb.Visible = value;
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action ActionResult { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Word { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Paragraph { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string OriginalWholeText { get; private set; }
 
         private string _originalWord;

@@ -10,13 +10,17 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
     public sealed partial class VobSubOcrCharacterInspect : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public XmlDocument ImageCompareDocument { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DeleteMultiMatch { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int LastIndex { get; private set; }
         private List<VobSubOcr.CompareMatch> _matches;
         private List<Bitmap> _imageSources;

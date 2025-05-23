@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.Controls;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms.Assa
 {
@@ -31,6 +32,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             public string Id { get; set; }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Subtitle UpdatedSubtitle { get; private set; }
         private readonly Subtitle _subtitleWithNewHeader;
         private Subtitle _drawing;

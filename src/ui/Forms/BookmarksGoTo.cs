@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -50,6 +51,7 @@ namespace Nikse.SubtitleEdit.Forms
             labelCount.Text = $"{LanguageSettings.Current.FindDialog.Count}: {listViewBookmarks.Items.Count}";
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int BookmarkIndex { get; private set; }
 
         private void listViewBookmarks_DoubleClick(object sender, EventArgs e)

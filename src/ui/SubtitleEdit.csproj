@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <ApplicationIcon>SE.ico</ApplicationIcon>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ManifestCertificateThumbprint>DCCE7922B5E425ADB221E06DC2FB405664CF8F63</ManifestCertificateThumbprint>
@@ -262,7 +262,6 @@
     <Content Include="Icons\VisualSync.png" />
     <Content Include="Icons\WaveformToggle.png" />
   </ItemGroup>
-  
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Visual.C++.10.0.x86">
       <Visible>False</Visible>
@@ -275,7 +274,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\libse\LibSE.csproj" />
   </ItemGroup>
@@ -288,16 +286,15 @@
     </HunspellAssemblies>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Http" />
-    <PackageReference Include="Microsoft.Win32.Registry" />
     <PackageReference Include="NAudio.Core" />
     <PackageReference Include="NAudio.WinMM" />
     <PackageReference Include="ncalc" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="NHunspell" />
     <PackageReference Include="System.Security.AccessControl" />
-    <PackageReference Include="System.Security.Principal.Windows" />
+    <PackageReference Include="System.Speech" />
     <PackageReference Include="Vosk" />
+    <PackageReference Include="System.Net.Http" />
+    <PackageReference Include="Westwind.NHUnspell.NetStandard" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Logic\VideoPlayers\DirectShowLib2005.cs" />
