@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -495,8 +496,6 @@ namespace Nikse.SubtitleEdit.Forms
                     comboBoxDictionaries.SelectedIndex = comboBoxDictionaries.Items.Count - 1;
                 }
             }
-            comboBoxDictionaries.AutoCompleteSource = AutoCompleteSource.ListItems;
-            comboBoxDictionaries.AutoCompleteMode = AutoCompleteMode.Append;
             comboBoxDictionaries.SelectedIndexChanged += ComboBoxDictionariesSelectedIndexChanged;
         }
 
@@ -1138,7 +1137,39 @@ namespace Nikse.SubtitleEdit.Forms
                                     correct = true;
                                     _noOfNames++;
                                 }
+
+                                if (correct)
+                                {
+                                    _wordsIndex++;
+                                }
                             }
+
+                            if (!correct && _wordsIndex < _words.Count - 1 && _words[_wordsIndex + 1].Index - 1 < _currentParagraph.Text.Length &&
+                                (_currentParagraph.Text[_words[_wordsIndex].Index + _currentWord.Length] == '\''))
+                            {
+                                var wordWithDash = _currentWord + "' " + _words[_wordsIndex + 1].Text;
+
+                                if (!correct)
+                                {
+                                    correct = _spellCheckWordLists.HasUserWord(wordWithDash);
+                                }
+                                if (!correct && _spellCheckWordLists.HasName(wordWithDash))
+                                {
+                                    correct = true;
+                                    _noOfNames++;
+                                }
+                                if (!correct && _spellCheckWordLists.HasNameExtended(wordWithDash, _currentParagraph.Text))
+                                {
+                                    correct = true;
+                                    _noOfNames++;
+                                }
+
+                                if (correct)
+                                {
+                                    _wordsIndex++;
+                                }
+                            }
+
                             if (!correct && _currentWord.EndsWith('\u2014')) // em dash
                             {
                                 var wordWithoutDash = _currentWord.TrimEnd('\u2014');
@@ -1151,6 +1182,15 @@ namespace Nikse.SubtitleEdit.Forms
                                 {
                                     correct = true;
                                     _noOfNames++;
+                                }
+                            }
+
+                            if (!correct && _wordsIndex > 0) // check name concat with previous word
+                            {
+                                var wordConCat = _words[_wordsIndex - 1].Text + " " + _currentWord;
+                                if (_spellCheckWordLists.HasNameExtended(wordConCat, _currentParagraph.Text))
+                                {
+                                    correct = true;
                                 }
                             }
                         }
@@ -1855,7 +1895,7 @@ namespace Nikse.SubtitleEdit.Forms
             menuItem = new ToolStripMenuItem(LanguageSettings.Current.Main.Menu.ContextMenu.RemoveBookmark);
             menuItem.Click += (sender2, e2) =>
             {
-                _mainForm.RemoveBookmark(index, _mainForm);
+                _mainForm.RemoveBookmark(index);
                 pictureBoxBookmark.Hide();
             };
             bookmarkContextMenu.Items.Add(menuItem);

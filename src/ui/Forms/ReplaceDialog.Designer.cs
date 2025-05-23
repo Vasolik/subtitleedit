@@ -28,20 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.radioButtonRegEx = new System.Windows.Forms.RadioButton();
             this.radioButtonCaseSensitive = new System.Windows.Forms.RadioButton();
             this.radioButtonNormal = new System.Windows.Forms.RadioButton();
             this.buttonReplace = new System.Windows.Forms.Button();
-            this.textBoxFind = new System.Windows.Forms.TextBox();
+            this.textBoxFind = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.buttonReplaceAll = new System.Windows.Forms.Button();
-            this.textBoxReplace = new System.Windows.Forms.TextBox();
+            this.textBoxReplace = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.labelReplaceWith = new System.Windows.Forms.Label();
             this.labelFindWhat = new System.Windows.Forms.Label();
             this.buttonFind = new System.Windows.Forms.Button();
             this.checkBoxWholeWord = new System.Windows.Forms.CheckBox();
-            this.comboBoxFindReplaceIn = new System.Windows.Forms.ComboBox();
-            this.labelFindReplaceIn = new System.Windows.Forms.Label();
-            this.comboBoxFind = new System.Windows.Forms.ComboBox();
+            this.comboBoxFindReplaceIn = new Nikse.SubtitleEdit.Controls.NikseComboBox();
+            this.labelFindReplaceIn = new Nikse.SubtitleEdit.Controls.NikseLabel();
+            this.comboBoxFind = new Nikse.SubtitleEdit.Controls.NikseComboBox();
+            this.contextMenuStripNormal = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripReplace = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemCutReplace = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemCopyReplace = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemPasteReplace = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemDeleteReplace = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripNormal.SuspendLayout();
+            this.contextMenuStripReplace.SuspendLayout();
             this.SuspendLayout();
             // 
             // radioButtonRegEx
@@ -95,6 +108,7 @@
             // 
             // textBoxFind
             // 
+            this.textBoxFind.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxFind.Location = new System.Drawing.Point(15, 25);
             this.textBoxFind.Name = "textBoxFind";
             this.textBoxFind.Size = new System.Drawing.Size(232, 21);
@@ -115,6 +129,8 @@
             // 
             // textBoxReplace
             // 
+            this.textBoxReplace.ContextMenuStrip = this.contextMenuStripReplace;
+            this.textBoxReplace.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.textBoxReplace.Location = new System.Drawing.Point(15, 71);
             this.textBoxReplace.Name = "textBoxReplace";
             this.textBoxReplace.Size = new System.Drawing.Size(232, 21);
@@ -163,12 +179,26 @@
             // 
             // comboBoxFindReplaceIn
             // 
+            this.comboBoxFindReplaceIn.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBoxFindReplaceIn.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxFindReplaceIn.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxFindReplaceIn.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
+            this.comboBoxFindReplaceIn.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxFindReplaceIn.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxFindReplaceIn.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.comboBoxFindReplaceIn.DropDownHeight = 400;
             this.comboBoxFindReplaceIn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFindReplaceIn.DropDownWidth = 232;
             this.comboBoxFindReplaceIn.FormattingEnabled = true;
             this.comboBoxFindReplaceIn.Location = new System.Drawing.Point(15, 120);
+            this.comboBoxFindReplaceIn.MaxLength = 32767;
             this.comboBoxFindReplaceIn.Name = "comboBoxFindReplaceIn";
+            this.comboBoxFindReplaceIn.SelectedIndex = -1;
+            this.comboBoxFindReplaceIn.SelectedItem = null;
+            this.comboBoxFindReplaceIn.SelectedText = "";
             this.comboBoxFindReplaceIn.Size = new System.Drawing.Size(232, 21);
             this.comboBoxFindReplaceIn.TabIndex = 20;
+            this.comboBoxFindReplaceIn.UsePopupWindow = false;
             // 
             // labelFindReplaceIn
             // 
@@ -181,12 +211,112 @@
             // 
             // comboBoxFind
             // 
+            this.comboBoxFind.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBoxFind.BackColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.comboBoxFind.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(171)))), ((int)(((byte)(173)))), ((int)(((byte)(179)))));
+            this.comboBoxFind.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
+            this.comboBoxFind.ButtonForeColor = System.Drawing.SystemColors.ControlText;
+            this.comboBoxFind.ButtonForeColorDown = System.Drawing.Color.Orange;
+            this.comboBoxFind.ButtonForeColorOver = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.comboBoxFind.DropDownHeight = 400;
+            this.comboBoxFind.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.comboBoxFind.DropDownWidth = 232;
             this.comboBoxFind.FormattingEnabled = true;
             this.comboBoxFind.Location = new System.Drawing.Point(15, 25);
+            this.comboBoxFind.MaxLength = 32767;
             this.comboBoxFind.Name = "comboBoxFind";
+            this.comboBoxFind.SelectedIndex = -1;
+            this.comboBoxFind.SelectedItem = null;
+            this.comboBoxFind.SelectedText = "";
             this.comboBoxFind.Size = new System.Drawing.Size(232, 21);
             this.comboBoxFind.TabIndex = 1;
+            this.comboBoxFind.TabStop = false;
+            this.comboBoxFind.UsePopupWindow = false;
             this.comboBoxFind.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboBoxFind_KeyDown);
+            // 
+            // contextMenuStripNormal
+            // 
+            this.contextMenuStripNormal.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cutToolStripMenuItem,
+            this.copyToolStripMenuItem,
+            this.pasteToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.contextMenuStripNormal.Name = "contextMenuStripNormal";
+            this.contextMenuStripNormal.Size = new System.Drawing.Size(181, 114);
+            this.contextMenuStripNormal.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripNormal_Opening);
+            // 
+            // cutToolStripMenuItem
+            // 
+            this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
+            this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.cutToolStripMenuItem.Text = "Cut";
+            this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            // 
+            // pasteToolStripMenuItem
+            // 
+            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
+            this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.pasteToolStripMenuItem.Text = "Paste";
+            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // contextMenuStripReplace
+            // 
+            this.contextMenuStripReplace.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemCutReplace,
+            this.toolStripMenuItemCopyReplace,
+            this.toolStripMenuItemPasteReplace,
+            this.toolStripMenuItemDeleteReplace});
+            this.contextMenuStripReplace.Name = "contextMenuStripNormal";
+            this.contextMenuStripReplace.Size = new System.Drawing.Size(145, 92);
+            this.contextMenuStripReplace.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripReplace_Opening);
+            // 
+            // toolStripMenuItemCutReplace
+            // 
+            this.toolStripMenuItemCutReplace.Name = "toolStripMenuItemCutReplace";
+            this.toolStripMenuItemCutReplace.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.toolStripMenuItemCutReplace.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemCutReplace.Text = "Cut";
+            this.toolStripMenuItemCutReplace.Click += new System.EventHandler(this.toolStripMenuItemCutReplace_Click);
+            // 
+            // toolStripMenuItemCopyReplace
+            // 
+            this.toolStripMenuItemCopyReplace.Name = "toolStripMenuItemCopyReplace";
+            this.toolStripMenuItemCopyReplace.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.toolStripMenuItemCopyReplace.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemCopyReplace.Text = "Copy";
+            this.toolStripMenuItemCopyReplace.Click += new System.EventHandler(this.toolStripMenuItemCopyReplace_Click);
+            // 
+            // toolStripMenuItemPasteReplace
+            // 
+            this.toolStripMenuItemPasteReplace.Name = "toolStripMenuItemPasteReplace";
+            this.toolStripMenuItemPasteReplace.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.toolStripMenuItemPasteReplace.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemPasteReplace.Text = "Paste";
+            this.toolStripMenuItemPasteReplace.Click += new System.EventHandler(this.toolStripMenuItemPasteReplace_Click);
+            // 
+            // toolStripMenuItemDeleteReplace
+            // 
+            this.toolStripMenuItemDeleteReplace.Name = "toolStripMenuItemDeleteReplace";
+            this.toolStripMenuItemDeleteReplace.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemDeleteReplace.Text = "Delete";
+            this.toolStripMenuItemDeleteReplace.Click += new System.EventHandler(this.toolStripMenuItemDeleteReplace_Click);
             // 
             // ReplaceDialog
             // 
@@ -205,8 +335,8 @@
             this.Controls.Add(this.radioButtonCaseSensitive);
             this.Controls.Add(this.radioButtonNormal);
             this.Controls.Add(this.buttonReplace);
-            this.Controls.Add(this.comboBoxFind);
             this.Controls.Add(this.textBoxFind);
+            this.Controls.Add(this.comboBoxFind);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
@@ -218,7 +348,10 @@
             this.Text = "Replace";
             this.Activated += new System.EventHandler(this.ReplaceDialog_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ReplaceDialog_FormClosing);
+            this.Shown += new System.EventHandler(this.ReplaceDialog_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormReplaceDialog_KeyDown);
+            this.contextMenuStripNormal.ResumeLayout(false);
+            this.contextMenuStripReplace.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -230,15 +363,25 @@
         private System.Windows.Forms.RadioButton radioButtonCaseSensitive;
         private System.Windows.Forms.RadioButton radioButtonNormal;
         private System.Windows.Forms.Button buttonReplace;
-        private System.Windows.Forms.TextBox textBoxFind;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxFind;
         private System.Windows.Forms.Button buttonReplaceAll;
-        private System.Windows.Forms.TextBox textBoxReplace;
+        private Nikse.SubtitleEdit.Controls.NikseTextBox textBoxReplace;
         private System.Windows.Forms.Label labelReplaceWith;
         private System.Windows.Forms.Label labelFindWhat;
         private System.Windows.Forms.Button buttonFind;
         private System.Windows.Forms.CheckBox checkBoxWholeWord;
-        private System.Windows.Forms.ComboBox comboBoxFindReplaceIn;
-        private System.Windows.Forms.Label labelFindReplaceIn;
-        private System.Windows.Forms.ComboBox comboBoxFind;
+        private Nikse.SubtitleEdit.Controls.NikseComboBox comboBoxFindReplaceIn;
+        private Nikse.SubtitleEdit.Controls.NikseLabel labelFindReplaceIn;
+        private Nikse.SubtitleEdit.Controls.NikseComboBox comboBoxFind;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripNormal;
+        private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripReplace;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCutReplace;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCopyReplace;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemPasteReplace;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDeleteReplace;
     }
 }

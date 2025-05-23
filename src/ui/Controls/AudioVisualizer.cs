@@ -11,6 +11,8 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Nikse.SubtitleEdit.Core.Forms;
+using System.Diagnostics;
+using System.Drawing.Imaging;
 
 namespace Nikse.SubtitleEdit.Controls
 {
@@ -73,6 +75,8 @@ namespace Nikse.SubtitleEdit.Controls
         }
 
         public int ClosenessForBorderSelection { get; set; } = 15;
+        public float SpectrogramAlpha { get; set; } = 1.0f;
+        public int WaveformAlpha { get; set; } = 255;
         private const int MinimumSelectionMilliseconds = 100;
 
         private long _buttonDownTimeTicks;
@@ -98,7 +102,6 @@ namespace Nikse.SubtitleEdit.Controls
         private double _gapAtStart = -1;
 
         private SpectrogramData _spectrogram;
-        private const int SpectrogramDisplayHeight = 128;
 
         public delegate void ParagraphEventHandler(object sender, ParagraphEventArgs e);
         public event ParagraphEventHandler OnNewSelectionRightClicked;
@@ -116,6 +119,7 @@ namespace Nikse.SubtitleEdit.Controls
         public event EventHandler OnZoomedChanged;
         public event EventHandler OnInsertAtVideoPosition;
         public event EventHandler OnPasteAtVideoPosition;
+        public event EventHandler OnSelectAll;
 
         private double _wholeParagraphMinMilliseconds;
         private double _wholeParagraphMaxMilliseconds = double.MaxValue;
@@ -157,7 +161,7 @@ namespace Nikse.SubtitleEdit.Controls
             }
         }
 
-        public const double VerticalZoomMinimum = 1.0;
+        public const double VerticalZoomMinimum = 0.1;
         public const double VerticalZoomMaximum = 20.0;
         private double _verticalZoomFactor = 1.0; // 1.0=no zoom
 
@@ -485,7 +489,7 @@ namespace Nikse.SubtitleEdit.Controls
 
         public void SetPosition(double startPositionSeconds, Subtitle subtitle, double currentVideoPositionSeconds, int subtitleIndex, ListView.SelectedIndexCollection selectedIndexes)
         {
-            if (TimeSpan.FromTicks(DateTime.UtcNow.Ticks - _lastMouseWheelScroll).TotalSeconds > 0.25)
+            if (TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _lastMouseWheelScroll).TotalSeconds > 0.25)
             { // don't set start position when scrolling with mouse wheel as it will make a bad (jumping back) forward scrolling
                 StartPositionSeconds = startPositionSeconds;
             }
@@ -561,7 +565,7 @@ namespace Nikse.SubtitleEdit.Controls
             {
                 var showSpectrogram = _showSpectrogram && IsSpectrogramAvailable;
                 var showSpectrogramOnly = showSpectrogram && !_showWaveform;
-                var waveformHeight = Height - (showSpectrogram ? SpectrogramDisplayHeight : 0);
+                var waveformHeight = Height;
 
                 // background
                 graphics.Clear(BackgroundColor);
@@ -575,14 +579,14 @@ namespace Nikse.SubtitleEdit.Controls
                 // spectrogram
                 if (showSpectrogram)
                 {
-                    DrawSpectrogram(graphics);
+                    DrawSpectrogram(graphics, waveformHeight);
                 }
 
                 // waveform
                 if (_showWaveform)
                 {
-                    using (var penNormal = new Pen(Color))
-                    using (var penSelected = new Pen(SelectedColor)) // selected paragraph
+                    using (var penNormal = new Pen(Color.FromArgb(this.WaveformAlpha, Color)))
+                    using (var penSelected = new Pen(Color.FromArgb(this.WaveformAlpha, SelectedColor))) // selected paragraph
                     {
                         var isSelectedHelper = new IsSelectedHelper(_allSelectedParagraphs, _wavePeaks.SampleRate);
                         var baseHeight = (int)(_wavePeaks.HighestPeak / _verticalZoomFactor);
@@ -1083,7 +1087,7 @@ namespace Nikse.SubtitleEdit.Controls
 
                             if (Configuration.Settings.VideoControls.WaveformDrawCps)
                             {
-                                text = $"{Utilities.GetCharactersPerSecond(paragraph):0.00}" + Environment.NewLine + text;
+                                text = $"{paragraph.GetCharactersPerSecond():0.00}" + Environment.NewLine + text;
                             }
                         }
                         else
@@ -1095,7 +1099,7 @@ namespace Nikse.SubtitleEdit.Controls
 
                             if (Configuration.Settings.VideoControls.WaveformDrawCps)
                             {
-                                text = string.Format(LanguageSettings.Current.Waveform.CharsSecX, Utilities.GetCharactersPerSecond(paragraph)) + Environment.NewLine + text;
+                                text = string.Format(LanguageSettings.Current.Waveform.CharsSecX, paragraph.GetCharactersPerSecond()) + Environment.NewLine + text;
                             }
                         }
                     }
@@ -1194,7 +1198,7 @@ namespace Nikse.SubtitleEdit.Controls
             _firstMove = true;
             if (e.Button == MouseButtons.Left)
             {
-                _buttonDownTimeTicks = DateTime.UtcNow.Ticks;
+                _buttonDownTimeTicks = Stopwatch.GetTimestamp();
 
                 Cursor = Cursors.VSplit;
                 double seconds = RelativeXPositionToSeconds(e.X);
@@ -1732,7 +1736,7 @@ namespace Nikse.SubtitleEdit.Controls
 
                                 _mouseDownParagraph.StartTime.TotalMilliseconds = milliseconds;
 
-                                if (Configuration.Settings.VideoControls.WaveformSnapToShotChanges && ModifierKeys != Keys.Shift  &&
+                                if (Configuration.Settings.VideoControls.WaveformSnapToShotChanges && ModifierKeys != Keys.Shift &&
                                     _shotChanges?.Count > 0)
                                 {
                                     var nearestShotChange = ShotChangeHelper.GetClosestShotChange(_shotChanges, new TimeCode(milliseconds));
@@ -1789,7 +1793,7 @@ namespace Nikse.SubtitleEdit.Controls
                                 }
 
                                 _mouseDownParagraph.EndTime.TotalMilliseconds = milliseconds;
-                                    
+
                                 if (Configuration.Settings.VideoControls.WaveformSnapToShotChanges && ModifierKeys != Keys.Shift)
                                 {
                                     var nearestShotChange = ShotChangeHelper.GetClosestShotChange(_shotChanges, new TimeCode(milliseconds));
@@ -2085,7 +2089,7 @@ namespace Nikse.SubtitleEdit.Controls
             if (e.Button == MouseButtons.Left && OnSingleClick != null)
             {
                 var diff = Math.Abs(_mouseMoveStartX - e.X);
-                if (_mouseMoveStartX == -1 || _mouseMoveEndX == -1 || diff < 10 && TimeSpan.FromTicks(DateTime.UtcNow.Ticks - _buttonDownTimeTicks).TotalSeconds < 0.25)
+                if (_mouseMoveStartX == -1 || _mouseMoveEndX == -1 || diff < 10 && TimeSpan.FromTicks(Stopwatch.GetTimestamp() - _buttonDownTimeTicks).TotalSeconds < 0.25)
                 {
                     if (ModifierKeys == Keys.Shift && SelectedParagraph != null)
                     {
@@ -2208,19 +2212,18 @@ namespace Nikse.SubtitleEdit.Controls
             }
             else if (e.KeyData == InsertAtVideoPositionShortcut)
             {
-                if (OnInsertAtVideoPosition != null)
-                {
-                    OnInsertAtVideoPosition.Invoke(this, null);
-                    e.SuppressKeyPress = true;
-                }
+                OnInsertAtVideoPosition?.Invoke(this, null);
+                e.SuppressKeyPress = true;
             }
             else if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control) //Ctrl+v = Paste from clipboard
             {
-                if (OnPasteAtVideoPosition != null)
-                {
-                    OnPasteAtVideoPosition.Invoke(this, null);
-                    e.SuppressKeyPress = true;
-                }
+                OnPasteAtVideoPosition?.Invoke(this, null);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyCode == Keys.A && e.Modifiers == Keys.Control) //Ctrl+a
+            {
+                OnSelectAll?.Invoke(this, null);
+                e.SuppressKeyPress = true;
             }
             else if (e.KeyData == Move100MsLeft)
             {
@@ -2326,7 +2329,7 @@ namespace Nikse.SubtitleEdit.Controls
             else
             {
                 StartPositionSeconds += delta / 256.0;
-                _lastMouseWheelScroll = DateTime.UtcNow.Ticks;
+                _lastMouseWheelScroll = Stopwatch.GetTimestamp();
                 if (_currentVideoPositionSeconds < _startPositionSeconds || _currentVideoPositionSeconds >= EndPositionSeconds)
                 {
                     OnPositionSelected?.Invoke(this, new ParagraphEventArgs(_startPositionSeconds, null));
@@ -2378,7 +2381,7 @@ namespace Nikse.SubtitleEdit.Controls
             Invalidate();
         }
 
-        private void DrawSpectrogram(Graphics graphics)
+        private void DrawSpectrogram(Graphics graphics, int height) // Add transparency parameter
         {
             var width = (int)Math.Round((EndPositionSeconds - _startPositionSeconds) / _spectrogram.SampleDuration);
             using (var bmpCombined = new Bitmap(width, _spectrogram.FftSize / 2))
@@ -2396,8 +2399,27 @@ namespace Nikse.SubtitleEdit.Controls
                     imageIndex++;
                 }
 
-                var displayHeight = _showWaveform ? SpectrogramDisplayHeight : Height;
-                graphics.DrawImage(bmpCombined, new Rectangle(0, Height - displayHeight, Width, displayHeight));
+                var destRect = new Rectangle(0, Height - height, Width, height);
+
+                // Create ImageAttributes
+                using (ImageAttributes imageAttributes = new ImageAttributes())
+                {
+                    // Create a color matrix for transparency
+                    float[][] colorMatrixElements = {
+                new float[] { 1, 0, 0, 0, 0 },
+                new float[] { 0, 1, 0, 0, 0 },
+                new float[] { 0, 0, 1, 0, 0 },
+                new float[] { 0, 0, 0, this.SpectrogramAlpha, 0 },
+                new float[] { 0, 0, 0, 0, 1 }
+            };
+                    ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
+
+                    // Set the color matrix in ImageAttributes
+                    imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+                    // Draw the image with transparency
+                    graphics.DrawImage(bmpCombined, destRect, 0, 0, bmpCombined.Width, bmpCombined.Height, GraphicsUnit.Pixel, imageAttributes);
+                }
             }
         }
 
@@ -2734,10 +2756,10 @@ namespace Nikse.SubtitleEdit.Controls
             {
                 var largestGapInFrames = Math.Max(Configuration.Settings.BeautifyTimeCodes.Profile.InCuesGap, Configuration.Settings.BeautifyTimeCodes.Profile.OutCuesGap);
                 var pixelsPerFrame = (_wavePeaks.SampleRate * _zoomFactor) / Configuration.Settings.General.CurrentFrameRate;
-                var snappingDistance = (int) Math.Round(pixelsPerFrame * Math.Max(1, largestGapInFrames));
+                var snappingDistance = (int)Math.Round(pixelsPerFrame * Math.Max(1, largestGapInFrames));
 
                 ShotChangeSnapPixels = Math.Max(8, snappingDistance);
-            } 
+            }
             else
             {
                 ShotChangeSnapPixels = 8;

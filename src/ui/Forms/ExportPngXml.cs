@@ -22,6 +22,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using Nikse.SubtitleEdit.Core.Settings;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -115,6 +117,7 @@ namespace Nikse.SubtitleEdit.Forms
         private static int _boxBorderSize = 8;
         private int _lastIndex;
         private Dictionary<int, string> _smpteTtmlImages = new Dictionary<int, string>();
+        private bool _skipPreview;
 
         private const string BoxMultiLineText = "BoxMultiLine";
         private const string BoxSingleLineText = "BoxSingleLine";
@@ -147,6 +150,11 @@ namespace Nikse.SubtitleEdit.Forms
         private void previewTimer_Tick(object sender, EventArgs e)
         {
             _previewTimer.Stop();
+            if (_skipPreview)
+            {
+                return;
+            }
+
             GeneratePreview();
         }
 
@@ -183,7 +191,14 @@ namespace Nikse.SubtitleEdit.Forms
 
         private string ToHHMMSSFF(TimeCode timeCode)
         {
-            return $"{timeCode.Hours:00}:{timeCode.Minutes:00}:{timeCode.Seconds:00}:{MillisecondsToFramesMaxFrameRate(timeCode.Milliseconds):00}";
+            var ms = timeCode.TotalMilliseconds;
+            if (!Configuration.Settings.General.CurrentVideoIsSmpte && ((decimal)FrameRate) % 1 != 0)
+            {
+                ms /= 1.001;
+            }
+
+            var tc = new TimeCode(ms);
+            return $"{tc.Hours:00}:{tc.Minutes:00}:{tc.Seconds:00}:{MillisecondsToFramesMaxFrameRate(tc.Milliseconds):00}";
         }
 
         private static ContentAlignment GetAlignmentFromParagraph(MakeBitmapParameter p, SubtitleFormat format, Subtitle subtitle)
@@ -460,6 +475,11 @@ namespace Nikse.SubtitleEdit.Forms
         internal MakeBitmapParameter MakeMakeBitmapParameter(int index, int screenWidth, int screenHeight)
         {
             var p = _subtitle.GetParagraphOrDefault(index);
+            if (p == null)
+            {
+                p = new Paragraph();
+            }
+
             var parameter = new MakeBitmapParameter
             {
                 Type = _exportType,
@@ -496,6 +516,7 @@ namespace Nikse.SubtitleEdit.Forms
                 FullFrame = checkBoxFullFrameImage.Checked,
                 FullFrameBackgroundColor = panelFullFrameBackground.BackColor,
             };
+
             if (index < _subtitle.Paragraphs.Count)
             {
                 parameter.P = _subtitle.Paragraphs[index];
@@ -557,6 +578,7 @@ namespace Nikse.SubtitleEdit.Forms
             {
                 parameter.P = null;
             }
+
             return parameter;
         }
 
@@ -972,22 +994,22 @@ namespace Nikse.SubtitleEdit.Forms
                     var doc = new XmlDocument();
                     var guid = Guid.NewGuid().ToString().RemoveChar('-').Insert(8, "-").Insert(13, "-").Insert(18, "-").Insert(23, "-");
                     var xml =
-                        "<dcst:SubtitleReel xmlns:dcst=\"http://www.smpte-ra.org/schemas/428-7/2014/DCST\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">" + Environment.NewLine +
-                        "  <dcst:Id>urn:uuid:" + guid + "</dcst:Id>" + Environment.NewLine +
-                        "  <dcst:ContentTitleText></dcst:ContentTitleText> " + Environment.NewLine +
-                        "  <dcst:AnnotationText>This is a subtitle file</dcst:AnnotationText>" + Environment.NewLine +
-                        "  <dcst:IssueDate>2014-01-01T00:00:00.000-00:00</dcst:IssueDate>" + Environment.NewLine +
-                        "  <dcst:ReelNumber>1</dcst:ReelNumber>" + Environment.NewLine +
-                        "  <dcst:Language>en</dcst:Language>" + Environment.NewLine +
-                        "  <dcst:EditRate>25 1</dcst:EditRate>" + Environment.NewLine +
-                        "  <dcst:TimeCodeRate>25</dcst:TimeCodeRate>" + Environment.NewLine +
-                        "  <dcst:StartTime>00:00:00:00</dcst:StartTime> " + Environment.NewLine +
-                        "  <dcst:LoadFont ID=\"theFontId\">urn:uuid:3dec6dc0-39d0-498d-97d0-928d2eb78391</dcst:LoadFont>" + Environment.NewLine +
-                        "  <dcst:SubtitleList>" + Environment.NewLine +
+                        "<SubtitleReel xmlns=\"http://www.smpte-ra.org/schemas/428-7/2014/DCST\">" + Environment.NewLine +
+                        "  <Id>urn:uuid:" + guid + "</Id>" + Environment.NewLine +
+                        "  <ContentTitleText>Movie Title</ContentTitleText>" + Environment.NewLine +
+                        "  <AnnotationText>This is a subtitle file</AnnotationText>" + Environment.NewLine +
+                        "  <IssueDate>" + DateTime.Now.ToString("o") + "</IssueDate>" + Environment.NewLine +
+                        "  <ReelNumber>1</ReelNumber>" + Environment.NewLine +
+                        "  <Language>en</Language>" + Environment.NewLine +
+                        "  <EditRate>[FRAMERATE] 1</EditRate>" + Environment.NewLine +
+                        "  <TimeCodeRate>[FRAMERATE]</TimeCodeRate>" + Environment.NewLine +
+                        "  <StartTime>00:00:00:00</StartTime>" + Environment.NewLine +
+                        "  <SubtitleList>" + Environment.NewLine +
                            sb +
-                        "  </dcst:SubtitleList>" + Environment.NewLine +
-                        "</dcst:SubtitleReel>";
+                        "  </SubtitleList>" + Environment.NewLine +
+                        "</SubtitleReel>";
 
+                    xml = xml.Replace("[FRAMERATE]", ((int)FrameRate).ToString(CultureInfo.InvariantCulture));
 
                     doc.LoadXml(xml);
                     var fName = saveFileDialog1.FileName;
@@ -1243,7 +1265,7 @@ namespace Nikse.SubtitleEdit.Forms
                         "<Description>" + Environment.NewLine +
                         "<Name Title=\"subtitle_exp\" Content=\"\"/>" + Environment.NewLine +
                         "<Language Code=\"eng\"/>" + Environment.NewLine +
-                        "<Format VideoFormat=\"" + videoFormat + "\" FrameRate=\"" + FrameRate.ToString(CultureInfo.InvariantCulture) + "\" DropFrame=\"False\"/>" + Environment.NewLine +
+                        "<Format VideoFormat=\"" + videoFormat + "\" FrameRate=\"" + FrameRate.ToString(CultureInfo.InvariantCulture) + "\" DropFrame=\"false\"/>" + Environment.NewLine +
                         "<Events Type=\"Graphic\" FirstEventInTC=\"" + ToHHMMSSFF(first.StartTime) + "\" LastEventOutTC=\"" + ToHHMMSSFF(last.EndTime) + "\" NumberofEvents=\"" + imagesSavedCount.ToString(CultureInfo.InvariantCulture) + "\"/>" + Environment.NewLine +
                         "</Description>" + Environment.NewLine +
                         "<Events>" + Environment.NewLine +
@@ -1252,7 +1274,7 @@ namespace Nikse.SubtitleEdit.Forms
             XmlNode events = doc.DocumentElement.SelectSingleNode("Events");
             doc.PreserveWhitespace = true;
             events.InnerXml = sb.ToString();
-            File.WriteAllText(fileName, FormatUtf8Xml(doc), Encoding.UTF8);
+            FileUtil.WriteAllTextWithDefaultUtf8(fileName, FormatUtf8Xml(doc));
         }
 
         internal void WriteDostFile(string fileName, string body)
@@ -1505,6 +1527,11 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 {
                     if (!param.Saved)
                     {
+                        if (param.Forced)
+                        {
+                            param.P.Forced = true;
+                        }
+
                         vobSubWriter.WriteParagraph(param.P, param.Bitmap, param.Alignment);
                     }
 
@@ -1832,8 +1859,9 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 {
                     if (!param.Saved)
                     {
-                        string numberString = $"{i:0000}";
-                        string fileName = Path.Combine(Path.GetDirectoryName(saveFileDialog1.FileName), numberString + ".png");
+                        // string numberString = $"{i:0000}";
+                        string uuidString = Guid.NewGuid().ToString().RemoveChar('-').Insert(8, "-").Insert(13, "-").Insert(18, "-").Insert(23, "-");
+                        string fileName = Path.Combine(Path.GetDirectoryName(saveFileDialog1.FileName), uuidString + ".png");
                         param.Bitmap.Save(fileName, ImageFormat.Png);
                         imagesSavedCount++;
                         param.Saved = true;
@@ -1886,14 +1914,14 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                                 break;
                         }
 
-                        sb.AppendLine("<Subtitle FadeDownTime=\"" + 0 + "\" FadeUpTime=\"" + 0 + "\" TimeOut=\"" + DCinemaInterop.ConvertToTimeString(param.P.EndTime) + "\" TimeIn=\"" + DCinemaInterop.ConvertToTimeString(param.P.StartTime) + "\" SpotNumber=\"" + param.P.Number + "\">");
+                        sb.AppendLine("<Subtitle SpotNumber=\"" + param.P.Number + "\" FadeUpTime=\"" + "00:00:00:00" + "\" FadeDownTime=\"" + "00:00:00:00" + "\" TimeIn=\"" + param.P.StartTime.ToHHMMSSFF() + "\" TimeOut=\"" + param.P.EndTime.ToHHMMSSFF() + "\">");
                         if (param.Depth3D == 0)
                         {
-                            sb.AppendLine("<Image VPosition=\"" + vPos + "\" HPosition=\"" + hPos + "\" VAlign=\"" + verticalAlignment + "\" HAlign=\"" + horizontalAlignment + "\">" + numberString + ".png" + "</Image>");
+                            sb.AppendLine("<Image Vposition=\"" + vPos + "\" Hposition=\"" + hPos + "\" Valign=\"" + verticalAlignment + "\" Halign=\"" + horizontalAlignment + "\">urn:uuid:" + uuidString + "</Image>");
                         }
                         else
                         {
-                            sb.AppendLine("<Image VPosition=\"" + vPos + "\" HPosition=\"" + hPos + "\" ZPosition=\"" + param.Depth3D + "\" VAlign=\"" + verticalAlignment + "\" HAlign=\"" + horizontalAlignment + "\">" + numberString + ".png" + "</Image>");
+                            sb.AppendLine("<Image Vposition=\"" + vPos + "\" Hposition=\"" + hPos + "\" Zposition=\"" + param.Depth3D + "\" Valign=\"" + verticalAlignment + "\" Halign=\"" + horizontalAlignment + "\">urn:uuid:" + uuidString + "</Image>");
                         }
 
                         sb.AppendLine("</Subtitle>");
@@ -2358,6 +2386,8 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
         private void SetupImageParameters()
         {
+            _skipPreview = true;
+
             if (subtitleListView1.SelectedItems.Count > 0 && _format.HasStyleSupport)
             {
                 Paragraph p = _subtitle.GetParagraphOrDefault(subtitleListView1.SelectedItems[0].Index);
@@ -2456,6 +2486,8 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             _subtitleFontBold = checkBoxBold.Checked;
 
             _borderWidth = GetBorderWidth();
+
+            _skipPreview = false;
         }
 
         private float GetBorderWidth()
@@ -2466,14 +2498,14 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 return 0;
             }
 
-            if (float.TryParse(comboBoxBorderWidth.SelectedItem.ToString(), out var f))
+            if (float.TryParse(comboBoxBorderWidth.SelectedItem.ToString().Replace(',', '.'), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var f))
             {
-                return f;
+                return f * 1.25f;
             }
 
-            if (float.TryParse(Utilities.RemoveNonNumbers(comboBoxBorderWidth.SelectedItem.ToString()), out f))
+            if (float.TryParse(Utilities.RemoveNonNumbers(comboBoxBorderWidth.SelectedItem.ToString()).Replace(',', '.'), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out f))
             {
-                return f;
+                return f * 1.25f;
             }
 
             return 0;
@@ -2740,15 +2772,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                                 try
                                 {
                                     colorStack.Push(c); // save old color
-                                    if (fontColor.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        arr = fontColor.Remove(0, 4).TrimEnd(')').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                        c = Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
-                                    }
-                                    else
-                                    {
-                                        c = ColorTranslator.FromHtml(fontColor);
-                                    }
+                                    c = Settings.FromHtml(fontColor);
                                 }
                                 catch
                                 {
@@ -3396,14 +3420,18 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                         else
                         {
                             sf.Alignment = StringAlignment.Center;
-                            x = parameter.ScreenWidth / 2;
                             if (parameter.JustifyLeft)
                             {
                                 sf.Alignment = StringAlignment.Near;
                             }
                             else if (parameter.JustifyRight)
                             {
+                                x = parameter.ScreenWidth - 3;
                                 sf.Alignment = StringAlignment.Far;
+                            }
+                            else
+                            {
+                                x = parameter.ScreenWidth / 2;
                             }
                         }
 
@@ -3570,15 +3598,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                                             try
                                             {
                                                 colorStack.Push(c); // save old color
-                                                if (fontColor.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    arr = fontColor.Remove(0, 4).TrimEnd(')').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                                    c = Color.FromArgb(int.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]));
-                                                }
-                                                else
-                                                {
-                                                    c = ColorTranslator.FromHtml(fontColor);
-                                                }
+                                                c = Settings.FromHtml(fontColor);
                                             }
                                             catch
                                             {
@@ -3965,23 +3985,31 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
                 var assTags = s.Substring(k + 1, l - k - 1).Split('\\');
                 var sb = new StringBuilder();
-                foreach (var assTag in assTags)
+                foreach (var assaTag in assTags)
                 {
-                    if (assTag == "i1")
+                    if (assaTag == "i1")
                     {
                         sb.Append("<i>");
                     }
-                    else if (assTag == "i" || assTag == "i0")
+                    else if (assaTag == "i" || assaTag == "i0")
                     {
                         sb.Append("</i>");
                     }
-                    else if (assTag == "b1" || assTag == "b2" || assTag == "b3" || assTag == "b4")
+                    else if (assaTag == "b1" || assaTag == "b2" || assaTag == "b3" || assaTag == "b4")
                     {
                         sb.Append("<b>");
                     }
-                    else if (assTag == "b" || assTag == "b0")
+                    else if (assaTag == "b" || assaTag == "b0")
                     {
                         sb.Append("</b>");
+                    }
+                    else if (assaTag.StartsWith("c&H", StringComparison.OrdinalIgnoreCase) && assaTag.EndsWith('&'))
+                    {
+                        var color = AdvancedSubStationAlpha.GetSsaColor(assaTag.TrimStart('c'), Color.Transparent);
+                        if (color != Color.Transparent)
+                        {
+                            sb.Append($"<font color={Utilities.ColorToHexWithTransparency(color)}>");
+                        }
                     }
                 }
                 s = s.Remove(k, l - k + 1);
@@ -4026,17 +4054,18 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 var shadowAlpha = parameter.ShadowAlpha;
                 if (parameter.ShadowWidth > 1)
                 {
-                    shadowAlpha = (int)Math.Round(shadowAlpha * 0.8);
+                    shadowAlpha = (int)Math.Round(shadowAlpha * 0.9);
                 }
 
                 var shadowPath = (GraphicsPath)path.Clone();
-                for (int k = 0; k < parameter.ShadowWidth; k++)
+                for (var k = 0; k < parameter.ShadowWidth; k++)
                 {
                     var translateMatrix = new Matrix();
                     translateMatrix.Translate(1, 1);
                     shadowPath.Transform(translateMatrix);
 
-                    using (var p1 = new Pen(new SolidBrush(Color.FromArgb(shadowAlpha, parameter.ShadowColor)), parameter.BorderWidth))
+                    var boderWidth = Math.Max(2, parameter.BorderWidth);
+                    using (var p1 = new Pen(new SolidBrush(Color.FromArgb(shadowAlpha, parameter.ShadowColor)), boderWidth))
                     {
                         SetLineJoin(parameter.LineJoin, p1);
                         g.DrawPath(p1, shadowPath);
@@ -4535,6 +4564,20 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 checkBoxFullFrameImage.Top = comboBoxFrameRate.Top + comboBoxFrameRate.Height + 5;
                 panelFullFrameBackground.Top = checkBoxFullFrameImage.Top;
             }
+            else if (exportType == ExportFormats.DCinemaSmpte2014)
+            {
+                labelFrameRate.Visible = true;
+                comboBoxFrameRate.Visible = true;
+
+                comboBoxFrameRate.Items.Add("24");
+                comboBoxFrameRate.Items.Add("25");
+                comboBoxFrameRate.Items.Add("30");
+                comboBoxFrameRate.Items.Add("50");
+                comboBoxFrameRate.Items.Add("60");
+                comboBoxFrameRate.SelectedIndex = 2;
+                comboBoxFrameRate.DropDownStyle = ComboBoxStyle.DropDownList;
+            }
+
             if (comboBoxFrameRate.Items.Count >= 2)
             {
                 SetLastFrameRate(Configuration.Settings.Tools.ExportLastFrameRate);
@@ -4570,17 +4613,15 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
             checkBoxSkipEmptyFrameAtStart.Visible = exportType == ExportFormats.ImageFrame;
 
-            foreach (var x in FontFamily.Families)
+            foreach (var fontFamily in FontHelper.GetRegularOrBoldCapableFontFamilies())
             {
-                if (x.IsStyleAvailable(FontStyle.Regular) || x.IsStyleAvailable(FontStyle.Bold))
+                comboBoxSubtitleFont.Items.Add(fontFamily.Name);
+                if (fontFamily.Name.Equals(_subtitleFontName, StringComparison.OrdinalIgnoreCase))
                 {
-                    comboBoxSubtitleFont.Items.Add(x.Name);
-                    if (x.Name.Equals(_subtitleFontName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        comboBoxSubtitleFont.SelectedIndex = comboBoxSubtitleFont.Items.Count - 1;
-                    }
+                    comboBoxSubtitleFont.SelectedIndex = comboBoxSubtitleFont.Items.Count - 1;
                 }
             }
+
             if (comboBoxSubtitleFont.SelectedIndex == -1)
             {
                 comboBoxSubtitleFont.SelectedIndex = 0; // take first font if default font was not found (e.g. linux)
@@ -4908,7 +4949,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
         private void subtitleListView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isLoading)
+            if (_isLoading || _skipPreview)
             {
                 return;
             }
@@ -4975,8 +5016,6 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             }
             return GetLeftMarginInPixels(p);
         }
-
-
 
         private void GeneratePreview()
         {
@@ -5828,7 +5867,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             }
         }
 
-        private void SubtitleListView1InitializeLanguage(LanguageStructure.General general, Core.Common.Settings settings)
+        private void SubtitleListView1InitializeLanguage(LanguageStructure.General general, Settings settings)
         {
             var columnIndexNumber = 0;
             var columnIndexStart = 1;
@@ -5870,31 +5909,70 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(_videoFileName) && LibVlcDynamic.IsInstalled)
+                if (!string.IsNullOrWhiteSpace(_videoFileName))
                 {
-                    using (var vlc = new LibVlcDynamic())
+                    if (!Configuration.IsRunningOnWindows || (!string.IsNullOrWhiteSpace(Configuration.Settings.General.FFmpegLocation) && File.Exists(Configuration.Settings.General.FFmpegLocation)))
                     {
-                        vlc.Initialize(panelVlcTemp, _videoFileName, null, null);
-                        Application.DoEvents();
-                        vlc.Volume = 0;
-                        vlc.Pause();
-                        vlc.CurrentPosition = p.StartTime.TotalSeconds;
-                        Application.DoEvents();
-                        var fileName = FileUtil.GetTempFileName(".bmp");
-                        vlc.TakeSnapshot(fileName, (uint)bmp.Width, (uint)bmp.Height);
-                        Application.DoEvents();
-                        Thread.Sleep(200);
-                        using (var tempBmp = new Bitmap(fileName))
+                        var ts = p.StartTime.TimeSpan;
+                        var s = $"{ts.Hours + ts.Days * 24:00}:{ts.Minutes:00}:{ts.Seconds:00}";
+                        var imageFileName = VideoPreviewGenerator.GetScreenShot(_videoFileName, s);
+
+                        if (File.Exists(imageFileName))
                         {
-                            g.DrawImageUnscaled(tempBmp, new Point(0, 0));
+                            using (var tempBmp = new Bitmap(imageFileName))
+                            {
+                                g.DrawImageUnscaled(tempBmp, new Point(0, 0));
+                            }
+
+                            try
+                            {
+                                File.Delete(imageFileName);
+                            }
+                            catch
+                            {
+                                // ignore
+                            }
+
+                            return;
                         }
                     }
-                    return;
+
+                    if (LibVlcDynamic.IsInstalled)
+                    {
+                        using (var vlc = new LibVlcDynamic())
+                        {
+                            vlc.Initialize(panelVlcTemp, _videoFileName, null, null);
+                            Application.DoEvents();
+                            vlc.Volume = 0;
+                            vlc.Pause();
+                            vlc.CurrentPosition = p.StartTime.TotalSeconds;
+                            Application.DoEvents();
+                            var fileName = FileUtil.GetTempFileName(".bmp");
+                            vlc.TakeSnapshot(fileName, (uint)bmp.Width, (uint)bmp.Height);
+                            Application.DoEvents();
+                            Thread.Sleep(200);
+                            using (var tempBmp = new Bitmap(fileName))
+                            {
+                                g.DrawImageUnscaled(tempBmp, new Point(0, 0));
+                            }
+
+                            try
+                            {
+                                File.Delete(fileName);
+                            }
+                            catch
+                            {
+                                // ignore
+                            }
+
+                            return;
+                        }
+                    }
                 }
             }
             catch
             {
-                // Was unable to grap screenshot via vlc
+                // Was unable to grap screenshot via ffmpeg/vlc
             }
 
             // Draw background with generated image

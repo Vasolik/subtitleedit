@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.Ocr
 {
@@ -83,7 +84,7 @@ namespace Nikse.SubtitleEdit.Forms.Ocr
             }
             list.Sort();
             comboBoxTexts.Items.Clear();
-            comboBoxTexts.Items.AddRange(list.ToArray<object>());
+            comboBoxTexts.Items.AddItems(list);
         }
 
         private void VobSubNOcrEdit_KeyDown(object sender, KeyEventArgs e)

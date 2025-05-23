@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.BinaryEdit
 {
@@ -259,8 +260,9 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
         private int _screenHeight;
         private string _lastSaveHash;
         private readonly string _nOcrFileName;
+        private bool _loading;
 
-        private int _columnIndexForced = 0;
+        private int _columnIndexForced;
         private int _columnIndexNumber = 1;
         private int _columnIndexStart = 2;
         private int _columnIndexText = -1;
@@ -270,7 +272,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
         private int _columnIndexCps = -1;
         private int _columnIndexWpm = -1;
 
-        public BinEdit(string fileName)
+        public BinEdit(string fileName, bool loading)
         {
             UiUtil.PreInitialize(this);
             InitializeComponent();
@@ -286,6 +288,13 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
             labelVideoInfo.Text = string.Empty;
             panelBackground.BackColor = Configuration.Settings.Tools.BinEditBackgroundColor;
             labelSyntaxError.Text = string.Empty;
+
+            _loading = loading;
+            if (loading)
+            {
+                ShowInTaskbar = true;
+                Configuration.Settings.General.StartRememberPositionAndSize = true;
+            }
 
             fileToolStripMenuItem.Text = LanguageSettings.Current.Main.Menu.File.Title;
             openFileToolStripMenuItem.Text = LanguageSettings.Current.Main.Menu.File.Open;
@@ -323,6 +332,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
             bottomAlignSelectedLinesToolStripMenuItem.Text = LanguageSettings.Current.BinEdit.BottomAlignSelectedLines;
             toggleforcedForSelectedLinesToolStripMenuItem.Text = LanguageSettings.Current.BinEdit.ToggleForcedSelectedLines;
             selectOnlyForcedLinesToolStripMenuItem.Text = LanguageSettings.Current.BinEdit.SelectForcedLines;
+            toolStripMenuItemSelectNonForced.Text = LanguageSettings.Current.BinEdit.SelectNonForcedLines;
             resizeImagesForSelectedLinesToolStripMenuItem.Text = LanguageSettings.Current.BinEdit.ResizeBitmapsForSelectedLines;
             colorSelectedLinesToolStripMenuItem.Text = LanguageSettings.Current.BinEdit.ChangeColorForSelectedLines;
             changeBrightnessForSelectedLinesToolStripMenuItem.Text = LanguageSettings.Current.BinEdit.ChangeBrightnessForSelectedLines;
@@ -363,6 +373,12 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
 
             videoPlayerContainer1.TryLoadGfx();
             videoPlayerContainer1.HidePlayerName();
+
+            if (Configuration.Settings.Tools.BinEditShowColumnGap)
+            {
+                _columnIndexGap = 0;
+                UpdateListViewColumns();
+            }
         }
 
         private void OpenBinSubtitle(string fileName)
@@ -428,8 +444,8 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
                 FillListView(_subtitle);
                 found = true;
             }
-            
-            
+
+
             if (!found && (ext == ".mkv" || ext == ".mks"))
             {
                 if (!OpenMatroskaFile(fileName))
@@ -549,7 +565,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
                     found = true;
                 }
             }
-            
+
             if (!found && FileUtil.IsManzanita(fileName))
             {
                 if (!ImportSubtitleFromManzanitaTransportStream(fileName))
@@ -606,7 +622,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
                 var paragraph = subtitle.Paragraphs[index];
                 var item = new ListViewItem { UseItemStyleForSubItems = false, Checked = extra.IsForced && _columnIndexForced >= 0 };
 
-                int count = startIndex;
+                var count = startIndex;
                 if (_columnIndexNumber >= 0)
                 {
                     count = AddListViewSubItem(item, count, (index + 1).ToString(CultureInfo.InvariantCulture));
@@ -634,7 +650,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
 
                 if (_columnIndexCps >= 0)
                 {
-                    count = AddListViewSubItem(item, count, $"{Utilities.GetCharactersPerSecond(paragraph):0.00}");
+                    count = AddListViewSubItem(item, count, $"{paragraph.GetCharactersPerSecond():0.00}");
                 }
 
                 if (_columnIndexWpm >= 0)
@@ -1000,56 +1016,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
             }
 
             CleanUp();
-            var sub = matroska.GetSubtitle(matroskaSubtitleInfo.TrackNumber, null);
-            var subtitles = new List<BluRaySupParser.PcsData>();
-            var log = new StringBuilder();
-            var clusterStream = new MemoryStream();
-            var lastPalettes = new Dictionary<int, List<PaletteInfo>>();
-            var lastBitmapObjects = new Dictionary<int, List<BluRaySupParser.OdsData>>();
-            foreach (var p in sub)
-            {
-                byte[] buffer = p.GetData(matroskaSubtitleInfo);
-                if (buffer != null && buffer.Length > 2)
-                {
-                    clusterStream.Write(buffer, 0, buffer.Length);
-                    if (ContainsBluRayStartSegment(buffer))
-                    {
-                        if (subtitles.Count > 0 && subtitles[subtitles.Count - 1].StartTime == subtitles[subtitles.Count - 1].EndTime)
-                        {
-                            subtitles[subtitles.Count - 1].EndTime = (long)((p.Start - 1) * 90.0);
-                        }
-
-                        clusterStream.Position = 0;
-                        var list = BluRaySupParser.ParseBluRaySup(clusterStream, log, true, lastPalettes, lastBitmapObjects);
-                        foreach (var sup in list)
-                        {
-                            sup.StartTime = (long)((p.Start - 1) * 90.0);
-                            sup.EndTime = (long)((p.End - 1) * 90.0);
-                            subtitles.Add(sup);
-
-                            // fix overlapping
-                            if (subtitles.Count > 1 && sub[subtitles.Count - 2].End > sub[subtitles.Count - 1].Start)
-                            {
-                                subtitles[subtitles.Count - 2].EndTime = subtitles[subtitles.Count - 1].StartTime - 1;
-                            }
-                        }
-
-                        clusterStream = new MemoryStream();
-                    }
-                }
-                else if (subtitles.Count > 0)
-                {
-                    var lastSub = subtitles[subtitles.Count - 1];
-                    if (lastSub.StartTime == lastSub.EndTime)
-                    {
-                        lastSub.EndTime = (long)((p.Start - 1) * 90.0);
-                        if (lastSub.EndTime - lastSub.StartTime > 1000000)
-                        {
-                            lastSub.EndTime = lastSub.StartTime;
-                        }
-                    }
-                }
-            }
+            var subtitles = BluRaySupParser.ParseBluRaySupFromMatroska(matroskaSubtitleInfo, matroska);
 
             _subtitle = new Subtitle();
             _extra = new List<Extra>();
@@ -1079,25 +1046,6 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
             }
 
             return true;
-        }
-
-        private static bool ContainsBluRayStartSegment(byte[] buffer)
-        {
-            const int epochStart = 0x80;
-            var position = 0;
-            while (position + 3 <= buffer.Length)
-            {
-                var segmentType = buffer[position];
-                if (segmentType == epochStart)
-                {
-                    return true;
-                }
-
-                var length = BluRaySupParser.BigEndianInt16(buffer, position + 1) + 3;
-                position += length;
-            }
-
-            return false;
         }
 
         private bool LoadDvbFromMatroska(MatroskaTrackInfo matroskaSubtitleInfo, MatroskaFile matroska)
@@ -1504,7 +1452,24 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
             var numberString = $"{i:0000}";
             var fileName = Path.Combine(path, numberString + ".png");
             bitmap.Save(fileName, ImageFormat.Png);
-            sb.AppendLine("<Event InTC=\"" + ToHHMMSSFF(p.StartTime) + "\" OutTC=\"" + ToHHMMSSFF(p.EndTime) + "\" Forced=\"" + extra.IsForced.ToString().ToLowerInvariant() + "\">");
+
+            var convertToSmpte = false;
+            var frameRateText = comboBoxFrameRate.Text.Replace(',', '.');
+            if (!string.IsNullOrEmpty(frameRateText) && decimal.TryParse(frameRateText, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var fr))
+            {
+                convertToSmpte = fr % 1 != 0;
+            }
+
+            var startTime = new TimeCode(p.StartTime.TotalMilliseconds);
+            var endTime = new TimeCode(p.EndTime.TotalMilliseconds);
+
+            if (convertToSmpte)
+            {
+                startTime = new TimeCode(startTime.TotalMilliseconds / 1.001);
+                endTime = new TimeCode(endTime.TotalMilliseconds / 1.001);
+            }
+
+            sb.AppendLine("<Event InTC=\"" + ToHHMMSSFF(startTime) + "\" OutTC=\"" + ToHHMMSSFF(endTime) + "\" Forced=\"" + extra.IsForced.ToString().ToLowerInvariant() + "\">");
             sb.AppendLine("  <Graphic Width=\"" + bitmap.Width.ToString(CultureInfo.InvariantCulture) + "\" Height=\"" +
                           bitmap.Height.ToString(CultureInfo.InvariantCulture) + "\" X=\"" + extra.X.ToString(CultureInfo.InvariantCulture) + "\" Y=\"" + extra.Y.ToString(CultureInfo.InvariantCulture) +
                           "\">" + numberString + ".png</Graphic>");
@@ -1549,7 +1514,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
                         "<Description>" + Environment.NewLine +
                         "<Name Title=\"subtitle_exp\" Content=\"\"/>" + Environment.NewLine +
                         "<Language Code=\"eng\"/>" + Environment.NewLine +
-                        "<Format VideoFormat=\"" + videoFormat + "\" FrameRate=\"" + _frameRate.ToString(CultureInfo.InvariantCulture) + "\" DropFrame=\"False\"/>" + Environment.NewLine +
+                        "<Format VideoFormat=\"" + videoFormat + "\" FrameRate=\"" + _frameRate.ToString(CultureInfo.InvariantCulture) + "\" DropFrame=\"false\"/>" + Environment.NewLine +
                         "<Events Type=\"Graphic\" FirstEventInTC=\"" + ToHHMMSSFF(first.StartTime) + "\" LastEventOutTC=\"" + ToHHMMSSFF(last.EndTime) + "\" NumberofEvents=\"" + count.ToString(CultureInfo.InvariantCulture) + "\"/>" + Environment.NewLine +
                         "</Description>" + Environment.NewLine +
                         "<Events>" + Environment.NewLine +
@@ -1558,7 +1523,7 @@ namespace Nikse.SubtitleEdit.Forms.BinaryEdit
             XmlNode events = doc.DocumentElement.SelectSingleNode("Events");
             doc.PreserveWhitespace = true;
             events.InnerXml = sb.ToString();
-            File.WriteAllText(fileName, FormatUtf8Xml(doc), Encoding.UTF8);
+            FileUtil.WriteAllTextWithDefaultUtf8(fileName, FormatUtf8Xml(doc));
         }
 
         private void WriteDostParagraph(Bitmap bitmap, StringBuilder sb, string path, string fileNameWithoutExtension, int i, Extra extra, Paragraph p)
@@ -2092,6 +2057,47 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
         private void BinEdit_Shown(object sender, EventArgs e)
         {
+            if ((Configuration.Settings.General.StartRememberPositionAndSize || _loading) &&
+                !string.IsNullOrEmpty(Configuration.Settings.Tools.BinEditStartPosition))
+            {
+                StartPosition = FormStartPosition.CenterParent;
+
+                var parts = Configuration.Settings.Tools.BinEditStartPosition.Split(';');
+                if (parts.Length == 2)
+                {
+                    if (int.TryParse(parts[0], out var x) && int.TryParse(parts[1], out var y))
+                    {
+                        if (x > -100 || y > -100)
+                        {
+                            Left = x;
+                            Top = y;
+                        }
+                    }
+                }
+
+                if (Configuration.Settings.Tools.BinEditStartSize == "Maximized")
+                {
+                    WindowState = FormWindowState.Maximized;
+                }
+                else
+                {
+                    var partsSize = Configuration.Settings.Tools.BinEditStartSize.Split(';');
+                    if (partsSize.Length == 2)
+                    {
+                        if (int.TryParse(partsSize[0], out var x) && int.TryParse(partsSize[1], out var y))
+                        {
+                            if (x > -100 || y > -100)
+                            {
+                                Width = x;
+                                Height = y;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
             timeUpDownStartTime.MaskedTextBox.TextChanged += (o, args) =>
             {
                 if (subtitleListView1.SelectedItems.Count < 1)
@@ -2294,6 +2300,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     var idx = subtitleListView1.SelectedItems[0].Index;
                     FillListView(_subtitle);
                     SelectIndexAndEnsureVisible(idx);
+                    comboBoxFrameRate.Text = changeFrameRate.NewFrameRate.ToString(CultureInfo.InvariantCulture);
                 }
             }
         }
@@ -2635,12 +2642,19 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             insertSubtitleAfterThisLineToolStripMenuItem.Visible = selectedCount == 1 && subtitleListView1.SelectedItems[0].Index == subtitleListView1.Items.Count - 1;
 
             selectOnlyForcedLinesToolStripMenuItem.Visible = _extra.Any(p => p.IsForced);
+            toolStripMenuItemSelectNonForced.Visible = _extra.Any(p => p.IsForced);
 
             quickOCRTextsforOverviewOnlyToolStripMenuItem.Visible = File.Exists(_nOcrFileName);
         }
 
         private void UpdateListViewColumns()
         {
+            var oldIdx = 0;
+            if (subtitleListView1.SelectedItems.Count > 0)
+            {
+                oldIdx = subtitleListView1.SelectedItems[0].Index;
+            }
+
             var index = 0;
             subtitleListView1.BeginUpdate();
             subtitleListView1.Items.Clear();
@@ -2706,6 +2720,8 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
             FillListView(_subtitle);
             subtitleListView1.EndUpdate();
+            SelectIndexAndEnsureVisible(oldIdx);
+            subtitleListView1.AutoSizeLastColumn();
         }
 
         private void openVideoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2792,8 +2808,15 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             }
         }
 
+        private bool _forceClose;
+        private DialogResult _dialogResult;
         private void BinEdit_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (_forceClose)
+            {
+                return;
+            }
+
             if (_extra != null && HasChanges())
             {
                 var result = MessageBox.Show(this, "Close and lose changes?", "SE", MessageBoxButtons.YesNoCancel);
@@ -2804,8 +2827,28 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 }
             }
 
+            if (Configuration.Settings.General.StartRememberPositionAndSize || _loading)
+            {
+                Configuration.Settings.Tools.BinEditStartPosition = Left + ";" + Top;
+                Configuration.Settings.Tools.BinEditStartSize = WindowState == FormWindowState.Maximized ? "Maximized" : Width + ";" + Height;
+            }
+
+            Configuration.Settings.Tools.BinEditShowColumnGap = _columnIndexGap >= 0;
+
             CloseVideo();
             CleanUp();
+
+            if (!e.Cancel)
+            {
+                e.Cancel = true; // Hack as FormClosing will crash if any Forms are created here (e.g. a msgbox). 
+                _forceClose = true;
+                _dialogResult = DialogResult;
+                TaskDelayHelper.RunDelayed(TimeSpan.FromMilliseconds(10), () =>
+                {
+                    DialogResult = _dialogResult;
+                    Close();
+                });
+            }
         }
 
         private void CleanUp()
@@ -3128,9 +3171,9 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             var bluePercent = color.B * 100 / total;
 
             var idx = subtitleListView1.SelectedItems[0].Index;
-            SetupProgressBar(GetIndices(true));
+            SetupProgressBar(GetIndices(true), "TODO:");
 
-            int count = 0;
+            var count = 0;
             var selectedIndices = GetIndices(true);
             foreach (var index in selectedIndices)
             {
@@ -3157,7 +3200,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 Application.DoEvents();
             }
 
-            progressBar1.Hide();
+            RemoveProgressBar();
         }
 
         private Bitmap ColorBitmap(Bitmap bitmap, int redPercent, int greenPercent, int bluePercent)
@@ -3371,10 +3414,11 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
                 var idx = subtitleListView1.SelectedItems[0].Index;
                 var selectedIndices = GetIndices(onlySelectedLines);
-                SetupProgressBar(selectedIndices);
+                SetupProgressBar(selectedIndices, "TODO:");
                 foreach (var index in selectedIndices)
                 {
                     progressBar1.Value++;
+
                     var extra = _extra[index];
                     var bmp = extra.Bitmap != null ? (Bitmap)extra.Bitmap.Clone() : GetBitmap(_binSubtitles[index]);
                     FixAlignment(f.Alignment, extra, bmp);
@@ -3389,7 +3433,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     bmp.Dispose();
                 }
 
-                progressBar1.Hide();
+                RemoveProgressBar();
             }
         }
 
@@ -3634,8 +3678,8 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 }
 
                 var selectedIndices = GetIndices(onlySelectedLines);
-                SetupProgressBar(selectedIndices);
-                int count = 0;
+                SetupProgressBar(selectedIndices, "TODO:");
+                var count = 0;
                 foreach (var i in selectedIndices)
                 {
                     Interlocked.Increment(ref count);
@@ -3662,7 +3706,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     Application.DoEvents();
                 }
 
-                progressBar1.Hide();
+                RemoveProgressBar();
             }
         }
 
@@ -3716,13 +3760,14 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 }
 
                 var selectedIndices = GetIndices(onlySelectedLines);
-                SetupProgressBar(selectedIndices);
+                SetupProgressBar(selectedIndices, "TODO:");
 
-                int count = 0;
+                var count = 0;
                 foreach (var i in selectedIndices)
                 {
                     Interlocked.Increment(ref count);
                     progressBar1.Value = count;
+
                     var sub = _binSubtitles[i];
                     var extraInner = _extra[i];
                     var bmpInner = extraInner.Bitmap != null ? (Bitmap)extraInner.Bitmap.Clone() : GetBitmap(sub);
@@ -3742,7 +3787,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     Application.DoEvents();
                 }
 
-                progressBar1.Hide();
+                RemoveProgressBar();
             }
         }
 
@@ -3780,8 +3825,8 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 }
 
                 var selectedIndices = GetIndices(onlySelectedLines);
-                SetupProgressBar(selectedIndices);
-                int count = 0;
+                SetupProgressBar(selectedIndices, "TODO:");
+                var count = 0;
                 foreach (var i in selectedIndices)
                 {
                     Interlocked.Increment(ref count);
@@ -3806,18 +3851,33 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                     Application.DoEvents();
                 }
 
-                progressBar1.Hide();
+                RemoveProgressBar();
             }
         }
 
-        private void SetupProgressBar(List<int> selectedIndices)
+        private void SetupProgressBar(List<int> selectedIndices, string title)
         {
             if (selectedIndices.Count > 10)
             {
+                menuStrip1.Enabled = false;
+                subtitleListView1.Enabled = false;
+                groupBoxCurrent.Enabled = false;
+                groupBoxVideoInfo.Enabled = false;
+
                 progressBar1.Maximum = selectedIndices.Count;
                 progressBar1.Value = 0;
                 progressBar1.Visible = true;
             }
+        }
+
+        private void RemoveProgressBar()
+        {
+            menuStrip1.Enabled = true;
+            subtitleListView1.Enabled = true;
+            groupBoxCurrent.Enabled = true;
+            groupBoxVideoInfo.Enabled = true;
+
+            progressBar1.Hide();
         }
 
         private void changeAlphaForSelectedLinesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3847,6 +3907,7 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
                 }
 
                 extra.IsForced = toggleValue;
+                subtitleListView1.Items[i].Checked = toggleValue;
                 if (i == idx)
                 {
                     checkBoxIsForced.Checked = extra.IsForced;
@@ -3856,9 +3917,9 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
 
         private void startTimeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < _subtitle.Paragraphs.Count; i++)
+            for (var i = 0; i < _subtitle.Paragraphs.Count; i++)
             {
-                for (int j = 0; j < _subtitle.Paragraphs.Count - 1; j++)
+                for (var j = 0; j < _subtitle.Paragraphs.Count - 1; j++)
                 {
                     if (_subtitle.Paragraphs[j].StartTime.TotalMilliseconds > _subtitle.Paragraphs[j + 1].StartTime.TotalMilliseconds)
                     {
@@ -3893,8 +3954,8 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             subtitleListView1.SelectedIndexChanged -= subtitleListView1_SelectedIndexChanged;
             subtitleListView1.SelectedIndices.Clear();
             System.Collections.IList list = subtitleListView1.Items;
-            bool first = true;
-            for (int i = 0; i < list.Count; i++)
+            var first = true;
+            for (var i = 0; i < list.Count; i++)
             {
                 var item = (ListViewItem)list[i];
                 if (_extra[i].IsForced)
@@ -4056,6 +4117,31 @@ $DROP=[DROPVALUE]" + Environment.NewLine + Environment.NewLine +
             {
                 bmp.Dispose();
             }
+        }
+
+        private void toolStripMenuItemSelectNonForced_Click(object sender, EventArgs e)
+        {
+            subtitleListView1.BeginUpdate();
+            subtitleListView1.SelectedIndexChanged -= subtitleListView1_SelectedIndexChanged;
+            subtitleListView1.SelectedIndices.Clear();
+            System.Collections.IList list = subtitleListView1.Items;
+            var first = true;
+            for (var i = 0; i < list.Count; i++)
+            {
+                var item = (ListViewItem)list[i];
+                if (!_extra[i].IsForced)
+                {
+                    item.Selected = true;
+                    if (first)
+                    {
+                        SelectIndexAndEnsureVisible(i);
+                        first = false;
+                    }
+                }
+            }
+            subtitleListView1.SelectedIndexChanged += subtitleListView1_SelectedIndexChanged;
+            subtitleListView1.EndUpdate();
+            subtitleListView1_SelectedIndexChanged(null, null);
         }
     }
 }

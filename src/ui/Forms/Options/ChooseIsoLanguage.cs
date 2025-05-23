@@ -90,14 +90,14 @@ namespace Nikse.SubtitleEdit.Forms.Options
                 }
             }
             comboBoxLanguages.SelectedIndex = index;
-            comboBoxLanguages.AutoCompleteSource = AutoCompleteSource.ListItems;
-            comboBoxLanguages.AutoCompleteMode = AutoCompleteMode.Append;
 
             Text = LanguageSettings.Current.ChooseLanguage.Title;
             labelLanguage.Text = LanguageSettings.Current.ChooseLanguage.Language;
             buttonOK.Text = LanguageSettings.Current.General.Ok;
             buttonCancel.Text = LanguageSettings.Current.General.Cancel;
             UiUtil.FixLargeFonts(this, buttonOK);
+
+            comboBoxLanguages.UsePopupWindow = true;
         }
 
         private void ChangeLanguage_KeyDown(object sender, KeyEventArgs e)

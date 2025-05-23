@@ -10,7 +10,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
     /// <summary>
     /// LRC is a format that synchronizes song lyrics with an audio/video file, [mm:ss.xx] where mm is minutes, ss is seconds and xx is hundredths of a second.
     ///
-    /// https://wiki.nicksoft.info/specifications:lrc-file
+    /// https://en.wikipedia.org/wiki/LRC_(file_format)
     ///
     /// Tags:
     ///     [al:''Album where the song is from'']
@@ -41,7 +41,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
 
             var subtitle = new Subtitle();
             LoadSubtitle(subtitle, lines, fileName);
-            if (subtitle.Paragraphs.Count > 4)
+            if (subtitle.Paragraphs.Count >= 1)
             {
                 var allStartWithNumber = true;
                 foreach (var p in subtitle.Paragraphs)
@@ -81,22 +81,33 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 sb.AppendLine("[ti:" + title.Replace("[", string.Empty).Replace("]", string.Empty) + "]");
             }
 
-            if (!header.Contains("[re:", StringComparison.Ordinal))
+            if (header != null && !header.Contains("[re:", StringComparison.Ordinal))
             {
                 sb.AppendLine($"[re: {BySeText}]");
             }
 
-            if (!header.Contains("[ve:", StringComparison.Ordinal))
+            if (header != null && !header.Contains("[ve:", StringComparison.Ordinal))
             {
                 sb.AppendLine($"[ve: {Utilities.AssemblyVersion}]");
             }
 
             const string timeCodeFormat = "[{0:00}:{1:00}.{2:00}]{3}";
-            foreach (var p in subtitle.Paragraphs)
+            for (var index = 0; index < subtitle.Paragraphs.Count; index++)
             {
+                var p = subtitle.Paragraphs[index];
                 var text = HtmlUtil.RemoveHtmlTags(p.Text);
                 text = text.Replace(Environment.NewLine, " ");
-                sb.AppendLine(string.Format(timeCodeFormat, p.StartTime.Hours * 60 + p.StartTime.Minutes, p.StartTime.Seconds, (int)Math.Round(p.StartTime.Milliseconds / 10.0), text));
+
+                var fraction = (int)Math.Round(p.StartTime.Milliseconds / 10.0);
+                if (fraction >= 100)
+                {
+                    var ms = new TimeCode(p.StartTime.Hours, p.StartTime.Minutes, p.StartTime.Seconds, 0).TotalMilliseconds;
+                    ms += 1000;
+                    p = new Paragraph(p.Text, ms, p.EndTime.TotalMilliseconds);
+                    fraction = 0;
+                }
+
+                sb.AppendLine(string.Format(timeCodeFormat, p.StartTime.Hours * 60 + p.StartTime.Minutes, p.StartTime.Seconds, fraction, text));
             }
 
             return sb.ToString().Trim();
@@ -192,6 +203,22 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     {
                         header.AppendLine(line);
                     }
+                }
+                else if (line.StartsWith("[ve:", StringComparison.Ordinal)) // editor version
+                {
+                    if (subtitle.Paragraphs.Count < 1)
+                    {
+                        header.AppendLine(line);
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(line))
+                {
+                    if (subtitle.Paragraphs.Count < 1)
+                    {
+                        header.AppendLine(line);
+                    }
+
+                    _errorCount++;
                 }
                 else if (!string.IsNullOrWhiteSpace(line))
                 {

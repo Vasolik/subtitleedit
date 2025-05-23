@@ -120,6 +120,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
         </styling>
         <layout>
             <region xml:id='bottom' tts:backgroundColor='transparent' tts:showBackground='whenActive' tts:origin='10% 55%' tts:extent='80% 80%' tts:displayAlign='after' />
+            <region xml:id='centerCenter' tts:backgroundColor='transparent' tts:showBackground='whenActive' tts:origin='10% 32%' tts:extent='80% 80%' tts:displayAlign='center ' />
             <region xml:id='top' tts:backgroundColor='transparent' tts:showBackground='whenActive' tts:origin='10% 10%' tts:extent='80% 80%' tts:displayAlign='before' />
         </layout>
     </head>
@@ -149,8 +150,9 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 }
             }
             var div = xml.DocumentElement.SelectSingleNode("//ttml:body", nsmgr).SelectSingleNode("ttml:div", nsmgr);
-            bool hasBottomCenterRegion = false;
-            bool hasTopCenterRegion = false;
+            var hasBottomCenterRegion = false;
+            var hasTopCenterRegion = false;
+            var hasMiddleRegion = false;
             foreach (XmlNode node in xml.DocumentElement.SelectNodes("//ttml:head/ttml:layout/ttml:region", nsmgr))
             {
                 string id = null;
@@ -172,6 +174,11 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 {
                     hasTopCenterRegion = true;
                 }
+
+                if (id != null && (id == "centerCenter" || id == "center"))
+                {
+                    hasMiddleRegion = true;
+                }
             }
 
             foreach (var p in subtitle.Paragraphs)
@@ -191,7 +198,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                 style.InnerText = "basic";
                 paragraph.Attributes.Append(style);
 
-                XmlAttribute textAlign = xml.CreateAttribute("textAlign");
+                XmlAttribute textAlign = xml.CreateAttribute("tts", "textAlign", "http://www.w3.org/ns/10/ttml#style");
                 textAlign.InnerText = "center";
                 paragraph.Attributes.Append(textAlign);
 
@@ -203,6 +210,11 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                         regionP.InnerText = "top";
                         paragraph.Attributes.Append(regionP);
                     }
+                }
+                else if (hasMiddleRegion && (text.StartsWith("{\\an5}", StringComparison.Ordinal) || text.StartsWith("{\\an6}", StringComparison.Ordinal) || text.StartsWith("{\\an7}", StringComparison.Ordinal)))
+                {
+                    regionP.InnerText = "centerCenter";
+                    paragraph.Attributes.Append(regionP);
                 }
                 else if (hasBottomCenterRegion)
                 {

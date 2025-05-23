@@ -5,13 +5,14 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms
 {
     public sealed partial class DownloadYouTubeDl : Form
     {
-        public const string Url = "https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp.exe";
-        public const string Sha512Hash = "a88df82d3833b746fe5c08474adc4839a8fdfd0000a3f3deb20365a3ad527506f094e47986607a621792ece066dd117d6e43ec9a5a5c6fa0e3f6288cecb22745";
+        public const string Url = "https://github.com/yt-dlp/yt-dlp/releases/download/2025.03.26/yt-dlp.exe";
+        public const string Sha512Hash = "bfda228334585030dd04723af29a386ff486448692df1d5e3f7910ac5d95f3e5e52fb255ec5747c5ab85cbc4ee7f5eba67894600414a8608f994ca43658a99ba";
         public bool AutoClose { get; internal set; }
         private readonly CancellationTokenSource _cancellationTokenSource;
 
@@ -54,7 +55,7 @@ namespace Nikse.SubtitleEdit.Forms
                 buttonOK.Enabled = false;
                 Refresh();
                 Cursor = Cursors.WaitCursor;
-                var httpClient = DownloaderFactory.MakeHttpClient();
+                using (var httpClient = DownloaderFactory.MakeHttpClient())
                 using (var downloadStream = new MemoryStream())
                 {
                     var downloadTask = httpClient.DownloadAsync(Url, downloadStream, new Progress<float>((progress) =>

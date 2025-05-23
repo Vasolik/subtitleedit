@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <OCRFixReplaceList>
 	<WholeWords>
-         <Word from="tñere" to="there" />
-         <Word from="ri9ht" to="right" />
+        <Word from="tñere" to="there" />
+        <Word from="ri9ht" to="right" />
 		<Word from="$COff$" to="scoffs" />
 		<Word from="$ergei" to="Sergei" />
 		<Word from="$lighnly" to="Slightly" />
@@ -429,10 +429,6 @@
 		<Word from="Cho/r" to="Choir" />
 		<Word from="Chocolatte" to="Chocolate" />
 		<Word from="chocolatte" to="chocolate" />
-		<Word from="Chrissake" to="Christ sake" />
-		<Word from="chrissake" to="christ sake" />
-		<Word from="Chrissakes" to="Christ sakes" />
-		<Word from="chrissakes" to="christ sakes" />
 		<Word from="cHucKl_Es" to="CHUCKLES" />
 		<Word from="CIamp" to="Clamp" />
 		<Word from="CIark" to="Clark" />
@@ -1758,7 +1754,6 @@
 		<Word from="Ol&lt;" to="Ole" />
 		<Word from="oldAdolfon" to="old Adolf on" />
 		<Word from="olole" to="dole" />
-		<Word from="onboard" to="on board" />
 		<Word from="one,s" to="one's" />
 		<Word from="One,s" to="One's" />
 		<Word from="onfy" to="only" />
@@ -1779,7 +1774,6 @@
 		<Word from="ordinarywoman" to="ordinary woman" />
 		<Word from="orfall" to="or fall" />
 		<Word from="orglory" to="or glory" />
-		<Word from="oriented" to="orientated" />
 		<Word from="Orjust" to="Or just" />
 		<Word from="orjust" to="or just" />
 		<Word from="ornot" to="or not" />
@@ -2801,6 +2795,10 @@
 		<Word from="0rjoins" to="or joins" />
 		<Word from="0ther" to="other" />
 		<Word from="0kay" to="okay" />
+		<Word from="Mclntyre" to="McIntyre" />
+		<Word from="Ifi" to="If I" />
+		<Word from="Isjust" to="Is just" />
+		<Word from="Ofmaking" to="Of making" />		
 	</WholeWords>
 	<PartialWordsAlways>
 		<!-- Will be replaced always -->

@@ -15,6 +15,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Controls;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.Assa
 {
@@ -227,7 +229,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             }
         }
 
-        private static void SafeNumericUpDownAssign(NumericUpDown numericUpDown, int value)
+        private static void SafeNumericUpDownAssign(NikseUpDown numericUpDown, int value)
         {
             if (value < numericUpDown.Minimum)
             {
@@ -278,6 +280,11 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             var positionsAndSizes = CalcAllPositionsAndSizes();
             foreach (var posAndSize in positionsAndSizes)
             {
+                if (posAndSize == null)
+                {
+                    continue;
+                }
+
                 // build box + gen preview via mpv
                 var x = posAndSize.Left - (int)numericUpDownPaddingLeft.Value;
                 var right = posAndSize.Right + (int)numericUpDownPaddingRight.Value;
@@ -404,7 +411,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
             {
                 if (MessageBox.Show("Download and use \"mpv\" as video player?", "Subtitle Edit", MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
                 {
-                    using (var form = new SettingsMpv(!LibMpvDynamic.IsInstalled))
+                    using (var form = new SettingsMpv())
                     {
                         if (form.ShowDialog(this) != DialogResult.OK)
                         {
@@ -846,8 +853,21 @@ namespace Nikse.SubtitleEdit.Forms.Assa
                     Application.DoEvents();
                 }
 
+                if (!File.Exists(outputVideoFileName))
+                {
+                    MessageBox.Show(this, "Unable to generate video with FFmpeg." + Environment.NewLine + process.StartInfo.Arguments, this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    return;
+                }
+
                 Cursor = Cursors.Default;
                 var bmpFileName = VideoPreviewGenerator.GetScreenShot(outputVideoFileName, "00:00:01");
+
+                if (!File.Exists(bmpFileName))
+                {
+                    MessageBox.Show(this, "Unable to get bitmap from video via FFmpeg.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    return;
+                }
+
                 using (var bmp = new Bitmap(bmpFileName))
                 {
                     var nBmp = new NikseBitmap(bmp);
@@ -910,6 +930,9 @@ namespace Nikse.SubtitleEdit.Forms.Assa
                     Application.DoEvents();
                 }
 
+                System.Threading.Thread.Sleep(100);
+                Application.DoEvents();
+
                 // make temp assa file with font
                 var assaTempFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".ass");
                 var sub = new Subtitle { Header = _subtitleWithNewHeader.Header };
@@ -941,7 +964,11 @@ namespace Nikse.SubtitleEdit.Forms.Assa
                 {
                     System.Threading.Thread.Sleep(100);
                     Application.DoEvents();
+                    progressBar1.Refresh();
                 }
+
+                System.Threading.Thread.Sleep(100);
+                Application.DoEvents();
 
                 var tempImageFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 var images = VideoPreviewGenerator.GetScreenShotsForEachFrame(outputVideoFileName, tempImageFolder);
@@ -951,17 +978,38 @@ namespace Nikse.SubtitleEdit.Forms.Assa
                     {
                         var idx = _selectedIndices[index];
                         var bmpFileName = images[index];
+
+                        PositionAndSize positionAndSize;
+
                         using (var bmp = new Bitmap(bmpFileName))
                         {
-                            var nBmp = new NikseBitmap(bmp);
-                            list.Add(new PositionAndSize
+                            if (bmp.Width > 1 && bmp.Height > 1)
                             {
-                                Top = nBmp.CalcTopCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
-                                Bottom = nBmp.Height - nBmp.CalcBottomCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
-                                Left = nBmp.CalcLeftCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
-                                Right = nBmp.Width - nBmp.CalcRightCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
-                                Id = _subtitleWithNewHeader.Paragraphs[idx].Id,
-                            });
+                                var nBmp = new NikseBitmap(bmp);
+                                positionAndSize = new PositionAndSize
+                                {
+                                    Top = nBmp.CalcTopCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                    Bottom = nBmp.Height - nBmp.CalcBottomCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                    Left = nBmp.CalcLeftCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                    Right = nBmp.Width - nBmp.CalcRightCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                    Id = _subtitleWithNewHeader.Paragraphs[idx].Id,
+                                };
+
+                                if (positionAndSize == null)
+                                {
+                                    positionAndSize = new PositionAndSize
+                                    {
+                                        Top = nBmp.CalcTopCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                        Bottom = nBmp.Height - nBmp.CalcBottomCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                        Left = nBmp.CalcLeftCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                        Right = nBmp.Width - nBmp.CalcRightCropping(Configuration.Settings.Tools.AssaBgBoxTransparentColor),
+                                        Id = _subtitleWithNewHeader.Paragraphs[idx].Id,
+                                    };
+                                }
+
+                                list.Add(positionAndSize);
+                            }
+
                         }
                         try
                         {
@@ -1155,6 +1203,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
                 _videoInfo.Width,
                 _videoInfo.Height,
                 "libx264",
+                null,
                 null,
                 null,
                 null,
@@ -1436,7 +1485,7 @@ namespace Nikse.SubtitleEdit.Forms.Assa
                         ColorChooser.SetLastColor(form.Color);
                         Configuration.Settings.General.LastColorPickerDropper = form.Color;
                         labelProgress.Text = string.Format(LanguageSettings.Current.AssaSetBackgroundBox.ColorPickerSetLastColor, Utilities.ColorToHexWithTransparency(form.Color));
-                        System.Threading.SynchronizationContext.Current.Post(TimeSpan.FromMilliseconds(3500), () =>
+                        TaskDelayHelper.RunDelayed(TimeSpan.FromMilliseconds(3500), () =>
                         {
                             labelProgress.Text = _videoText;
                         });

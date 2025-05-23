@@ -27,15 +27,15 @@ namespace Nikse.SubtitleEdit.Forms.Options
             comboBoxMeasureFontName.Items.Clear();
             var comboBoxSubtitleFontList = new List<string>();
             var comboBoxSubtitleFontIndex = 0;
-            foreach (var x in FontHelper.GetFontFamilies())
+            foreach (var fontFamily in FontHelper.GetAllSupportedFontFamilies())
             {
-                comboBoxSubtitleFontList.Add(x.Name);
-                if (x.Name.Equals(settings.MeasureFontName, StringComparison.OrdinalIgnoreCase))
+                comboBoxSubtitleFontList.Add(fontFamily.Name);
+                if (fontFamily.Name.Equals(settings.MeasureFontName, StringComparison.OrdinalIgnoreCase))
                 {
                     comboBoxSubtitleFontIndex = comboBoxSubtitleFontList.Count - 1;
                 }
             }
-            comboBoxMeasureFontName.Items.AddRange(comboBoxSubtitleFontList.ToArray<object>());
+            comboBoxMeasureFontName.Items.AddItems(comboBoxSubtitleFontList);
             comboBoxMeasureFontName.SelectedIndex = comboBoxSubtitleFontIndex;
             comboBoxMeasureFontName.EndUpdate();
 

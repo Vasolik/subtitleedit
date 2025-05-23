@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Nikse.SubtitleEdit.Forms
 {
@@ -171,7 +172,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             if (templateTrimmed == "s")
             {
-                t = t.Replace("s", $"{timeCode.TotalSeconds}");
+                t = t.Replace("s", $"{(long)Math.Round(timeCode.TotalSeconds, MidpointRounding.AwayFromZero)}");
             }
 
             if (templateTrimmed == "zzz")
@@ -181,7 +182,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             if (templateTrimmed == "z")
             {
-                t = t.Replace("z", $"{timeCode.TotalMilliseconds}");
+                t = t.Replace("z", $"{(long)Math.Round(timeCode.TotalMilliseconds, MidpointRounding.AwayFromZero)}");
             }
 
             if (templateTrimmed == "ff")
@@ -189,7 +190,7 @@ namespace Nikse.SubtitleEdit.Forms
                 t = t.Replace("ff", $"{SubtitleFormat.MillisecondsToFrames(timeCode.TotalMilliseconds)}");
             }
 
-            var totalSeconds = (int)timeCode.TotalSeconds;
+            var totalSeconds = (int)Math.Round(timeCode.TotalSeconds, MidpointRounding.AwayFromZero);
             if (t.StartsWith("ssssssss", StringComparison.Ordinal))
             {
                 t = t.Replace("ssssssss", $"{totalSeconds:00000000}");
@@ -225,7 +226,7 @@ namespace Nikse.SubtitleEdit.Forms
                 t = t.Replace("ss", $"{totalSeconds:00}");
             }
 
-            var totalMilliseconds = (long)timeCode.TotalMilliseconds;
+            var totalMilliseconds = (long)Math.Round(timeCode.TotalMilliseconds, MidpointRounding.AwayFromZero);
             if (t.StartsWith("zzzzzzzz", StringComparison.Ordinal))
             {
                 t = t.Replace("zzzzzzzz", $"{totalMilliseconds:00000000}");
@@ -340,14 +341,44 @@ namespace Nikse.SubtitleEdit.Forms
             template = template.Replace("{media-file-name}", string.IsNullOrEmpty(videoFileName) ? videoFileName : Path.GetFileNameWithoutExtension(videoFileName));
             template = template.Replace("{media-file-name-with-ext}", string.IsNullOrEmpty(videoFileName) ? videoFileName : Path.GetFileName(videoFileName));
             template = template.Replace("{#lines}", subtitle.Paragraphs.Count.ToString(CultureInfo.InvariantCulture));
-            
+            if (template.Contains("{#total-words}"))
+            {
+                template = template.Replace("{#total-words}", CalculateTotalWords(subtitle.Paragraphs).ToString(CultureInfo.InvariantCulture));
+            }
+            if (template.Contains("{#total-characters}"))
+            {
+                template = template.Replace("{#total-characters}", CalculateTotalCharacters(subtitle.Paragraphs).ToString(CultureInfo.InvariantCulture));
+            }
+
             template = template.Replace("{tab}", "\t");
             return template;
         }
 
+        private static int CalculateTotalWords(List<Paragraph> paragraphs)
+        {
+            var wordCount = 0;
+            foreach (var p in paragraphs)
+            {
+                wordCount += p.Text.CountWords();
+            }
+
+            return wordCount;
+        }
+
+        private static int CalculateTotalCharacters(List<Paragraph> paragraphs)
+        {
+            decimal characterCount = 0;
+            foreach (var p in paragraphs)
+            {
+                characterCount += p.Text.CountCharacters(false);
+            }
+
+            return (int)characterCount;
+        }
+
         internal static string GetParagraph(string template, string start, string end, string text, string originalText, int number, string actor, TimeCode duration, string gap, string timeCodeTemplate, Paragraph p, string videoFileName)
         {
-            var cps = Utilities.GetCharactersPerSecond(p);
+            var cps = p.GetCharactersPerSecond();
             var d = duration.ToString();
             if (timeCodeTemplate == "ff" || timeCodeTemplate == "f")
             {
@@ -356,7 +387,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             if (timeCodeTemplate == "zzz" || timeCodeTemplate == "zz" || timeCodeTemplate == "z")
             {
-                d = duration.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
+                d = ((long)Math.Round(duration.TotalMilliseconds, MidpointRounding.AwayFromZero)).ToString(CultureInfo.InvariantCulture);
             }
 
             if (timeCodeTemplate == "sss" || timeCodeTemplate == "ss" || timeCodeTemplate == "s")
@@ -365,7 +396,14 @@ namespace Nikse.SubtitleEdit.Forms
             }
             else if (timeCodeTemplate.EndsWith("ss.ff", StringComparison.Ordinal))
             {
-                d = $"{duration.Seconds:00}.{SubtitleFormat.MillisecondsToFramesMaxFrameRate(duration.Milliseconds):00}";
+                if (duration.Minutes > 0 && timeCodeTemplate.EndsWith("mm:ss.ff"))
+                {
+                    d = $"{duration.Minutes:00}:{duration.Seconds:00}.{SubtitleFormat.MillisecondsToFramesMaxFrameRate(duration.Milliseconds):00}";
+                }
+                else
+                {
+                    d = $"{duration.Seconds:00}.{SubtitleFormat.MillisecondsToFramesMaxFrameRate(duration.Milliseconds):00}";
+                }
             }
             else if (timeCodeTemplate.EndsWith("ss:ff", StringComparison.Ordinal))
             {
@@ -389,7 +427,14 @@ namespace Nikse.SubtitleEdit.Forms
             }
             else if (timeCodeTemplate.EndsWith("ss,zzz", StringComparison.Ordinal))
             {
-                d = $"{duration.Seconds:00},{duration.Milliseconds:000}";
+                if (duration.Minutes > 0 && timeCodeTemplate.EndsWith("mm:ss,zzz"))
+                {
+                    d = $"{duration.Minutes:00}:{duration.Seconds:00},{duration.Milliseconds:000}";
+                }
+                else
+                {
+                    d = $"{duration.Seconds:00},{duration.Milliseconds:000}";
+                }
             }
             else if (timeCodeTemplate.EndsWith("ss;zzz", StringComparison.Ordinal))
             {
@@ -405,7 +450,14 @@ namespace Nikse.SubtitleEdit.Forms
             }
             else if (timeCodeTemplate.EndsWith("ss,zz", StringComparison.Ordinal))
             {
-                d = $"{duration.Seconds:00},{Math.Round(duration.Milliseconds / 10.0):00}";
+                if (duration.Minutes > 0 && timeCodeTemplate.EndsWith("mm:ss,zz"))
+                {
+                    d = $"{duration.Minutes:00}:{duration.Seconds:00},{Math.Round(duration.Milliseconds / 10.0):00}";
+                }
+                else
+                {
+                    d = $"{duration.Seconds:00},{Math.Round(duration.Milliseconds / 10.0):00}";
+                }
             }
             else if (timeCodeTemplate.EndsWith("ss;zz", StringComparison.Ordinal))
             {
@@ -446,8 +498,7 @@ namespace Nikse.SubtitleEdit.Forms
                               string.IsNullOrEmpty(videoFileName) ? string.Empty : Path.GetFileName(videoFileName),
                               actorColonSpace,
                               actorUppercaseBracketsSpace
-                              )
-                ;
+                              );
             s = PostCurly(s, replaceStart, replaceEnd);
             return s;
         }
@@ -554,6 +605,11 @@ namespace Nikse.SubtitleEdit.Forms
             }
 
             return list;
+        }
+
+        private void contextMenuStripFooter_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
         }
     }
 }

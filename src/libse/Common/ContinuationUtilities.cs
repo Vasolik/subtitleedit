@@ -839,7 +839,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             while (input.IndexOf("<i>", StringComparison.Ordinal) >= 0)
             {
                 var startIndex = input.IndexOf("<i>", StringComparison.Ordinal);
-                var endIndex = input.IndexOf("</i>", StringComparison.Ordinal);
+                var endIndex = input.IndexOf("</i>", startIndex, StringComparison.Ordinal);
                 var textToRemove = endIndex >= 0 ? input.Substring(startIndex, (endIndex + 4) - startIndex) : input.Substring(startIndex);
                 input = input.Replace(textToRemove, string.Empty);
             }
@@ -909,6 +909,11 @@ namespace Nikse.SubtitleEdit.Core.Common
             input = input.Substring(lineStartIndex, lineEndIndex - lineStartIndex);
 
             var startIndex = input.IndexOf("<", StringComparison.Ordinal);
+            if (startIndex < 0)
+            {
+                return false;
+            }
+
             var endIndex = input.LastIndexOf("</", StringComparison.Ordinal);
             if (endIndex >= 0)
             {
@@ -949,7 +954,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             var input = ExtractParagraphOnly(originalInput);
 
             // Return if empty string
-            if (string.IsNullOrEmpty(originalInput))
+            if (string.IsNullOrEmpty(originalInput) || string.IsNullOrWhiteSpace(input) || input.Length < 2)
             {
                 return false;
             }
@@ -1198,7 +1203,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             return false;
         }
 
-        public static Tuple<string, string> MergeHelper(string input, string nextInput, ContinuationProfile profile, string language)
+        public static Tuple<string, string> MergeHelper(string input, string nextInput, ContinuationProfile profile, string language, bool? addComma = null)
         {
             // Convert for Arabic
             if (language == "ar")
@@ -1219,7 +1224,8 @@ namespace Nikse.SubtitleEdit.Core.Common
                 && (!Dashes.Contains(nextTextWithDash[0]) || Dashes.Contains(nextTextWithDash[0]) && nextTextWithDash.IndexOf(nextTextWithDash[0], 1) != -1))
             {
                 var newNextText = RemoveAllPrefixes(nextInput, profile);
-                var newText = RemoveSuffix(input, profile, StartsWithConjunction(newNextText, language));
+                var doAddComma = addComma ?? StartsWithConjunction(newNextText, language);
+                var newText = RemoveSuffix(input, profile, doAddComma);
 
                 input = newText;
                 nextInput = newNextText;

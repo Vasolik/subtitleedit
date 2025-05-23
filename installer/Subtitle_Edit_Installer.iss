@@ -43,7 +43,7 @@
 #define VerBuild
 #define VerRevision
 
-#define bindir "..\src\ui\bin\Release"
+#define bindir "..\src\ui\bin\Release\net48"
 
 #ifnexist bindir + "\SubtitleEdit.exe"
   #error Compile Subtitle Edit first
@@ -98,7 +98,7 @@ UsePreviousLanguage=no
 
 DefaultDirName={pf}\{#app_name}
 DefaultGroupName={#app_name}
-MinVersion=6.0
+MinVersion=6.1
 LicenseFile=..\LICENSE.txt
 InfoAfterFile=..\Changelog.txt
 SetupIconFile=..\src\ui\Icons\SE.ico
@@ -213,20 +213,11 @@ Source: ..\Dictionaries\fr_names.xml;              DestDir: {userappdata}\Subtit
 Source: ..\Dictionaries\hr_names.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
 Source: ..\Dictionaries\nb_names.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
 Source: ..\Dictionaries\nl_names.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
-Source: ..\Dictionaries\pt_names.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
+Source: ..\Dictionaries\pt_BR_names.xml;           DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
+Source: ..\Dictionaries\pt_PT_names.xml;           DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
 Source: ..\Dictionaries\ru_names.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
 Source: ..\Dictionaries\names.xml;                 DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion; Components: main
-Source: ..\Dictionaries\ar_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\bg_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\da_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\el_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\en_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\es_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\hr_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\mk_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\pt_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\ru_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
-Source: ..\Dictionaries\sr_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Dictionaries\*_NoBreakAfterList.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\da_DK_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\de_DE_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\en_US_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
@@ -236,6 +227,7 @@ Source: ..\Dictionaries\fi_FI_se.xml;              DestDir: {userappdata}\Subtit
 Source: ..\Dictionaries\nl_NL_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\pt_PT_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\ru_RU_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Dictionaries\it_IT_se.xml;              DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\en_US.aff;                 DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\en_US.dic;                 DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\dan_WordSplitList.txt;     DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
@@ -245,6 +237,10 @@ Source: ..\Dictionaries\ita_WordSplitList.txt;     DestDir: {userappdata}\Subtit
 Source: ..\Dictionaries\pol_WordSplitList.txt;     DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\spa_WordSplitList.txt;     DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Dictionaries\deu_Nouns.txt;             DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Dictionaries\da_interjections_se.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Dictionaries\en_interjections_se.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Dictionaries\es_interjections_se.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Dictionaries\fr_interjections_se.xml;   DestDir: {userappdata}\Subtitle Edit\Dictionaries; Flags: ignoreversion onlyifdoesntexist; Components: main
 
 
 Source: ..\Ocr\Latin.db;                           DestDir: {userappdata}\Subtitle Edit\Ocr;          Flags: ignoreversion uninsneveruninstall onlyifdoesntexist; Components: main
@@ -254,6 +250,7 @@ Source: ..\preview.mkv;                            DestDir: {userappdata}\Subtit
 
 Source: ..\Icons\ass.ico;                          DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\dfxp.ico;                         DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Icons\lrc.ico;                          DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\sbv.ico;                          DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\srt.ico;                          DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\ssa.ico;                          DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
@@ -264,10 +261,16 @@ Source: ..\Icons\vtt.ico;                          DestDir: {app}\Icons;        
 Source: ..\Icons\smi.ico;                          DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\itt.ico;                          DestDir: {app}\Icons;                              Flags: ignoreversion onlyifdoesntexist; Components: main
 
+Source: ..\Icons\*.png;                            DestDir: {userappdata}\Subtitle Edit\Icons;              Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\DarkTheme\*.png;                  DestDir: {userappdata}\Subtitle Edit\Icons\DarkTheme;    Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\DefaultTheme\*.png;               DestDir: {userappdata}\Subtitle Edit\Icons\DefaultTheme; Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\Legacy\*.png;                     DestDir: {userappdata}\Subtitle Edit\Icons\Legacy;       Flags: ignoreversion onlyifdoesntexist; Components: main
 Source: ..\Icons\Black\*.png;                      DestDir: {userappdata}\Subtitle Edit\Icons\Black;        Flags: ignoreversion onlyifdoesntexist; Components: main
+
+Source: ..\Icons\DarkTheme\VideoPlayer\*.png;      DestDir: {userappdata}\Subtitle Edit\Icons\DarkTheme\VideoPlayer;    Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Icons\DefaultTheme\VideoPlayer\*.png;   DestDir: {userappdata}\Subtitle Edit\Icons\DefaultTheme\VideoPlayer; Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Icons\Legacy\VideoPlayer\*.png;         DestDir: {userappdata}\Subtitle Edit\Icons\Legacy\VideoPlayer;       Flags: ignoreversion onlyifdoesntexist; Components: main
+Source: ..\Icons\Black\VideoPlayer\*.png;          DestDir: {userappdata}\Subtitle Edit\Icons\Black\VideoPlayer;        Flags: ignoreversion onlyifdoesntexist; Components: main
 
 #ifdef localize
 Source: {#bindir}\Languages\ar-EG.xml;             DestDir: {app}\Languages;                          Flags: ignoreversion; Components: translations
@@ -320,6 +323,11 @@ Source: {#bindir}\NHunspell.dll;                   DestDir: {app};              
 Source: {#bindir}\UtfUnknown.dll;                  DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: {#bindir}\Vosk.dll;                        DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: {#bindir}\NCalc.dll;                       DestDir: {app};                                    Flags: ignoreversion; Components: main
+Source: {#bindir}\SkiaSharp.dll;                   DestDir: {app};                                    Flags: ignoreversion; Components: main
+Source: {#bindir}\x86\7zxa.dll;                    DestDir: {app}\x86;                                Flags: ignoreversion; Components: main
+Source: {#bindir}\x64\7zxa.dll;                    DestDir: {app}\x64;                                Flags: ignoreversion; Components: main
+Source: {#bindir}\x86\libSkiaSharp.dll;            DestDir: {app}\x86;                                Flags: ignoreversion; Components: main
+Source: {#bindir}\x64\libSkiaSharp.dll;            DestDir: {app}\x64;                                Flags: ignoreversion; Components: main
 Source: ..\src\ui\DLLs\Interop.QuartzTypeLib.dll;  DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: {#bindir}\Newtonsoft.Json.dll;             DestDir: {app};                                    Flags: ignoreversion; Components: main
 Source: {#bindir}\System.Net.Http.Extensions.dll;  DestDir: {app};                                    Flags: ignoreversion; Components: main
@@ -362,6 +370,12 @@ Type: files;      Name: {app}\NHunspell.dll;                          Check: IsU
 Type: files;      Name: {app}\UtfUnknown.dll;                         Check: IsUpgrade()
 Type: files;      Name: {app}\Vosk.dll;                               Check: IsUpgrade()
 Type: files;      Name: {app}\NCalc.dll;                              Check: IsUpgrade()
+Type: files;      Name: {app}\SkiaSharp.dll;                          Check: IsUpgrade()
+Type: files;      Name: {app}\x86\7zxa.dll;                           Check: IsUpgrade()
+Type: files;      Name: {app}\x64\7zxa.dll;                           Check: IsUpgrade()
+Type: files;      Name: {app}\x86\libSkiaSharp.dll;                   Check: IsUpgrade()
+Type: files;      Name: {app}\x64\libSkiaSharp.dll;                   Check: IsUpgrade()
+Type: files;      Name: {app}\System.Memory.dll;                      Check: IsUpgrade()
 Type: files;      Name: {app}\Interop.QuartzTypeLib.dll;              Check: IsUpgrade()
 Type: files;      Name: {app}\Newtonsoft.Json.dll;                    Check: IsUpgrade()
 Type: files;      Name: {app}\System.Net.Http.Extensions.dll;         Check: IsUpgrade()
@@ -391,6 +405,10 @@ Type: files;      Name: {app}\Dictionaries\ita_WordSplitList.txt;      Check: Is
 Type: files;      Name: {app}\Dictionaries\pol_WordSplitList.txt;      Check: IsUpgrade()
 Type: files;      Name: {app}\Dictionaries\spa_WordSplitList.txt;      Check: IsUpgrade()
 Type: files;      Name: {app}\Dictionaries\deu_Nouns.txt;              Check: IsUpgrade()
+Type: files;      Name: {app}\Dictionaries\da_interjections_se.xml;    Check: IsUpgrade()
+Type: files;      Name: {app}\Dictionaries\en_interjections_se.xml;    Check: IsUpgrade()
+Type: files;      Name: {app}\Dictionaries\es_interjections_se.xml;    Check: IsUpgrade()
+Type: files;      Name: {app}\Dictionaries\fr_interjections_se.xml;    Check: IsUpgrade()
 
 Type: dirifempty; Name: {app}\Dictionaries;                            Check: IsUpgrade()
 Type: files;      Name: {app}\TessData\eng.DangAmbigs;                 Check: IsUpgrade()
@@ -685,17 +703,7 @@ begin
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\pt_names.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\ru_names.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\names.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\ar_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\bg_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\da_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\el_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\en_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\es_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\hr_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\mk_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\pt_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\ru_NoBreakAfterList.xml'));
-  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\sr_NoBreakAfterList.xml'));
+  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\*_NoBreakAfterList.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\da_DK_se.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\de_DE_se.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\en_US_se.xml'));
@@ -705,6 +713,7 @@ begin
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\nl_NL_se.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\pt_PT_se.xml'));
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\ru_RU_se.xml'));
+  DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\it_IT_se.xml'));
   DelTree(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\???_OCRFixReplaceList_User.xml'), False, True, False);
   DelTree(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\*.dic'), False, True, False);
   DelTree(ExpandConstant('{userappdata}\Subtitle Edit\Dictionaries\*.aff'), False, True, False);
@@ -714,6 +723,7 @@ begin
   DeleteFile(ExpandConstant('{userappdata}\Subtitle Edit\preview.mkv'));
   DeleteFile(ExpandConstant('{app}\Icons\ass.ico'));
   DeleteFile(ExpandConstant('{app}\Icons\dfxp.ico'));
+  DeleteFile(ExpandConstant('{app}\Icons\lrc.ico'));
   DeleteFile(ExpandConstant('{app}\Icons\sbv.ico'));
   DeleteFile(ExpandConstant('{app}\Icons\srt.ico'));
   DeleteFile(ExpandConstant('{app}\Icons\ssa.ico'));

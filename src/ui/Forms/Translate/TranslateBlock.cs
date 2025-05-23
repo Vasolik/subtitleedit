@@ -3,6 +3,8 @@ using Nikse.SubtitleEdit.Logic;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Nikse.SubtitleEdit.Core.Common;
+using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.Translate
 {
@@ -20,6 +22,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
             labelInfo.Text = LanguageSettings.Current.GoogleTranslate.TranslateBlockInfo;
             buttonGetTargetGet.Text = LanguageSettings.Current.GoogleTranslate.TranslateBlockGetFromClipboard;
             buttonCopySourceTextToClipboard.Text = LanguageSettings.Current.GoogleTranslate.TranslateBlockCopySourceText;
+            buttonCancel.Text = LanguageSettings.Current.General.Cancel;
 
             _sourceBlock = source;
             Text = title;
@@ -59,7 +62,7 @@ namespace Nikse.SubtitleEdit.Forms.Translate
 
         private void buttonCopySourceTextToClipboard_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(_sourceBlock.TargetText);
+            Retry.Do(() => Clipboard.SetText(_sourceBlock.TargetText), TimeSpan.FromMilliseconds(100), 3);
             buttonCopySourceTextToClipboard.Font = new Font(Font.FontFamily.Name, buttonCopySourceTextToClipboard.Font.Size, FontStyle.Regular);
         }
 

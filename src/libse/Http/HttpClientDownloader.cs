@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Nikse.SubtitleEdit.Core.Common;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Nikse.SubtitleEdit.Core.Common;
 
 namespace Nikse.SubtitleEdit.Core.Http
 {
@@ -12,10 +13,7 @@ namespace Nikse.SubtitleEdit.Core.Http
     {
         private readonly HttpClient _httpClient;
 
-        public HttpClientDownloader(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public HttpClientDownloader(HttpClient httpClient) => _httpClient = httpClient;
 
         public Uri BaseAddress
         {
@@ -32,7 +30,8 @@ namespace Nikse.SubtitleEdit.Core.Http
 
         public Task<string> GetStringAsync(string url)
         {
-            return _httpClient.GetStringAsync(url);
+            var response = _httpClient.GetByteArrayAsync(url).Result;
+            return Task.FromResult(Encoding.UTF8.GetString(response, 0, response.Length));
         }
 
         public async Task DownloadAsync(string requestUri, Stream destination, IProgress<float> progress = null, CancellationToken cancellationToken = default)
@@ -65,8 +64,7 @@ namespace Nikse.SubtitleEdit.Core.Http
 
                 if (Environment.OSVersion.Version.Major < 10)
                 {
-                    Configuration.Settings.General.UseLegacyDownloader = true;
-                    SeLogger.Error("Switching to legacy downloader due to old OS!");
+                    SeLogger.Error("A newer OS might be needed!");
                 }
 
                 throw;
@@ -101,9 +99,6 @@ namespace Nikse.SubtitleEdit.Core.Http
             }
         }
 
-        public void Dispose()
-        {
-            _httpClient?.Dispose();
-        }
+        public void Dispose() => _httpClient?.Dispose();
     }
 }

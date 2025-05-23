@@ -2,7 +2,7 @@
 <Language Name="Slovenščina">
   <General>
     <Title>Subtitle Edit</Title>
-    <Version>3.6.13</Version>
+    <Version>4.0.12</Version>
     <TranslatedBy>Prevod: Jadran Rudec, Pošta: jrudec@gmail.com</TranslatedBy>
     <CultureName>sl-SI</CultureName>
     <HelpFile />
@@ -666,7 +666,8 @@ Opomba: Preverite prosti prostor na disku.</WaveFileMalformed>
     <XImagesSavedInY>{0:#,##0} slike, shranjene v {1}</XImagesSavedInY>
     <VideoResolution>Video ločljivost</VideoResolution>
     <Align>Poravnaj</Align>
-    <Left></Left>
+    <Left>
+    </Left>
     <Right>Desno</Right>
     <Center>Na sredino</Center>
     <CenterLeftJustify>Na sredino, poravnano levo</CenterLeftJustify>
@@ -756,7 +757,7 @@ Opomba: Preverite prosti prostor na disku.</WaveFileMalformed>
     <RemovedEmptyLineAtTop>Odstrani prazno vrstico na vrhu</RemovedEmptyLineAtTop>
     <RemovedEmptyLineAtBottom>Odstrani prazno vrstico na dnu</RemovedEmptyLineAtBottom>
     <RemovedEmptyLineInMiddle>Odstrani prazno vrstico na sredini</RemovedEmptyLineInMiddle>
-    <RemovedEmptyLinesUnsedLineBreaks>Odstrani prazne vrstice/neuporabljene prelome vrstic</RemovedEmptyLinesUnsedLineBreaks>
+    <RemovedEmptyLinesUnusedLineBreaks>Odstrani prazne vrstice/neuporabljene prelome vrstic</RemovedEmptyLinesUnusedLineBreaks>
     <FixOverlappingDisplayTimes>Popravi prekrivajoče se prikazne čase</FixOverlappingDisplayTimes>
     <FixShortDisplayTimes>Popravi kratke prikazne čase</FixShortDisplayTimes>
     <FixLongDisplayTimes>Popravi dolge čase prikaza</FixLongDisplayTimes>
@@ -1722,7 +1723,7 @@ Ali želite začeti z vrha dokumenta ter nadaljevati iskanje in zamenjavo?</Repl
     <BeforeSetEndTimeAndOffsetTheRest>Pred nastavitvijo končnega časa in zamikom preostalega</BeforeSetEndTimeAndOffsetTheRest>
     <BeforeSetEndAndVideoPosition>Pred nastavitvijo končnega časa na položaju videa in samodejnim izračunom začetka</BeforeSetEndAndVideoPosition>
     <ContinueWithCurrentSpellCheck>Želite nadaljevati s trenutnim preverjanjem črkovanja?</ContinueWithCurrentSpellCheck>
-    <CharactersPerSecond>Znakov/s: 0:0,00}</CharactersPerSecond>
+    <CharactersPerSecond>Znakov/s: {0:0.00}</CharactersPerSecond>
     <GetFrameRateFromVideoFile>Pridobi hitrost sličic iz video datoteke</GetFrameRateFromVideoFile>
     <NetworkMessage>Novo sporočilo: {0} ({1}): {2}</NetworkMessage>
     <NetworkUpdate>Posodobljena vrstica: {0} ({1}): Index={2}, Text={3}</NetworkUpdate>
@@ -2359,8 +2360,6 @@ lahko ureja v isti datoteki s podnapisi (sodelovanje)</Information>
     <CpsLineLengthStyleCalcNoSpace>Preštej vse razen presledka</CpsLineLengthStyleCalcNoSpace>
     <CpsLineLengthStyleCalcCjk>CJK 1, latinica 0,5</CpsLineLengthStyleCalcCjk>
     <CpsLineLengthStyleCalcCjkNoSpace>CJK 1, latinica 0,5, presledek 0</CpsLineLengthStyleCalcCjkNoSpace>
-    <CpsLineLengthStyleCalcIgnoreArabicDiacritics>Prezri arabske diakritične znake</CpsLineLengthStyleCalcIgnoreArabicDiacritics>
-    <CpsLineLengthStyleCalcIgnoreArabicDiacriticsNoSpace>Prezri arabske diakritične znake/presledek</CpsLineLengthStyleCalcIgnoreArabicDiacriticsNoSpace>
     <CpsLineLengthStyleCalcNoSpaceOrPunctuation>Brez presledkov ali ločil ()[]-:;,.!?</CpsLineLengthStyleCalcNoSpaceOrPunctuation>
     <CpsLineLengthStyleCalcNoSpaceOrPunctuationCpsOnly>Brez presledkov ali ločil, samo cps</CpsLineLengthStyleCalcNoSpaceOrPunctuationCpsOnly>
     <MusicSymbol>Glasbeni simbol</MusicSymbol>
@@ -2392,7 +2391,7 @@ lahko ureja v isti datoteki s podnapisi (sodelovanje)</Information>
     <DarkThemeEnabled>Uporabi temno temo</DarkThemeEnabled>
     <DarkThemeShowGridViewLines>Prikaži mrežne črte prikaza seznama</DarkThemeShowGridViewLines>
     <UpdateShortcut>Posodobi</UpdateShortcut>
-    <FoucsSetVideoPosition>Izostritev nastavljenega položaja videa</FoucsSetVideoPosition>
+    <FocusSetVideoPosition>Izostritev nastavljenega položaja videa</FocusSetVideoPosition>
     <ToggleDockUndockOfVideoControls>Preklop zasidranih/odsidranih videokontrol</ToggleDockUndockOfVideoControls>
     <CreateSetEndAddNewAndGoToNew>Nastavi konec, dodaj novo in pojdi na novo</CreateSetEndAddNewAndGoToNew>
     <AdjustViaEndAutoStart>Prilagodi preko končnega položaja</AdjustViaEndAutoStart>
@@ -2614,7 +2613,8 @@ lahko ureja v isti datoteki s podnapisi (sodelovanje)</Information>
     <MainTextBoxAssaIntellisense>Prikaži pomočnika za oznake ASSA</MainTextBoxAssaIntellisense>
     <MainTextBoxAssaRemoveTag>Odstrani oznako ASSA pri kazalcu</MainTextBoxAssaRemoveTag>
     <MainFileSaveAll>Shrani vse</MainFileSaveAll>
-    <Miscellaneous></Miscellaneous>
+    <Miscellaneous>
+    </Miscellaneous>
     <CpsIncludesSpace>Znakov/s (CPS) vključuje presledke</CpsIncludesSpace>
     <UseDoNotBreakAfterList>Uporabi seznam "do-not-break-after"</UseDoNotBreakAfterList>
     <BreakEarlyForLineEnding>Prelomi predčasno za konec stavka (.!?)</BreakEarlyForLineEnding>
@@ -2818,14 +2818,14 @@ Nastavitev pisave za podnapise se običajno izvaja v predvajalniku videoposnetko
     <NumberOfAlignmentTags>Število oznak za poravnavo: {0:#,##0}</NumberOfAlignmentTags>
     <LineLengthMinimum>Dolžina podnapisa - najmanj: {0}</LineLengthMinimum>
     <LineLengthMaximum>Dolžina podnapisa - največ: {0}</LineLengthMaximum>
-    <LineLengthAverage>Dolžina podnapisov - povprečje: {0}</LineLengthAverage>
+    <LineLengthAverage>Dolžina podnapisov - povprečje: {0:#.###}</LineLengthAverage>
     <LinesPerSubtitleAverage>Podnaslov, število vrstic - povprečje: {0:0.0}</LinesPerSubtitleAverage>
     <SingleLineLengthMinimum>Dolžina ene vrstice - najmanj: {0}</SingleLineLengthMinimum>
     <SingleLineLengthMaximum>Dolžina ene vrstice – največ: {0}</SingleLineLengthMaximum>
-    <SingleLineLengthAverage>Dolžina ene vrstice - povprečje: {0}</SingleLineLengthAverage>
+    <SingleLineLengthAverage>Dolžina ene vrstice - povprečje: {0:#.###}</SingleLineLengthAverage>
     <SingleLineWidthMinimum>Širina ene vrstice - najmanj: {0} zaslonskih pik</SingleLineWidthMinimum>
     <SingleLineWidthMaximum>Širina ene vrstice - največ: {0} zaslonskih pik</SingleLineWidthMaximum>
-    <SingleLineWidthAverage>Širina ene vrstice - povprečje: {0} zaslonskih pik</SingleLineWidthAverage>
+    <SingleLineWidthAverage>Širina ene vrstice - povprečje: {0:#.###} zaslonskih pik</SingleLineWidthAverage>
     <DurationMinimum>Trajanje - najkrajše: {0:0.000} sekund</DurationMinimum>
     <DurationMaximum>Trajanje - najdaljše: {0:0.000} sekund</DurationMaximum>
     <DurationAverage>Trajanje - povprečje: {0:0.000} sekund</DurationAverage>
@@ -3169,7 +3169,7 @@ Nastavitev pisave za podnapise se običajno izvaja v predvajalniku videoposnetko
     <RemoveShotChangesFromSelection>Odstrani spremembo posnetka iz izbora</RemoveShotChangesFromSelection>
     <GuessTimeCodes>Ugani časovne kode...</GuessTimeCodes>
     <SeekSilence>Išči tišino...</SeekSilence>
-    <InsertSubtitleHere>Tukaj vstavi podnapis...</InsertSubtitleHere>
+    <InsertSubtitleHere>Tukaj vstavi podnapis</InsertSubtitleHere>
     <CharsSecX>CPS: {0:0.00}</CharsSecX>
     <WordsMinX>WPM: {0:0.00}</WordsMinX>
   </Waveform>
